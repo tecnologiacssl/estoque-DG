@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CSSL Central TI — Portal</title>
+<style>
+:root{
+  --azul:#3b82f6;
+  --azul-forte:#2563eb;
+  --azul-claro:#60a5fa;
+  --branco:#f5f7fa;
+  --cinza-claro:#9fb0c9;
+  --cinza-medio:#64748b;
+  --preto:#06070a;
+  --vidro:rgba(255,255,255,.04);
+  --borda:rgba(148,163,184,.18);
+  --verde:#22c55e;
+  --amarelo:#f59e0b;
+  --vermelho:#f87171;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:var(--preto);
+  color:var(--branco);
+  min-height:100vh;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;top:-20%;left:50%;transform:translateX(-50%);
+  width:900px;height:700px;
+  background:radial-gradient(circle,rgba(59,130,246,.22) 0%,rgba(59,130,246,0) 70%);
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:"";position:fixed;bottom:-25%;right:-10%;width:700px;height:700px;
+  background:radial-gradient(circle,rgba(96,165,250,.10) 0%,rgba(96,165,250,0) 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ---------- NAV ---------- */
+header.nav{
+  position:sticky;top:0;z-index:10;
+  background:rgba(6,7,10,.85);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(59,130,246,.22);
+  box-shadow:0 1px 30px rgba(37,99,235,.18);
+  padding:16px 30px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.marca{display:flex;align-items:center;gap:12px}
+.marca .ponto{width:11px;height:11px;border-radius:50%;background:var(--azul);box-shadow:0 0 4px 1px var(--azul),0 0 18px 4px rgba(59,130,246,.7)}
+.marca .texto b{display:block;color:#fff;font-size:17px;letter-spacing:.3px;text-shadow:0 0 20px rgba(59,130,246,.35)}
+.marca .texto span{display:block;color:var(--cinza-claro);font-size:12px;margin-top:1px}
+
+main{max-width:960px;margin:0 auto;padding:0 16px 70px;position:relative;z-index:1}
+
+/* ---------- CARTÃO GENÉRICO ESCURO ---------- */
+.cartao-escuro{
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  border:1px solid rgba(96,165,250,.22);
+  border-radius:20px;
+  box-shadow:0 25px 70px rgba(0,0,0,.55),0 0 50px rgba(37,99,235,.10),inset 0 1px 0 rgba(255,255,255,.04);
+  backdrop-filter:blur(16px);
+}
+
+.aviso{
+  display:none;font-size:12.5px;padding:9px 11px;border-radius:9px;margin-bottom:18px;text-align:center;line-height:1.5;
+}
+.aviso.amarelo{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#fbbf24}
+.aviso.vermelho{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--vermelho)}
+
+/* ---------- LOGIN ---------- */
+#tela-login{display:flex;justify-content:center;padding-top:70px}
+.login-card{padding:38px 30px 26px;width:100%;max-width:400px}
+
+.hero-login{text-align:center}
+.avatar-grande{
+  width:64px;height:64px;border-radius:50%;margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+  background:radial-gradient(circle at 32% 30%,rgba(96,165,250,.4),rgba(37,99,235,.06));
+  border:1px solid rgba(96,165,250,.4);box-shadow:0 0 35px rgba(59,130,246,.28);
+}
+.hero-login h2{margin:0 0 6px;font-size:21px;color:#fff;text-shadow:0 0 22px rgba(59,130,246,.3)}
+.hero-login p{margin:0 0 22px;color:var(--cinza-claro);font-size:13.5px}
+
+.form-oculto{display:none}
+form label{display:block;text-align:left;font-weight:650;font-size:13px;margin:14px 0 6px;color:var(--cinza-claro)}
+form label:first-of-type{margin-top:0}
+form input,form select,form textarea{
+  width:100%;padding:12px 13px;border-radius:10px;
+  background:var(--vidro);border:1px solid var(--borda);color:#fff;font-size:14px;font-family:inherit;
+}
+form textarea{min-height:100px;resize:vertical}
+form input::placeholder{color:#5b6b84}
+form input:focus,form select:focus,form textarea:focus{
+  outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(59,130,246,.18);
+}
+form select option{background:#0b0d12;color:#fff}
+.small{font-size:12px;color:var(--cinza-medio)}
+
+.msg-caixa{display:none;text-align:left;padding:9px 11px;border-radius:8px;font-size:12.5px;margin-top:12px}
+.msg-caixa.erro{background:rgba(248,113,113,.12);color:var(--vermelho);border:1px solid rgba(248,113,113,.3)}
+.msg-caixa.sucesso{background:rgba(34,197,94,.12);color:var(--verde);border:1px solid rgba(34,197,94,.3)}
+
+.btn-principal{
+  width:100%;margin-top:16px;
+  background:linear-gradient(135deg,var(--azul-forte),var(--azul));
+  color:#fff;border:0;padding:13px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;
+  box-shadow:0 10px 26px rgba(37,99,235,.35);transition:filter .15s ease,transform .1s ease;
+}
+.btn-principal:hover{filter:brightness(1.1)}
+.btn-principal:active{transform:translateY(1px)}
+.btn-principal:disabled{background:#334155;box-shadow:none;cursor:not-allowed;filter:none}
+
+.btn-secundario{
+  background:rgba(255,255,255,.03);border:1px solid var(--borda);color:var(--cinza-claro);
+  padding:9px 15px;border-radius:9px;font-size:13px;cursor:pointer;font-weight:600;
+}
+.btn-secundario:hover{border-color:var(--azul-claro);color:#fff}
+
+.carregando{font-size:12.5px;color:var(--cinza-claro);text-align:center;margin-top:10px;display:none}
+
+.abas-baixo{display:flex;gap:9px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.07)}
+.aba-btn{
+  flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:var(--cinza-claro);
+  padding:12px;border-radius:10px;font-weight:650;font-size:14px;cursor:pointer;transition:all .15s ease;
+}
+.aba-btn:hover{border-color:rgba(96,165,250,.35);color:#fff}
+.aba-btn.ativa{
+  background:linear-gradient(135deg,rgba(59,130,246,.28),rgba(59,130,246,.08));
+  border-color:rgba(96,165,250,.55);color:#fff;box-shadow:0 0 20px rgba(59,130,246,.22);
+}
+
+/* ---------- PORTAL ---------- */
+#tela-portal{display:none;padding-top:36px}
+.topo-portal{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;flex-wrap:wrap;gap:10px}
+.topo-portal .quem{font-size:14px;color:var(--cinza-claro)}
+.topo-portal .quem b{color:#fff}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.card-app{
+  position:relative;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid rgba(96,165,250,.18);border-radius:16px;padding:28px 24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);cursor:pointer;
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;overflow:hidden;
+}
+.card-app:hover{transform:translateY(-3px);border-color:rgba(96,165,250,.4);box-shadow:0 16px 40px rgba(37,99,235,.18)}
+.card-app.bloqueado{cursor:not-allowed}
+.card-app.bloqueado:hover{transform:none;box-shadow:0 10px 30px rgba(0,0,0,.4);border-color:rgba(96,165,250,.18)}
+.card-app .selo{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px}
+.card-app.chamado .selo{background:rgba(59,130,246,.15);color:var(--azul-claro);box-shadow:0 0 20px rgba(59,130,246,.15)}
+.card-app.estoque .selo{background:rgba(34,197,94,.14);color:var(--verde);box-shadow:0 0 20px rgba(34,197,94,.12)}
+.card-app.bloqueado .selo{background:rgba(255,255,255,.05);color:var(--cinza-medio);box-shadow:none}
+.card-app h3{margin:0 0 6px;font-size:18px;color:#fff}
+.card-app p{margin:0;color:var(--cinza-claro);font-size:13.5px;line-height:1.45}
+.tag-restrito{display:inline-flex;align-items:center;gap:5px;margin-top:14px;background:rgba(245,158,11,.14);color:var(--amarelo);font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px}
+.tag-livre{display:inline-flex;align-items:center;gap:5px;margin-top:14px;background:rgba(34,197,94,.14);color:var(--verde);font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px}
+
+/* ---------- CHAMADO ---------- */
+#tela-chamado{display:none;padding-top:36px}
+.topo-chamado{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.topo-chamado h2{margin:0;font-size:21px;color:#fff}
+.topo-chamado p{margin:4px 0 0;color:var(--cinza-claro);font-size:13.5px}
+.card-chamado-form{padding:26px 26px 30px}
+.badge{padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="marca">
+    <span class="ponto"></span>
+    <div class="texto">
+      <b>CSSL Central TI</b>
+      <span>Casa de Saúde Santa Lúcia — Rede interna</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ TELA DE LOGIN / CADASTRO ============ -->
+  <div id="tela-login">
+    <div class="login-card cartao-escuro">
+      <div class="aviso amarelo" id="aviso-supabase-login">
+        ⚠ Configure a URL e a chave do Supabase no início do &lt;script&gt; para o cadastro e o login funcionarem.
+      </div>
+
+      <div class="hero-login">
+        <div class="avatar-grande">🧑</div>
+        <h2>Acessar Portal</h2>
+        <p id="sub-dinamico">Escolha uma opção abaixo para continuar</p>
+      </div>
+
+      <form id="form-login" class="form-oculto">
+        <label for="email-login">E-mail cadastrado</label>
+        <input id="email-login" type="email" placeholder="nome@exemplo.com" required autocomplete="email">
+        <div class="msg-caixa erro" id="erro-login"></div>
+        <button type="submit" class="btn-principal" id="btn-login">Confirmar</button>
+      </form>
+      <div class="carregando" id="carregando-login">Verificando cadastro...</div>
+
+      <form id="form-criar" class="form-oculto">
+        <label for="nome-criar">Nome</label>
+        <input id="nome-criar" type="text" placeholder="Seu nome" required autocomplete="name">
+        <label for="email-criar">E-mail</label>
+        <input id="email-criar" type="email" placeholder="nome@exemplo.com" required autocomplete="email">
+        <div class="msg-caixa erro" id="erro-criar"></div>
+        <div class="msg-caixa sucesso" id="sucesso-criar"></div>
+        <button type="submit" class="btn-principal" id="btn-criar">Cadastrar</button>
+      </form>
+      <div class="carregando" id="carregando-criar">Salvando cadastro...</div>
+
+      <div class="abas-baixo">
+        <button class="aba-btn" id="aba-entrar-btn" type="button">Entrar</button>
+        <button class="aba-btn" id="aba-criar-btn" type="button">Criar conta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TELA DO PORTAL ============ -->
+  <div id="tela-portal">
+    <div class="topo-portal">
+      <div class="quem">Conectado como <b id="email-atual"></b></div>
+      <button class="btn-secundario" id="btn-sair">Sair</button>
+    </div>
+
+    <div class="cards">
+      <div class="card-app chamado" id="card-chamado">
+        <div class="selo">🖥️</div>
+        <h3>Abrir Chamado</h3>
+        <p>Registre um problema de TI e acompanhe o atendimento.</p>
+        <span class="tag-livre">✓ Acesso liberado</span>
+      </div>
+
+      <div class="card-app estoque" id="card-estoque">
+        <div class="selo" id="selo-estoque">📦</div>
+        <h3>Estoque</h3>
+        <p>Controle de estoque de equipamentos e materiais de TI.</p>
+        <span id="tag-estoque"></span>
+      </div>
+    </div>
+
+    <div class="aviso vermelho" id="aviso-bloqueio">
+      🔒 Este e-mail não tem permissão para acessar o Estoque. Fale com a TI se precisar de acesso.
+    </div>
+  </div>
+
+  <!-- ============ TELA DE ABRIR CHAMADO ============ -->
+  <div id="tela-chamado">
+    <div class="topo-chamado">
+      <div>
+        <h2>Abrir chamado de suporte</h2>
+        <p>Informe o problema e anexe arquivos quando necessário.</p>
+      </div>
+      <button class="btn-secundario" id="btn-voltar-portal">← Voltar ao portal</button>
+    </div>
+
+    <div class="cartao-escuro card-chamado-form">
+      <div class="aviso amarelo" id="aviso-supabase-chamado">
+        ⚠ Configure a URL e a chave do Supabase no início do &lt;script&gt; para o envio de chamados funcionar.
+      </div>
+      <div id="msg-chamado"></div>
+
+      <form id="form-chamado">
+        <label>Nome do solicitante</label>
+        <input name="solicitante" required>
+
+        <label>Setor</label>
+        <select name="setor" required>
+          <option value="">Selecione</option>
+          <option>Recepção</option><option>Pronto Atendimento</option><option>Internação</option>
+          <option>UTI</option><option>Farmácia</option><option>SAME</option><option>Faturamento</option>
+          <option>Auditoria</option><option>Administração</option><option>Laboratório</option>
+          <option>Radiologia</option><option>Bloco Cirúrgico</option><option>Centro de Especialidades</option>
+          <option>Manutenção</option><option>Outro</option>
+        </select>
+
+        <label>Categoria</label>
+        <select name="categoria">
+          <option>Sysart</option><option>Impressora</option><option>Rede / Internet</option>
+          <option>Computador</option><option>Acesso / Senha</option><option>Windows</option>
+          <option>Equipamento</option><option>Outro</option>
+        </select>
+
+        <label>Prioridade</label>
+        <select name="prioridade">
+          <option>Leve</option><option selected>Normal</option><option>Urgente</option>
+        </select>
+
+        <label>Descrição</label>
+        <textarea name="descricao" required></textarea>
+
+        <label>Arquivos opcionais</label>
+        <input id="files-chamado" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg">
+        <p class="small">Máximo de 10 MB por arquivo.</p>
+
+        <button type="submit" class="btn-principal" id="btn-enviar-chamado">Enviar chamado</button>
+      </form>
+      <div class="carregando" id="carregando-chamado">Enviando chamado...</div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ============================================================
+// CONFIGURAÇÃO DO SUPABASE — cole aqui os valores do seu projeto
+// (Project Settings → API, no painel do Supabase)
+// ============================================================
+var SUPABASE_URL = "https://qahkmnaqlaocbduuiuac.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhaGttbmFxbGFvY2JkdXVpdWFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTYwMzcsImV4cCI6MjEwMDEzMjAzN30.f_x08PNmXU3_ye2wrwpO-WmMpNnTwbqoSlwrLg7xXsU";
+
+var supabaseConfigurado = SUPABASE_URL.indexOf("https://qahkmnaqlaocbduuiuac.supabase.co") === -1 && SUPABASE_ANON_KEY.indexOf("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhaGttbmFxbGFvY2JkdXVpdWFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTYwMzcsImV4cCI6MjEwMDEzMjAzN30.f_x08PNmXU3_ye2wrwpO-WmMpNnTwbqoSlwrLg7xXsU") === -1;
+var db = supabaseConfigurado ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+if(!supabaseConfigurado){
+  document.getElementById('aviso-supabase-login').style.display = 'block';
+  document.getElementById('aviso-supabase-chamado').style.display = 'block';
+}
+
+// ---- Configuração geral ----
+var EMAIL_AUTORIZADO_ESTOQUE = "tecnologiacssl2025@gmail.com";
+var URL_ESTOQUE = "https://tecnologiacssl.github.io/estoque-DG/";
+
+var emailLogado = "";
+
+// ---- Elementos: login/cadastro ----
+var abaEntrarBtn = document.getElementById('aba-entrar-btn');
+var abaCriarBtn = document.getElementById('aba-criar-btn');
+var formLogin = document.getElementById('form-login');
+var formCriar = document.getElementById('form-criar');
+var subDinamico = document.getElementById('sub-dinamico');
+
+var emailLoginInput = document.getElementById('email-login');
+var erroLogin = document.getElementById('erro-login');
+var btnLogin = document.getElementById('btn-login');
+var carregandoLogin = document.getElementById('carregando-login');
+
+var nomeCriarInput = document.getElementById('nome-criar');
+var emailCriarInput = document.getElementById('email-criar');
+var erroCriar = document.getElementById('erro-criar');
+var sucessoCriar = document.getElementById('sucesso-criar');
+var btnCriar = document.getElementById('btn-criar');
+var carregandoCriar = document.getElementById('carregando-criar');
+
+// ---- Elementos: telas ----
+var telaLogin = document.getElementById('tela-login');
+var telaPortal = document.getElementById('tela-portal');
+var telaChamado = document.getElementById('tela-chamado');
+var emailAtualEl = document.getElementById('email-atual');
+var cardChamado = document.getElementById('card-chamado');
+var cardEstoque = document.getElementById('card-estoque');
+var seloEstoque = document.getElementById('selo-estoque');
+var tagEstoque = document.getElementById('tag-estoque');
+var avisoBloqueio = document.getElementById('aviso-bloqueio');
+var btnSair = document.getElementById('btn-sair');
+var btnVoltarPortal = document.getElementById('btn-voltar-portal');
+
+// ---- Elementos: chamado ----
+var formChamado = document.getElementById('form-chamado');
+var filesChamado = document.getElementById('files-chamado');
+var msgChamado = document.getElementById('msg-chamado');
+var btnEnviarChamado = document.getElementById('btn-enviar-chamado');
+var carregandoChamado = document.getElementById('carregando-chamado');
+
+function emailValido(v){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+function esconderMsgsLogin(){
+  erroLogin.style.display = 'none';
+  erroCriar.style.display = 'none';
+  sucessoCriar.style.display = 'none';
+}
+
+// ---- Alternar entre Entrar / Criar conta ----
+abaEntrarBtn.addEventListener('click', function(){
+  abaEntrarBtn.classList.add('ativa');
+  abaCriarBtn.classList.remove('ativa');
+  formLogin.classList.remove('form-oculto');
+  formCriar.classList.add('form-oculto');
+  subDinamico.textContent = 'Informe o e-mail cadastrado';
+  esconderMsgsLogin();
+  emailLoginInput.focus();
+});
+abaCriarBtn.addEventListener('click', function(){
+  abaCriarBtn.classList.add('ativa');
+  abaEntrarBtn.classList.remove('ativa');
+  formCriar.classList.remove('form-oculto');
+  formLogin.classList.add('form-oculto');
+  subDinamico.textContent = 'Cadastre seu e-mail para acessar o portal';
+  esconderMsgsLogin();
+  nomeCriarInput.focus();
+});
+
+// ---- Cadastro ----
+formCriar.addEventListener('submit', async function(e){
+  e.preventDefault();
+  esconderMsgsLogin();
+
+  var nome = nomeCriarInput.value.trim();
+  var email = emailCriarInput.value.trim();
+
+  if(!emailValido(email)){
+    erroCriar.textContent = 'Informe um e-mail válido.';
+    erroCriar.style.display = 'block';
+    return;
+  }
+  if(!supabaseConfigurado){
+    erroCriar.textContent = 'Supabase não configurado — veja o aviso no topo do formulário.';
+    erroCriar.style.display = 'block';
+    return;
+  }
+
+  btnCriar.disabled = true;
+  carregandoCriar.style.display = 'block';
+
+  try{
+    var emailNormalizado = email.toLowerCase();
+
+    var { data: existente } = await db.from('usuarios').select('id').eq('email', emailNormalizado).maybeSingle();
+    if(existente){
+      erroCriar.textContent = 'Este e-mail já está cadastrado. Use o botão "Entrar".';
+      erroCriar.style.display = 'block';
+      return;
+    }
+
+    var { error } = await db.from('usuarios').insert({ nome: nome, email: emailNormalizado });
+    if(error){
+      erroCriar.textContent = 'Não foi possível salvar o cadastro (' + error.message + ').';
+      erroCriar.style.display = 'block';
+      return;
+    }
+
+    sucessoCriar.textContent = 'Conta criada com sucesso! Agora entre pelo botão "Entrar".';
+    sucessoCriar.style.display = 'block';
+    formCriar.reset();
+  }catch(err){
+    erroCriar.textContent = 'Erro ao cadastrar (' + (err && err.message ? err.message : 'falha desconhecida') + ').';
+    erroCriar.style.display = 'block';
+  }finally{
+    btnCriar.disabled = false;
+    carregandoCriar.style.display = 'none';
+  }
+});
+
+// ---- Login ----
+formLogin.addEventListener('submit', async function(e){
+  e.preventDefault();
+  esconderMsgsLogin();
+
+  var v = emailLoginInput.value.trim();
+  if(!emailValido(v)){
+    erroLogin.textContent = 'Informe um e-mail válido.';
+    erroLogin.style.display = 'block';
+    return;
+  }
+  if(!supabaseConfigurado){
+    erroLogin.textContent = 'Supabase não configurado — veja o aviso no topo do formulário.';
+    erroLogin.style.display = 'block';
+    return;
+  }
+
+  btnLogin.disabled = true;
+  carregandoLogin.style.display = 'block';
+
+  try{
+    var { data: registro } = await db.from('usuarios').select('id, email').eq('email', v.toLowerCase()).maybeSingle();
+
+    if(!registro){
+      erroLogin.textContent = 'E-mail não cadastrado. Clique em "Criar conta".';
+      erroLogin.style.display = 'block';
+      return;
+    }
+
+    emailLogado = v;
+    entrarNoPortal();
+  }catch(err){
+    erroLogin.textContent = 'Erro ao verificar (' + (err && err.message ? err.message : 'falha desconhecida') + ').';
+    erroLogin.style.display = 'block';
+  }finally{
+    btnLogin.disabled = false;
+    carregandoLogin.style.display = 'none';
+  }
+});
+
+function entrarNoPortal(){
+  emailAtualEl.textContent = emailLogado;
+  telaLogin.style.display = 'none';
+  telaChamado.style.display = 'none';
+  telaPortal.style.display = 'block';
+  avisoBloqueio.style.display = 'none';
+
+  var autorizado = emailLogado.toLowerCase() === EMAIL_AUTORIZADO_ESTOQUE.toLowerCase();
+
+  if(autorizado){
+    cardEstoque.classList.remove('bloqueado');
+    seloEstoque.textContent = '📦';
+    tagEstoque.className = 'tag-livre';
+    tagEstoque.innerHTML = '✓ Acesso liberado';
+  } else {
+    cardEstoque.classList.add('bloqueado');
+    seloEstoque.textContent = '🔒';
+    tagEstoque.className = 'tag-restrito';
+    tagEstoque.innerHTML = '🔒 Acesso restrito';
+  }
+}
+
+// ---- Navegação entre portal e chamado (mesma página, sem recarregar) ----
+cardChamado.addEventListener('click', function(){
+  telaPortal.style.display = 'none';
+  telaChamado.style.display = 'block';
+  msgChamado.innerHTML = '';
+});
+btnVoltarPortal.addEventListener('click', function(){
+  telaChamado.style.display = 'none';
+  telaPortal.style.display = 'block';
+});
+
+cardEstoque.addEventListener('click', function(){
+  var autorizado = emailLogado.toLowerCase() === EMAIL_AUTORIZADO_ESTOQUE.toLowerCase();
+  if(autorizado){
+    window.location.href = URL_ESTOQUE;
+  } else {
+    avisoBloqueio.style.display = 'block';
+  }
+});
+
+btnSair.addEventListener('click', function(){
+  emailLogado = "";
+  emailLoginInput.value = "";
+  formLogin.classList.add('form-oculto');
+  formCriar.classList.add('form-oculto');
+  abaEntrarBtn.classList.remove('ativa');
+  abaCriarBtn.classList.remove('ativa');
+  subDinamico.textContent = 'Escolha uma opção abaixo para continuar';
+  telaPortal.style.display = 'none';
+  telaChamado.style.display = 'none';
+  telaLogin.style.display = 'flex';
+  esconderMsgsLogin();
+});
+
+// ---- Abrir chamado ----
+async function enviarAnexos(){
+  let out = [];
+  for(const f of filesChamado.files){
+    if(f.size > 10485760){
+      alert('Arquivo acima de 10 MB: ' + f.name);
+      continue;
+    }
+    let caminho = Date.now() + '_' + f.name.replace(/[^\w.\-]+/g, '_');
+    let { error } = await db.storage.from('anexos').upload(caminho, f);
+    if(error){
+      alert('Falha ao enviar o arquivo ' + f.name + ': ' + error.message);
+      continue;
+    }
+    let { data: pub } = db.storage.from('anexos').getPublicUrl(caminho);
+    out.push({ nome: f.name, url: pub.publicUrl });
+  }
+  return out;
+}
+
+formChamado.addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  if(!supabaseConfigurado){
+    msgChamado.innerHTML = '<div class="msg-caixa erro" style="display:block">Supabase não configurado. Veja o aviso no topo do formulário.</div>';
+    return;
+  }
+
+  btnEnviarChamado.disabled = true;
+  carregandoChamado.style.display = 'block';
+  msgChamado.innerHTML = '';
+
+  try{
+    let d = Object.fromEntries(new FormData(formChamado));
+    let anexos = await enviarAnexos();
+
+    let { data, error } = await db
+      .from('chamados')
+      .insert({
+        solicitante: d.solicitante,
+        setor: d.setor,
+        categoria: d.categoria,
+        prioridade: d.prioridade,
+        descricao: d.descricao,
+        anexos: anexos
+      })
+      .select('numero')
+      .single();
+
+    if(error){
+      msgChamado.innerHTML = '<div class="msg-caixa erro" style="display:block">' + error.message + '</div>';
+      return;
+    }
+
+    msgChamado.innerHTML = '<div class="msg-caixa sucesso" style="display:block">Chamado nº ' + String(data.numero).padStart(5,'0') + ' aberto com sucesso. Anote esse número.</div>';
+    formChamado.reset();
+  }catch(err){
+    msgChamado.innerHTML = '<div class="msg-caixa erro" style="display:block">Erro ao enviar (' + (err && err.message ? err.message : 'falha desconhecida') + ').</div>';
+  }finally{
+    btnEnviarChamado.disabled = false;
+    carregandoChamado.style.display = 'none';
+  }
+});
+</script>
+
+</body>
+</html>
