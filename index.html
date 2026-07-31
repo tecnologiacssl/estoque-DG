@@ -1,0 +1,3104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CSSL Central TI — Portal</title>
+<style>
+:root{
+  --azul:#3b82f6;
+  --azul-forte:#2563eb;
+  --azul-claro:#60a5fa;
+  --branco:#f5f7fa;
+  --cinza-claro:#9fb0c9;
+  --cinza-medio:#64748b;
+  --preto:#06070a;
+  --vidro:rgba(255,255,255,.04);
+  --borda:rgba(148,163,184,.18);
+  --verde:#22c55e;
+  --amarelo:#f59e0b;
+  --vermelho:#f87171;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:var(--preto);
+  color:var(--branco);
+  min-height:100vh;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;top:-20%;left:50%;transform:translateX(-50%);
+  width:900px;height:700px;
+  background:radial-gradient(circle,rgba(59,130,246,.22) 0%,rgba(59,130,246,0) 70%);
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:"";position:fixed;bottom:-25%;right:-10%;width:700px;height:700px;
+  background:radial-gradient(circle,rgba(96,165,250,.10) 0%,rgba(96,165,250,0) 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ---------- NAV ---------- */
+header.nav{
+  position:sticky;top:0;z-index:10;
+  background:rgba(6,7,10,.85);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(59,130,246,.22);
+  box-shadow:0 1px 30px rgba(37,99,235,.18);
+  padding:16px 30px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.marca{display:flex;align-items:center;gap:12px}
+.marca .ponto{width:11px;height:11px;border-radius:50%;background:var(--azul);box-shadow:0 0 4px 1px var(--azul),0 0 18px 4px rgba(59,130,246,.7)}
+.marca .texto b{display:block;color:#fff;font-size:17px;letter-spacing:.3px;text-shadow:0 0 20px rgba(59,130,246,.35)}
+.marca .texto span{display:block;color:var(--cinza-claro);font-size:12px;margin-top:1px}
+
+main{max-width:960px;margin:0 auto;padding:0 16px 70px;position:relative;z-index:1}
+
+/* ---------- CARTÃO GENÉRICO ESCURO ---------- */
+.cartao-escuro{
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  border:1px solid rgba(96,165,250,.22);
+  border-radius:20px;
+  box-shadow:0 25px 70px rgba(0,0,0,.55),0 0 50px rgba(37,99,235,.10),inset 0 1px 0 rgba(255,255,255,.04);
+  backdrop-filter:blur(16px);
+}
+
+.aviso{
+  display:none;font-size:12.5px;padding:9px 11px;border-radius:9px;margin-bottom:18px;text-align:center;line-height:1.5;
+}
+.aviso.amarelo{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#fbbf24}
+.aviso.vermelho{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--vermelho)}
+
+/* ---------- LOGIN ---------- */
+#tela-login{display:flex;justify-content:center;padding-top:70px}
+.login-card{padding:38px 30px 26px;width:100%;max-width:400px}
+
+.hero-login{text-align:center}
+.avatar-grande{
+  width:64px;height:64px;border-radius:50%;margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+  background:radial-gradient(circle at 32% 30%,rgba(96,165,250,.4),rgba(37,99,235,.06));
+  border:1px solid rgba(96,165,250,.4);box-shadow:0 0 35px rgba(59,130,246,.28);
+}
+.hero-login h2{margin:0 0 6px;font-size:21px;color:#fff;text-shadow:0 0 22px rgba(59,130,246,.3)}
+.hero-login p{margin:0 0 22px;color:var(--cinza-claro);font-size:13.5px}
+
+.form-oculto{display:none}
+form label{display:block;text-align:left;font-weight:650;font-size:13px;margin:14px 0 6px;color:var(--cinza-claro)}
+form label:first-of-type{margin-top:0}
+form input,form select,form textarea{
+  width:100%;padding:12px 13px;border-radius:10px;
+  background:var(--vidro);border:1px solid var(--borda);color:#fff;font-size:14px;font-family:inherit;
+}
+form textarea{min-height:100px;resize:vertical}
+form input::placeholder{color:#5b6b84}
+form input:focus,form select:focus,form textarea:focus{
+  outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(59,130,246,.18);
+}
+form select option{background:#0b0d12;color:#fff}
+.small{font-size:12px;color:var(--cinza-medio)}
+
+.msg-caixa{display:none;text-align:left;padding:9px 11px;border-radius:8px;font-size:12.5px;margin-top:12px}
+.msg-caixa.erro{background:rgba(248,113,113,.12);color:var(--vermelho);border:1px solid rgba(248,113,113,.3)}
+.msg-caixa.sucesso{background:rgba(34,197,94,.12);color:var(--verde);border:1px solid rgba(34,197,94,.3)}
+
+.btn-principal{
+  width:100%;margin-top:16px;
+  background:linear-gradient(135deg,var(--azul-forte),var(--azul));
+  color:#fff;border:0;padding:13px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;
+  box-shadow:0 10px 26px rgba(37,99,235,.35);transition:filter .15s ease,transform .1s ease;
+}
+.btn-principal:hover{filter:brightness(1.1)}
+.btn-principal:active{transform:translateY(1px)}
+.btn-principal:disabled{background:#334155;box-shadow:none;cursor:not-allowed;filter:none}
+
+.btn-secundario{
+  background:rgba(255,255,255,.03);border:1px solid var(--borda);color:var(--cinza-claro);
+  padding:9px 15px;border-radius:9px;font-size:13px;cursor:pointer;font-weight:600;
+}
+.btn-secundario:hover{border-color:var(--azul-claro);color:#fff}
+
+.carregando{font-size:12.5px;color:var(--cinza-claro);text-align:center;margin-top:10px;display:none}
+
+.abas-baixo{display:flex;gap:9px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.07)}
+.aba-btn{
+  flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:var(--cinza-claro);
+  padding:12px;border-radius:10px;font-weight:650;font-size:14px;cursor:pointer;transition:all .15s ease;
+}
+.aba-btn:hover{border-color:rgba(96,165,250,.35);color:#fff}
+.aba-btn.ativa{
+  background:linear-gradient(135deg,rgba(59,130,246,.28),rgba(59,130,246,.08));
+  border-color:rgba(96,165,250,.55);color:#fff;box-shadow:0 0 20px rgba(59,130,246,.22);
+}
+
+/* ---------- PORTAL ---------- */
+#tela-portal{display:none;padding-top:36px}
+.topo-portal{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;flex-wrap:wrap;gap:10px}
+.topo-portal .quem{font-size:14px;color:var(--cinza-claro)}
+.topo-portal .quem b{color:#fff}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.card-app{
+  position:relative;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid rgba(96,165,250,.18);border-radius:16px;padding:28px 24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);cursor:pointer;
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;overflow:hidden;
+}
+.card-app:hover{transform:translateY(-3px);border-color:rgba(96,165,250,.4);box-shadow:0 16px 40px rgba(37,99,235,.18)}
+.card-app.bloqueado{cursor:not-allowed}
+.card-app.bloqueado:hover{transform:none;box-shadow:0 10px 30px rgba(0,0,0,.4);border-color:rgba(96,165,250,.18)}
+.card-app .selo{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px}
+.card-app.chamado .selo{background:rgba(59,130,246,.15);color:var(--azul-claro);box-shadow:0 0 20px rgba(59,130,246,.15)}
+.card-app.estoque .selo{background:rgba(34,197,94,.14);color:var(--verde);box-shadow:0 0 20px rgba(34,197,94,.12)}
+.card-app.bloqueado .selo{background:rgba(255,255,255,.05);color:var(--cinza-medio);box-shadow:none}
+.card-app h3{margin:0 0 6px;font-size:18px;color:#fff}
+.card-app p{margin:0;color:var(--cinza-claro);font-size:13.5px;line-height:1.45}
+.tag-restrito{display:inline-flex;align-items:center;gap:5px;margin-top:14px;background:rgba(245,158,11,.14);color:var(--amarelo);font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px}
+.tag-livre{display:inline-flex;align-items:center;gap:5px;margin-top:14px;background:rgba(34,197,94,.14);color:var(--verde);font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px}
+
+/* ---------- CHAMADO ---------- */
+#tela-chamado{display:none;padding-top:36px}
+.topo-chamado{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.topo-chamado h2{margin:0;font-size:21px;color:#fff}
+.topo-chamado p{margin:4px 0 0;color:var(--cinza-claro);font-size:13.5px}
+.card-chamado-form{padding:26px 26px 30px}
+.badge{padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
+
+/* ---------- ADIÇÃO: PAINEL DE CHAMADOS / ADMIN (novo, não altera nada acima) ---------- */
+.card-app.painel .selo{background:rgba(245,158,11,.14);color:var(--amarelo);box-shadow:0 0 20px rgba(245,158,11,.12)}
+.badge.leve{background:rgba(34,197,94,.15);color:var(--verde)}
+.badge.normal{background:rgba(59,130,246,.15);color:var(--azul-claro)}
+.badge.urgente{background:rgba(248,113,113,.15);color:var(--vermelho)}
+.linha-chamado{border-bottom:1px solid rgba(255,255,255,.07);padding:14px 0}
+.linha-chamado:last-child{border-bottom:none}
+.linha-chamado .topo-linha{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.linha-chamado .num{color:#fff;font-weight:700}
+.linha-chamado .meta{color:var(--cinza-claro);font-size:12.5px;margin:4px 0}
+.linha-chamado select{width:auto;padding:6px 10px;font-size:12.5px;margin-top:6px}
+.linha-usuario{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);flex-wrap:wrap;gap:8px}
+.linha-usuario:last-child{border-bottom:none}
+.linha-usuario .info b{color:#fff;display:block;font-size:14px}
+.linha-usuario .info span{color:var(--cinza-claro);font-size:12.5px}
+#tela-painel{display:none;padding-top:36px}
+#tela-estoque{display:none;padding-top:36px}
+#tela-estoque .frame-estoque{width:100%;height:calc(100vh - 170px);min-height:520px;border:none;border-radius:14px;background:#fff}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="marca">
+    <span class="ponto"></span>
+    <div class="texto">
+      <b>CSSL Central TI</b>
+      <span>Casa de Saúde Santa Lúcia — Rede interna</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ TELA DE LOGIN / CADASTRO ============ -->
+  <div id="tela-login">
+    <div class="login-card cartao-escuro">
+      <div class="aviso amarelo" id="aviso-supabase-login">
+        ⚠ Configure a URL e a chave do Supabase no início do &lt;script&gt; para o cadastro e o login funcionarem.
+      </div>
+
+      <div class="hero-login">
+        <div class="avatar-grande">🧑</div>
+        <h2>Acessar Portal</h2>
+        <p id="sub-dinamico">Escolha uma opção abaixo para continuar</p>
+      </div>
+
+      <form id="form-login" class="form-oculto">
+        <label for="email-login">E-mail cadastrado</label>
+        <input id="email-login" type="email" placeholder="nome@exemplo.com" required autocomplete="email">
+        <div class="msg-caixa erro" id="erro-login"></div>
+        <button type="submit" class="btn-principal" id="btn-login">Confirmar</button>
+      </form>
+      <div class="carregando" id="carregando-login">Verificando cadastro...</div>
+
+      <form id="form-criar" class="form-oculto">
+        <label for="nome-criar">Nome</label>
+        <input id="nome-criar" type="text" placeholder="Seu nome" required autocomplete="name">
+        <label for="email-criar">E-mail</label>
+        <input id="email-criar" type="email" placeholder="nome@exemplo.com" required autocomplete="email">
+        <div class="msg-caixa erro" id="erro-criar"></div>
+        <div class="msg-caixa sucesso" id="sucesso-criar"></div>
+        <button type="submit" class="btn-principal" id="btn-criar">Cadastrar</button>
+      </form>
+      <div class="carregando" id="carregando-criar">Salvando cadastro...</div>
+
+      <div class="abas-baixo">
+        <button class="aba-btn" id="aba-entrar-btn" type="button">Entrar</button>
+        <button class="aba-btn" id="aba-criar-btn" type="button">Criar conta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TELA DO PORTAL ============ -->
+  <div id="tela-portal">
+    <div class="topo-portal">
+      <div class="quem">Conectado como <b id="email-atual"></b></div>
+      <button class="btn-secundario" id="btn-sair">Sair</button>
+    </div>
+
+    <div class="cards">
+      <div class="card-app chamado" id="card-chamado">
+        <div class="selo">🖥️</div>
+        <h3>Abrir Chamado</h3>
+        <p>Registre um problema de TI e acompanhe o atendimento.</p>
+        <span class="tag-livre">✓ Acesso liberado</span>
+      </div>
+
+      <div class="card-app estoque" id="card-estoque">
+        <div class="selo" id="selo-estoque">📦</div>
+        <h3>Estoque</h3>
+        <p>Controle de estoque de equipamentos e materiais de TI.</p>
+        <span id="tag-estoque"></span>
+      </div>
+
+      <!-- ADIÇÃO: card do painel de chamados recebidos -->
+      <div class="card-app painel" id="card-painel">
+        <div class="selo" id="selo-painel">🎧</div>
+        <h3>Painel de Chamados</h3>
+        <p>Veja os chamados recebidos e acompanhe o atendimento da TI.</p>
+        <span id="tag-painel"></span>
+      </div>
+    </div>
+
+    <div class="aviso vermelho" id="aviso-bloqueio">
+      🔒 Este e-mail não tem permissão para acessar o Estoque. Fale com a TI se precisar de acesso.
+    </div>
+
+    <!-- ADIÇÃO: aviso de bloqueio do painel -->
+    <div class="aviso vermelho" id="aviso-bloqueio-painel">
+      🔒 Este e-mail não tem permissão para acessar o Painel de Chamados. Fale com a TI se precisar de acesso.
+    </div>
+  </div>
+
+  <!-- ============ TELA DE ABRIR CHAMADO ============ -->
+  <div id="tela-chamado">
+    <div class="topo-chamado">
+      <div>
+        <h2>Abrir chamado de suporte</h2>
+        <p>Informe o problema e anexe arquivos quando necessário.</p>
+      </div>
+      <button class="btn-secundario" id="btn-voltar-portal">← Voltar ao portal</button>
+    </div>
+
+    <div class="cartao-escuro card-chamado-form">
+      <div class="aviso amarelo" id="aviso-supabase-chamado">
+        ⚠ Configure a URL e a chave do Supabase no início do &lt;script&gt; para o envio de chamados funcionar.
+      </div>
+      <div id="msg-chamado"></div>
+
+      <form id="form-chamado">
+        <label>Nome do solicitante</label>
+        <input name="solicitante" required>
+
+        <label>Setor</label>
+        <select name="setor" required>
+          <option value="">Selecione</option>
+          <option>Recepção</option><option>Pronto Atendimento</option><option>Internação</option>
+          <option>UTI</option><option>Farmácia</option><option>SAME</option><option>Faturamento</option>
+          <option>Auditoria</option><option>Administração</option><option>Laboratório</option>
+          <option>Radiologia</option><option>Bloco Cirúrgico</option><option>Centro de Especialidades</option>
+          <option>Manutenção</option><option>Outro</option>
+        </select>
+
+        <label>Categoria</label>
+        <select name="categoria">
+          <option>Sysart</option><option>Impressora</option><option>Rede / Internet</option>
+          <option>Computador</option><option>Acesso / Senha</option><option>Windows</option>
+          <option>Equipamento</option><option>Outro</option>
+        </select>
+
+        <label>Prioridade</label>
+        <select name="prioridade">
+          <option>Leve</option><option selected>Normal</option><option>Urgente</option>
+        </select>
+
+        <label>Descrição</label>
+        <textarea name="descricao" required></textarea>
+
+        <label>Arquivos opcionais</label>
+        <input id="files-chamado" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg">
+        <p class="small">Máximo de 10 MB por arquivo.</p>
+
+        <button type="submit" class="btn-principal" id="btn-enviar-chamado">Enviar chamado</button>
+      </form>
+      <div class="carregando" id="carregando-chamado">Enviando chamado...</div>
+    </div>
+  </div>
+
+  <!-- ============ ADIÇÃO: TELA DO PAINEL DE CHAMADOS ============ -->
+  <div id="tela-painel">
+    <div class="topo-chamado">
+      <div>
+        <h2>Painel de Chamados</h2>
+        <p>Chamados recebidos pela equipe de TI.</p>
+      </div>
+      <button class="btn-secundario" id="btn-voltar-portal-painel">← Voltar ao portal</button>
+    </div>
+
+    <div class="cartao-escuro card-chamado-form" id="lista-chamados">
+      <p class="small">Carregando chamados...</p>
+    </div>
+
+    <div class="cartao-escuro card-chamado-form" id="bloco-admin-usuarios" style="display:none;margin-top:20px">
+      <h3 style="margin-top:0;color:#fff">Gerenciar usuários (admin)</h3>
+      <p class="small">Apenas tecnologiacssl2025@gmail.com pode tornar outras pessoas admin.</p>
+      <div id="lista-usuarios"><p class="small">Carregando usuários...</p></div>
+    </div>
+  </div>
+
+  <!-- ============ ESTOQUE EMBUTIDO (mesma página) ============ -->
+  <div id="tela-estoque">
+    <div class="topo-chamado">
+      <div>
+        <h2>Estoque</h2>
+        <p>Controle de estoque de equipamentos e materiais de TI.</p>
+      </div>
+      <button class="btn-secundario" id="btn-voltar-portal-estoque">← Voltar ao portal</button>
+    </div>
+    <iframe class="frame-estoque" id="frame-estoque" title="Planilha de Estoque"></iframe>
+  </div>
+
+  <!-- Conteúdo original da planilha de estoque, guardado aqui para ser carregado no iframe acima -->
+  <textarea id="estoque-html-source" style="display:none" aria-hidden="true"><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planilha de Estoque · Casa de Saúde Santa Lúcia</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --blue-900:#0f1b3d; --blue-700:#1d4ed8; --blue-600:#2563eb;
+    --blue-100:#e8eefc; --blue-50:#f4f7fd; --bg:#f6f8fc; --panel:#ffffff;
+    --border:#e6e9f2; --text:#101828; --text-muted:#667085;
+    --green-600:#16a34a; --green-50:#eafaf0; --red-500:#e64c3c; --red-50:#fdecea;
+    --amber-500:#f0a93a; --amber-50:#fef3e0;
+    --radius-lg:14px; --radius-md:10px;
+    --shadow:0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.06);
+    --surface:#ffffff; --field-bg:#fbfcfe; --chip-bg:#eef2f9;
+    --icon-muted:#98a2b3; --nav-text:#344054; --cube-bg:#dce6fb;
+    --qr-border:#c7d7fb; --del-border:#f3c6c1; --switch-bg:#e2e8f0;
+    --modal-shadow:0 20px 60px rgba(0,0,0,.25); --toast-shadow:0 8px 24px rgba(0,0,0,.2);
+    --card-hover-shadow:0 6px 16px rgba(16,24,40,.08);
+    --toast-bg:#0f1b3d;
+  }
+  html[data-theme="dark"]{
+    --blue-900:#eaf0ff; --blue-700:#6d9bff; --blue-600:#5b8def;
+    --blue-100:#1c2b4d; --blue-50:#18213a; --bg:#0b1120; --panel:#141b2e;
+    --border:#26304a; --text:#e7ebf5; --text-muted:#9aa5bd;
+    --green-600:#4ade80; --green-50:#12291d; --red-500:#f87171; --red-50:#331c1c;
+    --amber-500:#f7c15e; --amber-50:#3a2c12;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 1px 3px rgba(0,0,0,.35);
+    --surface:#141b2e; --field-bg:#101728; --chip-bg:#1b2439;
+    --icon-muted:#7a86a3; --nav-text:#c3cbdf; --cube-bg:#1c2b4d;
+    --qr-border:#2c3a63; --del-border:#4a2626; --switch-bg:#2a3453;
+    --modal-shadow:0 20px 60px rgba(0,0,0,.6); --toast-shadow:0 8px 24px rgba(0,0,0,.5);
+    --card-hover-shadow:0 6px 16px rgba(0,0,0,.4);
+    --toast-bg:#1f2b4a;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--bg);}
+  body{margin:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;transition:background .2s ease, color .2s ease;}
+  .app{display:flex;min-height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{width:260px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 16px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  .brand{display:flex;align-items:center;gap:12px;padding:0 8px 24px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+  .brand-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#16a34a);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex-shrink:0;}
+  .brand-name{line-height:1.2;}
+  .brand-name .eyebrow{font-size:10.5px;letter-spacing:.06em;color:var(--text-muted);font-weight:600;text-transform:uppercase;}
+  .brand-name .title{font-size:14.5px;font-weight:800;color:var(--blue-900);}
+  nav.primary{display:flex;flex-direction:column;gap:2px;}
+  .nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius-md);font-size:14px;font-weight:500;color:var(--nav-text);text-decoration:none;cursor:pointer;user-select:none;transition:background .15s ease, color .15s ease;border:none;background:none;width:100%;text-align:left;font-family:inherit;}
+  .nav-item .ico{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .nav-item:hover{background:var(--blue-50);}
+  .nav-item.active{background:var(--blue-100);color:var(--blue-700);font-weight:700;}
+  .sidebar-bottom{margin-top:auto;padding-top:16px;}
+  .theme-switch{display:flex;gap:3px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:14px;}
+  .theme-opt{flex:1;border:none;background:none;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--text-muted);padding:7px 4px;border-radius:7px;cursor:pointer;transition:background .15s ease, color .15s ease;white-space:nowrap;}
+  .theme-opt:hover{color:var(--text);}
+  .theme-opt.active{background:var(--panel);color:var(--blue-700);box-shadow:var(--shadow);}
+  .balance-card{background:var(--blue-50);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:14px;}
+  .balance-card .label{font-size:12px;color:var(--text-muted);font-weight:600;}
+  .balance-card .row{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+  .balance-card .num{font-size:26px;font-weight:800;color:var(--blue-900);}
+  .balance-card .sub{font-size:11.5px;color:var(--text-muted);}
+  .balance-card .cube{width:38px;height:38px;border-radius:10px;background:var(--cube-bg);display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .user-chip{display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid var(--border);}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--blue-100);color:var(--blue-700);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px;flex-shrink:0;}
+  .user-chip .who{font-size:13.5px;font-weight:700;color:var(--text);}
+  .user-chip .role{font-size:11.5px;color:var(--text-muted);}
+  .user-chip .chev{margin-left:auto;color:var(--text-muted);font-size:12px;}
+
+  /* MAIN */
+  .main{flex:1;padding:28px 32px 48px;max-width:1600px;}
+  .page{display:none;}
+  .page.active{display:block;animation:fadein .18s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  .topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:20px;}
+  .topbar h1{font-size:26px;margin:0 0 4px;font-weight:800;color:var(--blue-900);}
+  .topbar p{margin:0;color:var(--text-muted);font-size:14px;}
+  .topbar-actions{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;font-size:13.5px;font-weight:600;padding:10px 16px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:.15s ease;}
+  .btn:hover{background:var(--blue-50);}
+  .btn-primary{background:var(--blue-600);border-color:var(--blue-600);color:#fff;}
+  .btn-primary:hover{background:var(--blue-700);}
+  .btn-danger{background:var(--surface);border-color:var(--del-border);color:var(--red-500);}
+  .btn-danger:hover{background:var(--red-50);}
+  .btn-sm{padding:7px 12px;font-size:12.5px;}
+  .bell{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;background:var(--surface);cursor:pointer;}
+  .bell .dot{position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--red-500);}
+
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:24px;margin-bottom:20px;}
+  .panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;}
+  .panel-title .left{display:flex;align-items:center;gap:10px;}
+  .panel-title .ico-box{width:32px;height:32px;border-radius:9px;background:var(--blue-100);display:flex;align-items:center;justify-content:center;color:var(--blue-700);font-size:16px;flex-shrink:0;}
+  .panel-title h2{font-size:16.5px;margin:0;font-weight:800;}
+
+  .form-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:18px;margin-bottom:16px;}
+  .field label{display:block;font-size:12.5px;font-weight:700;color:var(--nav-text);margin-bottom:6px;}
+  .field input, .field select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;font-size:13.5px;font-family:inherit;background:var(--field-bg);color:var(--text);}
+  .field input:focus, .field select:focus{outline:2px solid var(--blue-600);outline-offset:1px;border-color:var(--blue-600);}
+  .field-search{position:relative;}
+  .field-search span{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--icon-muted);font-size:14px;}
+  .form-grid2{display:grid;grid-template-columns:2.2fr 1fr;gap:18px;align-items:end;}
+
+  .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
+  .quick-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s ease, box-shadow .12s ease;}
+  .quick-card:hover{transform:translateY(-2px);box-shadow:var(--card-hover-shadow);}
+  .quick-card .qicon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+  .quick-card .qtext .qtitle{font-size:13.5px;font-weight:700;color:var(--text);}
+  .quick-card .qtext .qsub{font-size:11.5px;color:var(--text-muted);}
+  .qicon.green{background:var(--green-50);color:var(--green-600);}
+  .qicon.red{background:var(--red-50);color:var(--red-500);}
+  .qicon.blue{background:var(--blue-100);color:var(--blue-700);}
+  .qicon.amber{background:var(--amber-50);color:var(--amber-500);}
+
+  .table-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:16px;flex-wrap:wrap;}
+  .search-box{position:relative;flex:1;min-width:220px;max-width:340px;}
+  .search-box input{width:100%;padding:9px 12px 9px 34px;border:1px solid var(--border);border-radius:9px;font-size:13.5px;background:var(--field-bg);}
+  .search-box span{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--icon-muted);font-size:13px;}
+
+  table{width:100%;border-collapse:collapse;}
+  thead th{text-align:left;font-size:11.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;padding:10px 14px;border-bottom:1px solid var(--border);}
+  tbody td{padding:14px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  .mat-cell{display:flex;align-items:center;gap:12px;}
+  .mat-icon{width:38px;height:38px;border-radius:9px;background:var(--chip-bg);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+  .mat-name{font-weight:700;color:var(--text);}
+  .badge{display:inline-block;margin-top:3px;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--green-50);color:var(--green-600);}
+  .badge.out{background:var(--red-50);color:var(--red-500);}
+  .badge.neutral{background:var(--chip-bg);color:var(--text-muted);}
+  .badge.warn{background:var(--amber-50);color:#b7791f;}
+  .badge-cat{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--chip-bg);color:var(--text);}
+  .badge-cat .dot-col{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .badge-cat.muted{color:var(--text-muted);font-weight:600;}
+  .cat-cell{display:flex;align-items:center;gap:8px;}
+  .cat-edit-btn{border:1px solid var(--border);background:var(--surface);color:var(--icon-muted);width:24px;height:24px;border-radius:7px;font-size:12px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.15s ease;}
+  .cat-edit-btn:hover{background:var(--blue-50);color:var(--blue-700);border-color:var(--blue-600);}
+  .filtro-wrap{position:relative;}
+  .filtro-panel{display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--modal-shadow);padding:16px;width:240px;z-index:20;}
+  .filtro-panel.open{display:block;}
+  .filtro-panel .field{margin-bottom:12px;}
+  .filtro-panel .field:last-child{margin-bottom:0;}
+  .filtro-panel label{display:block;font-size:11.5px;font-weight:700;color:var(--nav-text);margin-bottom:6px;}
+  .filtro-panel select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--field-bg);color:var(--text);}
+  .qty-num{font-weight:800;font-size:14.5px;}
+  .qty-unit{font-size:11.5px;color:var(--text-muted);display:block;}
+  .update-date{font-weight:600;}
+  .update-type{font-size:11.5px;color:var(--text-muted);display:block;}
+  .actions-cell{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .qr-btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--blue-700);border:1px solid var(--qr-border);background:var(--surface);padding:7px 12px;border-radius:8px;cursor:pointer;}
+  .qr-btn:hover{background:var(--blue-50);}
+  .del-btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--red-500);border:1px solid var(--del-border);background:var(--surface);padding:7px 10px;border-radius:8px;cursor:pointer;}
+  .del-btn:hover{background:var(--red-50);}
+  .empty-row td{text-align:center;color:var(--text-muted);padding:40px 12px;}
+  .table-footer{display:flex;align-items:center;justify-content:space-between;margin-top:16px;font-size:13px;color:var(--text-muted);}
+  .pager{display:flex;gap:6px;}
+  .pager button{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:13px;color:var(--text-muted);}
+  .pager button.active{background:var(--blue-100);color:var(--blue-700);border-color:var(--blue-100);font-weight:700;}
+
+  /* Bipagem */
+  .scan-wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;}
+  .scan-input-box{border:2px dashed var(--qr-border);border-radius:12px;padding:22px;background:var(--blue-50);text-align:center;}
+  .scan-input-box input{width:100%;padding:14px 16px;border-radius:10px;border:1px solid var(--border);font-size:15px;text-align:center;font-family:'Courier New',monospace;letter-spacing:.03em;}
+  .scan-input-box .hint{font-size:12px;color:var(--text-muted);margin-top:10px;}
+  .scan-result{border-radius:12px;padding:18px;border:1px solid var(--border);background:var(--field-bg);min-height:130px;display:flex;flex-direction:column;justify-content:center;gap:6px;}
+  .scan-result.ok{background:var(--green-50);border-color:#bfe8cf;}
+  .scan-result.err{background:var(--red-50);border-color:var(--del-border);}
+  .scan-result .r-title{font-weight:800;font-size:14.5px;}
+  .scan-result .r-sub{font-size:12.5px;color:var(--text-muted);}
+  .cam-toggle{margin-top:14px;}
+  #camWrap{display:none;margin-top:16px;text-align:center;}
+  #camWrap video{width:100%;max-width:340px;border-radius:10px;border:1px solid var(--border);}
+
+  /* Modal QR */
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .modal-overlay.show{display:flex;}
+  .modal-box{background:var(--surface);border-radius:16px;padding:28px;max-width:380px;width:100%;text-align:center;box-shadow:var(--modal-shadow);}
+  .modal-box h3{margin:0 0 4px;font-size:18px;font-weight:800;color:var(--blue-900);}
+  .modal-box .msub{color:var(--text-muted);font-size:13px;margin-bottom:18px;}
+  #qrcanvas-holder{display:flex;justify-content:center;margin-bottom:16px;}
+  #qrcanvas-holder img, #qrcanvas-holder canvas{border-radius:10px;border:1px solid var(--border);padding:10px;background:#ffffff;}
+  .token-chip{display:inline-block;background:var(--chip-bg);color:var(--text-muted);font-family:'Courier New',monospace;font-size:11.5px;padding:5px 10px;border-radius:6px;margin-bottom:16px;}
+  .status-line{display:flex;justify-content:center;gap:8px;margin-bottom:18px;}
+  .status-dot{width:26px;height:26px;border-radius:50%;background:var(--chip-bg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--text-muted);}
+  .status-dot.done{background:var(--green-600);color:#fff;}
+  .status-dot.current{background:var(--blue-600);color:#fff;}
+  .modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .modal-close{position:absolute;top:16px;right:20px;cursor:pointer;font-size:20px;color:var(--text-muted);background:none;border:none;}
+  .modal-box{position:relative;}
+
+  /* Genéricos: categorias, fornecedores, config */
+  .simple-add-row{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;margin-bottom:20px;align-items:end;}
+  .simple-add-row.two{grid-template-columns:1fr auto;}
+  .chip-list{display:flex;flex-wrap:wrap;gap:10px;}
+  .chip{display:flex;align-items:center;gap:8px;background:var(--field-bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13.5px;}
+  .chip .dot-col{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .chip button{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;}
+  .chip button:hover{color:var(--red-500);}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
+  .stat-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow);}
+  .stat-card .label{font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:8px;}
+  .stat-card .value{font-size:26px;font-weight:800;color:var(--blue-900);}
+  .bar-row{display:grid;grid-template-columns:140px 1fr 60px;gap:12px;align-items:center;margin-bottom:12px;font-size:13px;}
+  .bar-track{background:var(--chip-bg);border-radius:20px;height:10px;overflow:hidden;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:20px;}
+
+  .toast-wrap{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:200;}
+  .toast{background:var(--toast-bg);color:#fff;padding:13px 20px;border-radius:10px;font-size:13.5px;font-weight:600;box-shadow:var(--toast-shadow);opacity:0;transform:translateY(12px);transition:opacity .25s ease, transform .25s ease;max-width:320px;}
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast.err{background:var(--red-500);}
+  .toast.ok{background:var(--green-600);}
+
+  /* ===================== IMPRESSÃO DE ETIQUETA (49mm x 34mm) ===================== */
+  #printArea{display:none;}
+  .print-label{
+    width:49mm;height:34mm;box-sizing:border-box;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+    padding:1mm;overflow:hidden;
+  }
+  .print-label .lbl-qr{width:27mm;height:27mm;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .print-label .lbl-qr img, .print-label .lbl-qr canvas{width:27mm !important;height:27mm !important;image-rendering:pixelated;}
+  .print-label .lbl-nome{
+    font-family:Arial,sans-serif;font-size:6.5pt;font-weight:700;color:#000;
+    text-align:center;margin-top:0.4mm;max-width:47mm;line-height:1.05;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .print-label .lbl-token{
+    font-family:'Courier New',monospace;font-size:5pt;color:#000;
+    text-align:center;margin-top:0.2mm;line-height:1;
+  }
+  @media print{
+    @page{ size:49mm 34mm; margin:0; }
+    html,body{margin:0;padding:0;height:100%;}
+    body *{visibility:hidden;}
+    #printArea, #printArea *{visibility:visible;}
+    #printArea{
+      display:flex !important;flex-direction:column;
+      position:absolute;top:0;left:0;width:100%;
+      align-items:center;
+    }
+    .print-label{
+      page-break-after:always;
+      display:flex !important;align-items:center;justify-content:center;
+      margin:0 auto;
+    }
+    .print-label:last-child{page-break-after:auto;}
+  }
+
+  select#configEmojiFake{display:none;}
+  .settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+  .settings-row:last-child{border-bottom:none;}
+  .settings-row .s-title{font-weight:700;font-size:13.5px;}
+  .settings-row .s-sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+  .switch{width:42px;height:24px;border-radius:20px;background:var(--switch-bg);position:relative;cursor:pointer;flex-shrink:0;transition:.2s;}
+  .switch.on{background:var(--blue-600);}
+  .switch .knob{width:18px;height:18px;border-radius:50%;background:var(--surface);position:absolute;top:3px;left:3px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .switch.on .knob{left:21px;}
+
+  @media (max-width:1100px){
+    .sidebar{display:none;}
+    .form-grid{grid-template-columns:1fr 1fr;}
+    .quick-grid{grid-template-columns:1fr 1fr;}
+    .stat-grid{grid-template-columns:1fr 1fr;}
+    .scan-wrap{grid-template-columns:1fr;}
+    .main{padding:20px;}
+  }
+
+  /* ===================== TELA DE LOGIN ===================== */
+  #loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:500;padding:20px;}
+  #loginScreen.hidden{display:none;}
+  .login-box{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--modal-shadow);padding:32px 30px;}
+  .login-brand{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:22px;}
+  .login-brand .brand-icon{width:52px;height:52px;border-radius:14px;font-size:26px;margin-bottom:12px;}
+  .login-brand .eyebrow{font-size:11px;letter-spacing:.06em;color:var(--text-muted);font-weight:700;text-transform:uppercase;}
+  .login-brand .title{font-size:17px;font-weight:800;color:var(--blue-900);}
+  .login-tabs{display:flex;gap:3px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:20px;}
+  .login-tab{flex:1;border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--text-muted);padding:8px 4px;border-radius:7px;cursor:pointer;transition:.15s ease;}
+  .login-tab.active{background:var(--panel);color:var(--blue-700);box-shadow:var(--shadow);}
+  .login-box .field{margin-bottom:16px;}
+  .login-box .field label{display:block;font-size:12.5px;font-weight:700;color:var(--nav-text);margin-bottom:6px;}
+  .login-box .field input{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:9px;font-size:13.5px;font-family:inherit;background:var(--field-bg);color:var(--text);}
+  .login-box .field input:focus{outline:2px solid var(--blue-600);outline-offset:1px;border-color:var(--blue-600);}
+  .login-msg{font-size:12.5px;font-weight:600;margin-bottom:14px;padding:9px 12px;border-radius:8px;display:none;}
+  .login-msg.show{display:block;}
+  .login-msg.err{background:var(--red-50);color:var(--red-500);}
+  .login-msg.ok{background:var(--green-50);color:var(--green-600);}
+  .login-submit{width:100%;justify-content:center;padding:11px 16px;font-size:14px;}
+  .login-hint{margin-top:16px;font-size:11.5px;color:var(--text-muted);text-align:center;line-height:1.5;}
+
+  /* ===================== MINHA CONTA ===================== */
+  .account-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--blue-50);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:22px;}
+  .account-card .avatar{width:46px;height:46px;font-size:15px;}
+  .account-card .who{font-weight:800;font-size:14.5px;color:var(--text);}
+  .account-card .sub{font-size:12px;color:var(--text-muted);margin-top:2px;}
+</style>
+<script>
+  // Aplica o tema o mais cedo possível (antes da 1ª pintura) para evitar "flash" de tela clara.
+  // Usa localStorage como palpite rápido; a preferência definitiva (via window.storage) é
+  // confirmada depois pelo script principal em iniciarTema().
+  (function(){
+    try{
+      var pref = localStorage.getItem('cssl_tema_pref') || 'auto';
+      var h = new Date().getHours();
+      var escuroPorHorario = (h >= 20 || h < 6);
+      var efetivo = pref === 'auto' ? (escuroPorHorario ? 'dark' : 'light') : pref;
+      document.documentElement.setAttribute('data-theme', efetivo);
+    }catch(e){}
+  })();
+</script>
+</head>
+<body>
+
+<!-- TELA DE LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-brand">
+      <div class="brand-icon">✚</div>
+      <div class="eyebrow">Casa de Saúde</div>
+      <div class="title">SANTA LÚCIA</div>
+    </div>
+
+    <div class="login-tabs">
+      <button type="button" class="login-tab active" id="tabEntrar" onclick="alternarAbaLogin('entrar')">Entrar</button>
+      <button type="button" class="login-tab" id="tabCriar" onclick="alternarAbaLogin('criar')">Criar conta</button>
+    </div>
+
+    <div class="login-msg" id="loginMsg"></div>
+
+    <form id="loginForm" onsubmit="submeterLogin(); return false;">
+      <div class="field" id="loginNomeField" style="display:none;">
+        <label for="loginNome">Nome de usuário</label>
+        <input id="loginNome" type="text" autocomplete="name" placeholder="Como podemos te chamar">
+      </div>
+      <div class="field">
+        <label for="loginEmail">E-mail</label>
+        <input id="loginEmail" type="email" autocomplete="username" placeholder="seuemail@exemplo.com">
+      </div>
+      <div class="field">
+        <label for="loginSenha">Senha</label>
+        <input id="loginSenha" type="password" autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <div class="field" id="loginConfirmaSenhaField" style="display:none;">
+        <label for="loginConfirmaSenha">Confirmar senha</label>
+        <input id="loginConfirmaSenha" type="password" autocomplete="new-password" placeholder="Repita a senha">
+      </div>
+      <button type="submit" class="btn btn-primary login-submit" id="loginSubmitBtn">Entrar</button>
+    </form>
+
+    <div class="login-hint" id="loginHint">Use o e-mail e a senha cadastrados para acessar o sistema.</div>
+  </div>
+</div>
+
+<div class="app" id="appRoot" style="display:none;">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">✚</div>
+      <div class="brand-name">
+        <div class="eyebrow">Casa de Saúde</div>
+        <div class="title">SANTA LÚCIA</div>
+      </div>
+    </div>
+    <nav class="primary">
+      <button class="nav-item active" data-page="estoque" onclick="switchPage('estoque')"><span class="ico">🗂️</span> Estoque</button>
+      <button class="nav-item" data-page="historico" onclick="switchPage('historico')"><span class="ico">🕘</span> Histórico</button>
+      <button class="nav-item" data-page="relatorios" onclick="switchPage('relatorios')"><span class="ico">📄</span> Relatórios</button>
+      <button class="nav-item" data-page="categorias" onclick="switchPage('categorias')"><span class="ico">⭐</span> Categorias</button>
+      <button class="nav-item" data-page="fornecedores" onclick="switchPage('fornecedores')"><span class="ico">🤝</span> Fornecedores</button>
+      <button class="nav-item" data-page="configuracoes" onclick="switchPage('configuracoes')"><span class="ico">⚙️</span> Configurações</button>
+      <button class="nav-item" data-page="conta" onclick="switchPage('conta')"><span class="ico">👤</span> Minha Conta</button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="theme-switch" id="themeSwitch" role="group" aria-label="Tema do site">
+        <button type="button" class="theme-opt" data-mode="light" onclick="setTheme('light')" title="Modo claro">☀️ Claro</button>
+        <button type="button" class="theme-opt" data-mode="dark" onclick="setTheme('dark')" title="Modo escuro">🌙 Escuro</button>
+        <button type="button" class="theme-opt" data-mode="auto" onclick="setTheme('auto')" title="Automático (escuro a partir das 20h)">🕘 Auto</button>
+      </div>
+      <div class="balance-card">
+        <div class="label">Saldo geral</div>
+        <div class="row">
+          <div>
+            <div class="num" id="saldoGeral">0</div>
+            <div class="sub">itens em estoque</div>
+          </div>
+          <div class="cube">📦</div>
+        </div>
+      </div>
+      <div class="user-chip" style="cursor:pointer;" onclick="switchPage('conta')" title="Minha conta">
+        <div class="avatar" id="chipAvatar">--</div>
+        <div>
+          <div class="who" id="chipEmail">Carregando...</div>
+          <div class="role">Administrador</div>
+        </div>
+        <div class="chev">⌄</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- PÁGINA ESTOQUE -->
+    <section class="page active" id="page-estoque">
+      <div class="topbar">
+        <div>
+          <h1>Planilha de Estoque</h1>
+          <p>Registre entradas e saídas de materiais e acompanhe o saldo atual.</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn" onclick="switchPage('historico')">🕘 Histórico de Movimentações</button>
+          <div class="bell">🔔<span class="dot"></span></div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="panel-title"><div class="left"><div class="ico-box">📋</div><h2>Registrar movimentação</h2></div></div>
+        <div class="form-grid">
+          <div class="field field-search">
+            <label for="fMaterial">Material</label>
+            <input id="fMaterial" list="materialList" placeholder="Pesquisar material...">
+            <span>🔍</span>
+            <datalist id="materialList"></datalist>
+          </div>
+          <div class="field">
+            <label for="fQtd">Quantidade</label>
+            <input id="fQtd" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="fTipo">Tipo</label>
+            <select id="fTipo">
+              <option value="Entrada">⬇ Entrada</option>
+              <option value="Saída">⬆ Saída</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fData">Data</label>
+            <input id="fData" type="date">
+          </div>
+          <div class="field">
+            <label for="fCategoria">Categoria</label>
+            <select id="fCategoria">
+              <option value="">Sem categoria</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid2">
+          <div class="field">
+            <label for="fObs">Observação (opcional)</label>
+            <input id="fObs" placeholder="Ex: Compra do mês, ajuste de estoque...">
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="registrarMovimentacao()">⊕ Registrar movimentação</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="quick-grid">
+        <div class="quick-card" onclick="exportarExcel()">
+          <div class="qicon green">📊</div>
+          <div class="qtext"><div class="qtitle">Exportar Excel</div><div class="qsub">Planilha formatada (.xlsx)</div></div>
+        </div>
+        <div class="quick-card" onclick="limparDados()">
+          <div class="qicon red">🗑️</div>
+          <div class="qtext"><div class="qtitle">Limpar dados</div><div class="qsub">Remover registros</div></div>
+        </div>
+        <div class="quick-card" onclick="switchPage('relatorios')">
+          <div class="qicon blue">🥧</div>
+          <div class="qtext"><div class="qtitle">Mostrar Saldo Atual</div><div class="qsub">Ver resumo do estoque</div></div>
+        </div>
+        <div class="quick-card" onclick="switchPage('historico')">
+          <div class="qicon amber">📈</div>
+          <div class="qtext"><div class="qtitle">Mostrar Histórico</div><div class="qsub">Ver movimentações</div></div>
+        </div>
+      </div>
+
+      <!-- BIPAGEM QR -->
+      <section class="panel">
+        <div class="panel-title">
+          <div class="left"><div class="ico-box" style="background:var(--amber-50);color:#b7791f;">▦</div><h2>Bipar QR Code</h2></div>
+          <span class="badge neutral" style="margin-top:0;">1ª leitura = Entrada · 2ª leitura = Saída</span>
+        </div>
+        <div class="scan-wrap">
+          <div>
+            <div class="field" style="margin-bottom:14px;">
+              <label for="scanDestino">Destino da saída (para onde este item vai)</label>
+              <input id="scanDestino" placeholder="Ex: Setor de Enfermagem, Sala 3, Paciente João..." autocomplete="off">
+              <div class="hint" style="margin-top:6px;">Obrigatório na 2ª leitura (saída) do QR Code — a 1ª leitura (entrada) não exige este campo.</div>
+            </div>
+            <div class="scan-input-box">
+              <input id="scanInput" placeholder="Clique aqui e bipe o QR Code (ou digite o código)" autocomplete="off">
+              <div class="hint">Compatível com leitores USB/Bluetooth (funcionam como teclado). Pressione Enter após digitar manualmente.</div>
+            </div>
+            <div class="cam-toggle">
+              <button class="btn btn-sm" onclick="toggleCamera()" id="camBtn">📷 Usar câmera para bipar</button>
+            </div>
+            <div id="camWrap">
+              <video id="camVideo" playsinline muted></video>
+              <canvas id="camCanvas" style="display:none;"></canvas>
+              <div class="hint" style="margin-top:8px;">Aponte a câmera para o QR Code do produto.</div>
+            </div>
+          </div>
+          <div class="scan-result" id="scanResult">
+            <div class="r-title">Aguardando leitura...</div>
+            <div class="r-sub">Gere um QR Code em um produto e bipe aqui para registrar entrada/saída automaticamente.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="table-top">
+          <div class="panel-title" style="margin-bottom:0;">
+            <div class="left"><div class="ico-box" style="background:var(--green-50);color:var(--green-600);">📦</div><h2>Produtos em estoque</h2></div>
+          </div>
+          <div class="search-box"><span>🔍</span><input id="tableSearch" placeholder="Buscar material..." oninput="renderTable()"></div>
+          <div class="filtro-wrap">
+            <button class="btn" onclick="toggleFiltroPanel(event)">▽ Filtros</button>
+            <div class="filtro-panel" id="filtroPanel">
+              <div class="field">
+                <label for="filtroOrdenar">Ordenar por</label>
+                <select id="filtroOrdenar" onchange="renderTable()">
+                  <option value="">Padrão</option>
+                  <option value="nome-az">Nome (A-Z)</option>
+                  <option value="nome-za">Nome (Z-A)</option>
+                  <option value="qtd-desc">Quantidade (maior → menor)</option>
+                  <option value="qtd-asc">Quantidade (menor → maior)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="filtroCategoria">Categoria</label>
+                <select id="filtroCategoria" onchange="renderTable()">
+                  <option value="">Todas as categorias</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Material</th><th>Categoria</th><th>Quantidade</th><th>Última atualização</th><th>Status do QR</th><th>Ações</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="table-footer">
+          <span id="footerCount">Exibindo 0 de 0 itens</span>
+          <div class="pager"><button>«</button><button class="active">1</button><button>»</button></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- PÁGINA HISTÓRICO -->
+    <section class="page" id="page-historico">
+      <div class="topbar">
+        <div><h1>Histórico de Movimentações</h1><p>Todas as entradas e saídas registradas, manuais ou via QR Code.</p></div>
+      </div>
+      <section class="panel">
+        <div class="table-top">
+          <div class="search-box"><span>🔍</span><input id="histSearch" placeholder="Buscar por material..." oninput="renderHistorico()"></div>
+          <select id="histFiltroTipo" onchange="renderHistorico()" style="padding:9px 12px;border:1px solid var(--border);border-radius:9px;font-size:13.5px;">
+            <option value="">Todos os tipos</option>
+            <option value="Entrada">Entrada</option>
+            <option value="Saída">Saída</option>
+          </select>
+          <select id="histFiltroOrigem" onchange="renderHistorico()" style="padding:9px 12px;border:1px solid var(--border);border-radius:9px;font-size:13.5px;">
+            <option value="">Todas as origens</option>
+            <option value="Manual">Manual</option>
+            <option value="QR Code">QR Code</option>
+          </select>
+        </div>
+        <table>
+          <thead><tr><th>Data/Hora</th><th>Material</th><th>Tipo</th><th>Qtd</th><th>Origem</th><th>Observação</th></tr></thead>
+          <tbody id="histBody"></tbody>
+        </table>
+      </section>
+    </section>
+
+    <!-- PÁGINA RELATÓRIOS -->
+    <section class="page" id="page-relatorios">
+      <div class="topbar">
+        <div><h1>Relatórios</h1><p>Resumo geral do estoque e das movimentações.</p></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="label">Produtos cadastrados</div><div class="value" id="repProdutos">0</div></div>
+        <div class="stat-card"><div class="label">Saldo total em estoque</div><div class="value" id="repSaldo">0</div></div>
+        <div class="stat-card"><div class="label">Total de entradas</div><div class="value" id="repEntradas">0</div></div>
+        <div class="stat-card"><div class="label">Total de saídas</div><div class="value" id="repSaidas">0</div></div>
+      </div>
+      <section class="panel">
+        <div class="panel-title"><div class="left"><div class="ico-box">🥧</div><h2>Saldo atual por produto</h2></div></div>
+        <div id="repBars"></div>
+      </section>
+    </section>
+
+    <!-- PÁGINA CATEGORIAS -->
+    <section class="page" id="page-categorias">
+      <div class="topbar"><div><h1>Categorias</h1><p>Organize os materiais por categoria.</p></div></div>
+      <section class="panel">
+        <div class="simple-add-row">
+          <div class="field"><label>Nome da categoria</label><input id="catNome" placeholder="Ex: Material de escritório"></div>
+          <div class="field"><label>Cor</label><input id="catCor" type="color" value="#2563eb" style="height:41px;padding:4px;"></div>
+          <button class="btn btn-primary" onclick="addCategoria()">⊕ Adicionar</button>
+        </div>
+        <div class="chip-list" id="catList"></div>
+      </section>
+    </section>
+
+    <!-- PÁGINA FORNECEDORES -->
+    <section class="page" id="page-fornecedores">
+      <div class="topbar"><div><h1>Fornecedores</h1><p>Cadastre os fornecedores dos materiais.</p></div></div>
+      <section class="panel">
+        <div class="simple-add-row" style="grid-template-columns:1fr 1fr 1fr auto;">
+          <div class="field"><label>Nome</label><input id="fornNome" placeholder="Ex: Distribuidora ABC"></div>
+          <div class="field"><label>Contato</label><input id="fornContato" placeholder="Nome do responsável"></div>
+          <div class="field"><label>Telefone</label><input id="fornTel" placeholder="(00) 00000-0000"></div>
+          <button class="btn btn-primary" onclick="addFornecedor()">⊕ Adicionar</button>
+        </div>
+        <table>
+          <thead><tr><th>Fornecedor</th><th>Contato</th><th>Telefone</th><th></th></tr></thead>
+          <tbody id="fornBody"></tbody>
+        </table>
+      </section>
+    </section>
+
+    <!-- PÁGINA CONFIGURAÇÕES -->
+    <section class="page" id="page-configuracoes">
+      <div class="topbar"><div><h1>Configurações</h1><p>Preferências gerais do sistema.</p></div></div>
+      <section class="panel">
+        <div class="panel-title"><div class="left"><div class="ico-box">🏥</div><h2>Dados da unidade</h2></div></div>
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="field"><label>Nome da unidade</label><input id="cfgNome" value="Casa de Saúde Santa Lúcia"></div>
+          <div class="field"><label>Responsável</label><input id="cfgResp" value="TI - CSSL"></div>
+        </div>
+        <button class="btn btn-primary" onclick="salvarConfiguracoes()">Salvar alterações</button>
+      </section>
+      <section class="panel">
+        <div class="panel-title"><div class="left"><div class="ico-box" style="background:var(--amber-50);color:#b7791f;">🔗</div><h2>Leitura por câmera nativa (link do QR Code)</h2></div></div>
+        <p style="font-size:13px;color:var(--text-muted);margin-top:0;">Se você hospedar este sistema em um endereço https (ex: Netlify, Vercel, GitHub Pages), cole o link aqui. Os próximos QR Codes gerados passam a abrir esse link automaticamente — assim a câmera comum do celular (Google Lens/câmera nativa) já entende o código e bipa sozinha, sem precisar do leitor embutido do site.</p>
+        <div class="form-grid2" style="margin-bottom:0;">
+          <div class="field"><label>Link público do sistema</label><input id="cfgUrl" placeholder="Ex: https://seu-site.netlify.app"></div>
+          <div class="field"><label>&nbsp;</label><button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="salvarConfiguracoes()">Salvar link</button></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-title"><div class="left"><div class="ico-box">🔔</div><h2>Notificações</h2></div></div>
+        <div class="settings-row">
+          <div><div class="s-title">Alertar estoque baixo</div><div class="s-sub">Avisar quando a quantidade chegar a zero</div></div>
+          <div class="switch on" onclick="this.classList.toggle('on')"><div class="knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="s-title">Confirmar antes de bipar saída</div><div class="s-sub">Pedir confirmação na 2ª leitura do QR Code</div></div>
+          <div class="switch" onclick="this.classList.toggle('on')"><div class="knob"></div></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-title"><div class="left"><div class="ico-box" style="background:var(--red-50);color:var(--red-500);">⚠️</div><h2>Zona de risco</h2></div></div>
+        <p style="font-size:13px;color:var(--text-muted);margin-top:0;">Os dados deste sistema ficam salvos apenas na memória desta sessão do navegador (não há banco de dados conectado). Use "Exportar Excel" com frequência para manter backup.</p>
+        <button class="btn btn-danger" onclick="limparDados()">Limpar todos os registros de estoque</button>
+      </section>
+    </section>
+
+    <!-- PÁGINA MINHA CONTA -->
+    <section class="page" id="page-conta">
+      <div class="topbar">
+        <div>
+          <h1>Minha Conta</h1>
+          <p>Dados do usuário conectado no momento.</p>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="account-card">
+          <div class="avatar" id="contaAvatar">--</div>
+          <div>
+            <div class="who" id="contaNomeAtual">-</div>
+            <div class="sub" id="contaEmailAtual">-</div>
+            <div class="sub" id="contaDesde">-</div>
+          </div>
+        </div>
+
+        <div class="panel-title"><div class="left"><div class="ico-box">🧑</div><h2>Alterar nome de usuário</h2></div></div>
+        <div class="login-msg" id="contaNomeMsg"></div>
+        <div class="form-grid2" style="margin-bottom:22px;">
+          <div class="field"><label for="contaNovoNome">Nome de usuário</label><input id="contaNovoNome" type="text" placeholder="Como podemos te chamar"></div>
+          <div class="field"><label>&nbsp;</label><button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="atualizarNomeUsuario()">Salvar nome</button></div>
+        </div>
+
+        <div class="panel-title"><div class="left"><div class="ico-box">✉️</div><h2>Alterar e-mail</h2></div></div>
+        <div class="login-msg" id="contaEmailMsg"></div>
+        <div class="form-grid2" style="margin-bottom:22px;">
+          <div class="field"><label for="contaNovoEmail">Novo e-mail</label><input id="contaNovoEmail" type="email" placeholder="novoemail@exemplo.com"></div>
+          <div class="field"><label>&nbsp;</label><button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="atualizarEmail()">Salvar e-mail</button></div>
+        </div>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:-12px;">Pode ser necessário confirmar a alteração pelo link enviado ao novo e-mail, dependendo da configuração do projeto.</p>
+
+        <div class="panel-title" style="margin-top:10px;"><div class="left"><div class="ico-box">🔒</div><h2>Alterar senha</h2></div></div>
+        <div class="login-msg" id="contaSenhaMsg"></div>
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="field"><label for="contaNovaSenha">Nova senha</label><input id="contaNovaSenha" type="password" placeholder="Mínimo 6 caracteres"></div>
+          <div class="field"><label for="contaConfirmaSenha">Confirmar nova senha</label><input id="contaConfirmaSenha" type="password" placeholder="Repita a senha"></div>
+        </div>
+        <button class="btn btn-primary" onclick="atualizarSenha()">Salvar nova senha</button>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title"><div class="left"><div class="ico-box" style="background:var(--red-50);color:var(--red-500);">🚪</div><h2>Sair</h2></div></div>
+        <p style="font-size:13px;color:var(--text-muted);margin-top:0;">Encerra sua sessão neste dispositivo. Será necessário informar e-mail e senha novamente para voltar a acessar o sistema.</p>
+        <button class="btn btn-danger" onclick="sair()">Sair da conta</button>
+      </section>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL QR -->
+<div class="modal-overlay" id="qrModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="fecharModalQR()">✕</button>
+    <h3 id="qrModalTitulo">Produto</h3>
+    <div class="msub">Escaneie ou bipe este código para movimentar o estoque</div>
+    <div class="qr-nav" id="qrNav" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;">
+      <button class="btn btn-sm" id="qrNavPrev" onclick="navegarCodigo(-1)">◀</button>
+      <span id="qrNavInfo" style="font-size:12.5px;font-weight:700;color:var(--text-muted);min-width:120px;">Código 1 de 1</span>
+      <button class="btn btn-sm" id="qrNavNext" onclick="navegarCodigo(1)">▶</button>
+    </div>
+    <div id="qrcanvas-holder"></div>
+    <div class="token-chip" id="qrTokenChip">TOKEN</div>
+    <div class="status-line">
+      <div class="status-dot" id="dotEntrada">1</div>
+      <div class="status-dot" id="dotSaida">2</div>
+    </div>
+    <div class="msub" id="qrModalAviso" style="margin-bottom:16px;"></div>
+    <div class="msub" style="margin-bottom:16px;font-size:11.5px;">🖨 Ao imprimir, selecione sua impressora de etiquetas e confira se o tamanho do papel ficou "49 x 34 mm" (ou "Personalizado/Custom") na caixa de impressão, com margens em 0.</div>
+    <div class="modal-actions">
+      <button class="btn btn-sm btn-primary" onclick="imprimirEtiquetaAtual()">🖨 Imprimir etiqueta</button>
+      <button class="btn btn-sm" onclick="imprimirTodasEtiquetas()">🖨 Imprimir todas</button>
+      <button class="btn btn-sm" onclick="baixarQR()">⬇ Baixar este</button>
+      <button class="btn btn-sm" onclick="baixarTodosQR()">⬇ Baixar todos</button>
+      <button class="btn btn-sm" onclick="gerarNovoCodigo()">＋ Adicionar unidade</button>
+      <button class="btn btn-sm" onclick="fecharModalQR()">Concluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR CATEGORIA DO PRODUTO -->
+<div class="modal-overlay" id="catProdutoModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="fecharModalCategoriaProduto()">✕</button>
+    <h3 id="catProdutoModalTitulo">Editar categoria</h3>
+    <div class="msub">Corrija a categoria deste material caso ela tenha sido cadastrada errada.</div>
+    <div class="field" style="text-align:left;margin-bottom:18px;">
+      <label>Categoria</label>
+      <select id="catProdutoSelect">
+        <option value="">Sem categoria</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sm btn-primary" onclick="salvarCategoriaProduto()">Salvar</button>
+      <button class="btn btn-sm" onclick="fecharModalCategoriaProduto()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- usado apenas na hora de imprimir etiquetas (49mm x 34mm) -->
+<div id="printArea"></div>
+
+<script>
+/* ===================== ESTADO ===================== */
+let seq = 1;
+let produtos = [];
+let movimentos = [];
+let qrCodes = {}; // token -> {produtoId, produtoNome, bips, criadoEm, entradaEm, saidaEm}
+let categorias = [];
+let fornecedores = [];
+let config = { nomeUnidade:'Casa de Saúde Santa Lúcia', responsavel:'TI - CSSL', urlPublica:'' };
+let modalTokenAtual = null;
+let modalTokensAtuais = []; // lista de tokens (um por unidade) do produto aberto no modal
+let modalIndexAtual = 0;    // índice do token exibido dentro de modalTokensAtuais
+let camStream = null;
+let camLoopId = null;
+
+/* ===================== ARMAZENAMENTO PERSISTENTE (SUPABASE) ===================== */
+// Agora o estoque é salvo de verdade no Supabase (banco compartilhado por todos que acessarem
+// a página), com fallback em localStorage apenas se o Supabase estiver offline/sem internet.
+const STORAGE_KEY = 'cssl_estoque_v1';
+
+// >>> PREENCHA AQUI com os dados do SEU projeto Supabase (Project Settings > API) <<<
+const SUPABASE_URL = 'https://qahkmnaqlaocbduuiuac.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhaGttbmFxbGFvY2JkdXVpdWFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTYwMzcsImV4cCI6MjEwMDEzMjAzN30.f_x08PNmXU3_ye2wrwpO-WmMpNnTwbqoSlwrLg7xXsU';
+
+const supabaseClient = (SUPABASE_URL.includes('SEU-PROJETO'))
+  ? null
+  : window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+if(!supabaseClient){
+  console.warn('Supabase não configurado: preencha SUPABASE_URL e SUPABASE_ANON_KEY no código. Usando apenas localStorage por enquanto.');
+}
+
+async function storageGet(key, fallback){
+  try{
+    if(supabaseClient){
+      const { data, error } = await supabaseClient
+        .from('estoque_estado')
+        .select('dados')
+        .eq('chave', key)
+        .maybeSingle();
+      if(error) throw error;
+      if(data && data.dados) return data.dados;
+    }
+  }catch(e){ console.warn('Falha ao ler do Supabase, tentando localStorage:', e); }
+  try{
+    if(window.localStorage){
+      const raw = localStorage.getItem('cssl_'+key);
+      if(raw) return JSON.parse(raw);
+    }
+  }catch(e){}
+  return fallback;
+}
+
+async function storageSet(key, value){
+  try{
+    if(window.localStorage){
+      localStorage.setItem('cssl_'+key, JSON.stringify(value)); // backup local sempre
+    }
+  }catch(e){}
+  try{
+    if(supabaseClient){
+      const { error } = await supabaseClient
+        .from('estoque_estado')
+        .upsert({ chave: key, dados: value, atualizado_em: new Date().toISOString() }, { onConflict: 'chave' });
+      if(error) throw error;
+    }
+  }catch(e){ console.warn('Falha ao salvar no Supabase (dados ficaram só no localStorage):', e); }
+}
+
+/* ===================== AUTENTICAÇÃO (SUPABASE AUTH) ===================== */
+let usuarioAtual = null; // objeto do usuário logado (vindo do Supabase Auth)
+let modoLogin = 'entrar'; // 'entrar' | 'criar'
+
+function alternarAbaLogin(modo){
+  modoLogin = modo;
+  document.getElementById('tabEntrar').classList.toggle('active', modo==='entrar');
+  document.getElementById('tabCriar').classList.toggle('active', modo==='criar');
+  document.getElementById('loginSubmitBtn').textContent = modo==='entrar' ? 'Entrar' : 'Criar conta';
+  document.getElementById('loginNomeField').style.display = modo==='criar' ? '' : 'none';
+  document.getElementById('loginConfirmaSenhaField').style.display = modo==='criar' ? '' : 'none';
+  document.getElementById('loginHint').textContent = modo==='entrar'
+    ? 'Use o e-mail e a senha cadastrados para acessar o sistema.'
+    : 'A senha precisa ter no mínimo 6 caracteres. Dependendo da configuração do projeto, pode ser exigida confirmação por e-mail antes do primeiro acesso.';
+  esconderMsgLogin();
+}
+
+function exibirMsgLogin(msg, tipo){
+  const el = document.getElementById('loginMsg');
+  el.textContent = msg;
+  el.className = 'login-msg show ' + tipo;
+}
+function esconderMsgLogin(){
+  const el = document.getElementById('loginMsg');
+  el.className = 'login-msg';
+}
+
+async function submeterLogin(){
+  if(!supabaseClient){
+    exibirMsgLogin('Autenticação indisponível: Supabase não está configurado neste sistema.', 'err');
+    return;
+  }
+  const email = document.getElementById('loginEmail').value.trim();
+  const senha = document.getElementById('loginSenha').value;
+  const nome = document.getElementById('loginNome').value.trim();
+  const confirmaSenha = document.getElementById('loginConfirmaSenha').value;
+  if(!email || !senha){
+    exibirMsgLogin('Preencha e-mail e senha.', 'err');
+    return;
+  }
+  if(modoLogin === 'criar'){
+    if(!nome){
+      exibirMsgLogin('Informe seu nome de usuário.', 'err');
+      return;
+    }
+    if(senha.length < 6){
+      exibirMsgLogin('A senha precisa ter no mínimo 6 caracteres.', 'err');
+      return;
+    }
+    if(senha !== confirmaSenha){
+      exibirMsgLogin('As senhas não coincidem.', 'err');
+      return;
+    }
+  }
+  const btn = document.getElementById('loginSubmitBtn');
+  btn.disabled = true;
+  esconderMsgLogin();
+
+  try{
+    if(modoLogin === 'entrar'){
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
+      if(error) throw error;
+      // onAuthStateChange cuida de exibir o app
+    }else{
+      const { data, error } = await supabaseClient.auth.signUp({ email, password: senha, options: { data: { nome_usuario: nome } } });
+      if(error) throw error;
+      if(data && data.user && !data.session){
+        exibirMsgLogin('Conta criada! Verifique seu e-mail para confirmar o acesso antes de entrar.', 'ok');
+        alternarAbaLogin('entrar');
+      }
+      // se o projeto não exigir confirmação por e-mail, data.session já vem preenchida
+      // e onAuthStateChange cuida de exibir o app automaticamente
+    }
+  }catch(e){
+    exibirMsgLogin(traduzirErroAuth(e.message), 'err');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function traduzirErroAuth(msg){
+  const m = (msg||'').toLowerCase();
+  if(m.includes('invalid login credentials')) return 'E-mail ou senha incorretos.';
+  if(m.includes('user already registered')) return 'Já existe uma conta com este e-mail. Tente entrar.';
+  if(m.includes('password') && m.includes('6')) return 'A senha precisa ter no mínimo 6 caracteres.';
+  if(m.includes('email') && m.includes('invalid')) return 'Informe um e-mail válido.';
+  return msg || 'Não foi possível concluir a operação.';
+}
+
+async function sair(){
+  if(!supabaseClient) return;
+  await supabaseClient.auth.signOut();
+  // onAuthStateChange cuida de voltar para a tela de login
+}
+
+function nomeUsuarioAtual(){
+  return (usuarioAtual && usuarioAtual.user_metadata && usuarioAtual.user_metadata.nome_usuario) || '';
+}
+
+function iniciaisDoEmail(email){
+  if(!email) return '--';
+  const nomeParte = email.split('@')[0];
+  const partes = nomeParte.replace(/[._-]+/g,' ').trim().split(' ').filter(Boolean);
+  if(partes.length >= 2) return (partes[0][0] + partes[1][0]).toUpperCase();
+  return nomeParte.slice(0,2).toUpperCase();
+}
+
+function iniciaisDoNome(nome){
+  const partes = nome.trim().split(' ').filter(Boolean);
+  if(partes.length >= 2) return (partes[0][0] + partes[1][0]).toUpperCase();
+  return nome.slice(0,2).toUpperCase();
+}
+
+function atualizarChipUsuario(){
+  if(!usuarioAtual) return;
+  const nome = nomeUsuarioAtual();
+  const iniciais = nome ? iniciaisDoNome(nome) : iniciaisDoEmail(usuarioAtual.email);
+  const chipAvatar = document.getElementById('chipAvatar');
+  const chipEmail = document.getElementById('chipEmail');
+  if(chipAvatar) chipAvatar.textContent = iniciais;
+  if(chipEmail) chipEmail.textContent = nome || usuarioAtual.email;
+}
+
+function renderConta(){
+  if(!usuarioAtual) return;
+  const nome = nomeUsuarioAtual();
+  document.getElementById('contaAvatar').textContent = nome ? iniciaisDoNome(nome) : iniciaisDoEmail(usuarioAtual.email);
+  document.getElementById('contaNomeAtual').textContent = nome || 'Nome de usuário não definido';
+  document.getElementById('contaEmailAtual').textContent = usuarioAtual.email;
+  const criadoEm = usuarioAtual.created_at ? new Date(usuarioAtual.created_at).toLocaleDateString('pt-BR') : '-';
+  document.getElementById('contaDesde').textContent = 'Conta criada em ' + criadoEm;
+  document.getElementById('contaNovoNome').value = nome;
+  document.getElementById('contaNovoEmail').value = '';
+  document.getElementById('contaNovaSenha').value = '';
+  document.getElementById('contaConfirmaSenha').value = '';
+  document.getElementById('contaNomeMsg').className = 'login-msg';
+  document.getElementById('contaEmailMsg').className = 'login-msg';
+  document.getElementById('contaSenhaMsg').className = 'login-msg';
+}
+
+async function atualizarNomeUsuario(){
+  const msgEl = document.getElementById('contaNomeMsg');
+  const novoNome = document.getElementById('contaNovoNome').value.trim();
+  if(!novoNome){
+    msgEl.textContent = 'Informe o nome de usuário.'; msgEl.className = 'login-msg show err'; return;
+  }
+  try{
+    const { data, error } = await supabaseClient.auth.updateUser({ data: { nome_usuario: novoNome } });
+    if(error) throw error;
+    if(data && data.user) usuarioAtual = data.user;
+    msgEl.textContent = 'Nome de usuário atualizado com sucesso.';
+    msgEl.className = 'login-msg show ok';
+    document.getElementById('contaNomeAtual').textContent = novoNome;
+    atualizarChipUsuario();
+    toast('Nome de usuário atualizado.', 'ok');
+  }catch(e){
+    msgEl.textContent = traduzirErroAuth(e.message);
+    msgEl.className = 'login-msg show err';
+  }
+}
+
+async function atualizarEmail(){
+  const msgEl = document.getElementById('contaEmailMsg');
+  const novoEmail = document.getElementById('contaNovoEmail').value.trim();
+  if(!novoEmail){
+    msgEl.textContent = 'Informe o novo e-mail.'; msgEl.className = 'login-msg show err'; return;
+  }
+  try{
+    const { error } = await supabaseClient.auth.updateUser({ email: novoEmail });
+    if(error) throw error;
+    msgEl.textContent = 'Solicitação enviada! Confirme a troca pelo link enviado ao novo e-mail.';
+    msgEl.className = 'login-msg show ok';
+    toast('E-mail de confirmação enviado.', 'ok');
+  }catch(e){
+    msgEl.textContent = traduzirErroAuth(e.message);
+    msgEl.className = 'login-msg show err';
+  }
+}
+
+async function atualizarSenha(){
+  const msgEl = document.getElementById('contaSenhaMsg');
+  const novaSenha = document.getElementById('contaNovaSenha').value;
+  const confirma = document.getElementById('contaConfirmaSenha').value;
+  if(!novaSenha || novaSenha.length < 6){
+    msgEl.textContent = 'A senha precisa ter no mínimo 6 caracteres.'; msgEl.className = 'login-msg show err'; return;
+  }
+  if(novaSenha !== confirma){
+    msgEl.textContent = 'As senhas não coincidem.'; msgEl.className = 'login-msg show err'; return;
+  }
+  try{
+    const { error } = await supabaseClient.auth.updateUser({ password: novaSenha });
+    if(error) throw error;
+    msgEl.textContent = 'Senha atualizada com sucesso.';
+    msgEl.className = 'login-msg show ok';
+    document.getElementById('contaNovaSenha').value = '';
+    document.getElementById('contaConfirmaSenha').value = '';
+    toast('Senha atualizada.', 'ok');
+  }catch(e){
+    msgEl.textContent = traduzirErroAuth(e.message);
+    msgEl.className = 'login-msg show err';
+  }
+}
+
+let appJaIniciado = false;
+async function mostrarApp(usuario){
+  usuarioAtual = usuario;
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('appRoot').style.display = '';
+  atualizarChipUsuario();
+  if(!appJaIniciado){
+    appJaIniciado = true;
+    await iniciarApp();
+  }
+}
+function mostrarLogin(){
+  usuarioAtual = null;
+  document.getElementById('appRoot').style.display = 'none';
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginSenha').value = '';
+  document.getElementById('loginNome').value = '';
+  document.getElementById('loginConfirmaSenha').value = '';
+  esconderMsgLogin();
+}
+
+async function iniciarAutenticacao(){
+  if(!supabaseClient){
+    exibirMsgLogin('Autenticação indisponível: Supabase não está configurado neste sistema.', 'err');
+    return;
+  }
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(session && session.user){
+    mostrarApp(session.user);
+  }else{
+    mostrarLogin();
+  }
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if(session && session.user){
+      mostrarApp(session.user);
+    }else{
+      mostrarLogin();
+    }
+  });
+}
+
+// Mantém o estoque sincronizado em tempo real entre todos que estiverem com a página aberta:
+// quando alguém em outro computador registra uma movimentação, esta tela atualiza sozinha.
+function iniciarSincronizacaoTempoReal(){
+  if(!supabaseClient) return;
+  supabaseClient
+    .channel('estoque-realtime')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'estoque_estado', filter: `chave=eq.${STORAGE_KEY}` }, async () => {
+      await carregarEstado();
+      updateMaterialList();
+      updateFiltroCategoriaOptions();
+      renderTable();
+      renderHistorico();
+      renderRelatorios();
+      renderCategorias();
+      renderFornecedores();
+    })
+    .subscribe();
+}
+
+/* ===================== TEMA (CLARO / ESCURO / AUTOMÁTICO) ===================== */
+// Preferência de tema é pessoal (não compartilhada entre usuários), por isso usa shared:false.
+const THEME_KEY = 'cssl_tema_pref';
+const HORA_INICIO_NOTURNO = 20; // a partir das 20h o modo automático vira escuro
+const HORA_FIM_NOTURNO = 6;     // até as 6h ainda é escuro
+let temaAutoTimer = null;
+
+async function temaStorageGet(){
+  try{
+    if(window.storage){
+      const res = await window.storage.get(THEME_KEY, false);
+      return (res && res.value) ? res.value : null;
+    }
+  }catch(e){ /* preferência ainda não salva */ }
+  try{
+    if(window.localStorage){
+      return localStorage.getItem('cssl_tema_pref') || null;
+    }
+  }catch(e){}
+  return null;
+}
+
+async function temaStorageSet(mode){
+  try{
+    if(window.storage){
+      await window.storage.set(THEME_KEY, mode, false);
+      return;
+    }
+  }catch(e){ /* cai para localStorage abaixo */ }
+  try{
+    if(window.localStorage){
+      localStorage.setItem('cssl_tema_pref', mode);
+    }
+  }catch(e){}
+}
+
+function horaSugereModoEscuro(){
+  const h = new Date().getHours();
+  return h >= HORA_INICIO_NOTURNO || h < HORA_FIM_NOTURNO;
+}
+
+function aplicarTema(mode){
+  const efetivo = mode === 'auto' ? (horaSugereModoEscuro() ? 'dark' : 'light') : mode;
+  document.documentElement.setAttribute('data-theme', efetivo);
+  document.querySelectorAll('.theme-opt').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+
+  clearInterval(temaAutoTimer);
+  if(mode === 'auto'){
+    // reavalia a cada minuto para trocar de claro/escuro automaticamente quando o horário virar
+    temaAutoTimer = setInterval(()=>aplicarTema('auto'), 60000);
+  }
+}
+
+function setTheme(mode){
+  aplicarTema(mode);
+  temaStorageSet(mode);
+}
+
+async function iniciarTema(){
+  const salvo = await temaStorageGet();
+  aplicarTema(salvo || 'auto');
+}
+
+let salvarTimeout = null;
+function persistirEstado(){
+  clearTimeout(salvarTimeout);
+  salvarTimeout = setTimeout(()=>{
+    storageSet(STORAGE_KEY, { produtos, movimentos, qrCodes, categorias, fornecedores, config, seq });
+  }, 350);
+}
+
+async function carregarEstado(){
+  const dados = await storageGet(STORAGE_KEY, null);
+  if(dados){
+    produtos = dados.produtos || [];
+    movimentos = dados.movimentos || [];
+    qrCodes = dados.qrCodes || {};
+    categorias = dados.categorias || [];
+    fornecedores = dados.fornecedores || [];
+    config = dados.config || config;
+    seq = dados.seq || 1;
+  }
+}
+
+const iconFor = (nome) => {
+  const n = nome.toLowerCase();
+  if(n.includes("mouse")) return "🖱️";
+  if(n.includes("teclado")) return "⌨️";
+  if(n.includes("luva")) return "🧤";
+  if(n.includes("máscara")||n.includes("mascara")) return "😷";
+  if(n.includes("seringa")) return "💉";
+  if(n.includes("algodão")||n.includes("algodao")) return "🧵";
+  if(n.includes("papel")) return "🧻";
+  if(n.includes("álcool")||n.includes("alcool")) return "🧴";
+  return "📦";
+};
+
+/* ============ BUSCA DE ÍCONE AUTOMÁTICA NA INTERNET ============ */
+// dicionário PT->EN para melhorar a precisão da busca (a API de ícones indexa termos em inglês)
+const dicionarioPtEn = {
+  "mouse":"mouse","teclado":"keyboard","luva":"glove","luvas":"gloves","máscara":"face mask","mascara":"face mask",
+  "seringa":"syringe","algodão":"cotton","algodao":"cotton","papel":"paper roll","álcool":"alcohol gel","alcool":"alcohol gel",
+  "monitor":"computer monitor","impressora":"printer","computador":"desktop computer","notebook":"laptop",
+  "cadeira":"chair","mesa":"table","caneta":"pen","grampeador":"stapler","tesoura":"scissors",
+  "termômetro":"thermometer","termometro":"thermometer","estetoscópio":"stethoscope","estetoscopio":"stethoscope",
+  "gaze":"bandage","curativo":"bandage","agulha":"syringe needle","remedio":"medicine pill","remédio":"medicine pill",
+  "medicamento":"medicine pill","soro":"iv bag","capacete":"helmet","óculos":"glasses","oculos":"glasses",
+  "avental":"lab coat","jaleco":"lab coat","bisturi":"scalpel","cadeira de rodas":"wheelchair","maca":"hospital bed",
+  "oxigênio":"oxygen tank","oxigenio":"oxygen tank","fralda":"diaper","sabonete":"soap","detergente":"cleaning spray",
+  "câmera":"camera","camera":"camera","telefone":"telephone","celular":"smartphone","cabo":"cable","fio":"cable",
+  "bateria":"battery","lâmpada":"light bulb","lampada":"light bulb","extintor":"fire extinguisher"
+};
+
+function termoBuscaIcone(nome){
+  const n = nome.toLowerCase().trim();
+  for(const chave in dicionarioPtEn){
+    if(n.includes(chave)) return dicionarioPtEn[chave];
+  }
+  return nome;
+}
+
+const cacheIcones = {}; // nome do produto (lowercase) -> url do ícone já resolvido
+
+function buscarIconeOnline(produto){
+  const chaveCache = produto.nome.toLowerCase().trim();
+  if(cacheIcones[chaveCache]){
+    produto.iconUrl = cacheIcones[chaveCache];
+    renderTable();
+    return;
+  }
+  const termo = termoBuscaIcone(produto.nome);
+  fetch(`https://api.iconify.design/search?query=${encodeURIComponent(termo)}&limit=6`)
+    .then(r=>r.json())
+    .then(data=>{
+      if(data && data.icons && data.icons.length){
+        // prioriza sets com traço mais "line/flat" que combinam com o layout
+        const preferidos = ["mdi","lucide","tabler","ph","material-symbols"];
+        let escolhido = data.icons.find(i=>preferidos.some(pref=>i.startsWith(pref+":")));
+        if(!escolhido) escolhido = data.icons[0];
+        const [prefix, name] = escolhido.split(":");
+        const url = `https://api.iconify.design/${prefix}/${name}.svg?color=%232563eb&width=32&height=32`;
+        produto.iconUrl = url;
+        cacheIcones[chaveCache] = url;
+      }
+      renderTable();
+    })
+    .catch(()=>{ /* sem internet ou API indisponível: mantém o emoji padrão */ });
+}
+
+function matIconHtml(p){
+  if(p.iconUrl){
+    return `<img src="${p.iconUrl}" alt="" style="width:20px;height:20px;" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${p.icon}'}))">`;
+  }
+  return p.icon;
+}
+function novoId(prefixo){ return prefixo + (seq++); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function nowBR(){
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mi = String(d.getMinutes()).padStart(2,'0');
+  return `${dd}/${mm}/${yy} ${hh}:${mi}`;
+}
+function formatDateBR(iso){
+  const [y,m,d] = iso.split("-");
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mi = String(now.getMinutes()).padStart(2,'0');
+  return `${d}/${m}/${y} ${hh}:${mi}`;
+}
+
+document.getElementById('fData').value = todayISO();
+
+/* ===================== TOAST ===================== */
+function toast(msg, tipo=''){
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast' + (tipo ? ' '+tipo : '');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
+  setTimeout(()=>{
+    el.classList.remove('show');
+    setTimeout(()=>el.remove(), 300);
+  }, 3200);
+}
+
+/* ===================== NAVEGAÇÃO ===================== */
+function switchPage(nome){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+nome).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.page===nome));
+  if(nome==='historico') renderHistorico();
+  if(nome==='relatorios') renderRelatorios();
+  if(nome==='categorias') renderCategorias();
+  if(nome==='fornecedores') renderFornecedores();
+  if(nome==='conta') renderConta();
+}
+
+/* ===================== MOVIMENTAÇÃO MANUAL ===================== */
+function updateMaterialList(){
+  document.getElementById('materialList').innerHTML = produtos.map(p=>`<option value="${p.nome}">`).join('');
+}
+
+function localizarOuCriarProduto(nome, categoriaId){
+  let produto = produtos.find(p=>p.nome.toLowerCase() === nome.toLowerCase());
+  if(!produto){
+    produto = { id:novoId('p'), nome, icon:iconFor(nome), iconUrl:null, qtd:0, ultimaAtualizacao:'-', ultimoTipo:'-', categoria:categoriaId || '' };
+    produtos.push(produto);
+    buscarIconeOnline(produto); // busca o ícone real na internet em segundo plano
+  } else if(categoriaId){
+    produto.categoria = categoriaId;
+  }
+  return produto;
+}
+
+function aplicarMovimento(produto, tipo, qtd, dataFmt, origem, obs){
+  produto.qtd += (tipo === 'Entrada') ? qtd : -qtd;
+  if(produto.qtd < 0) produto.qtd = 0;
+  produto.ultimaAtualizacao = dataFmt;
+  produto.ultimoTipo = tipo;
+  movimentos.unshift({
+    id: novoId('m'), produtoId: produto.id, produtoNome: produto.nome,
+    tipo, qtd, data: dataFmt, origem, obs: obs || ''
+  });
+  persistirEstado();
+}
+
+function registrarMovimentacao(){
+  const nome = document.getElementById('fMaterial').value.trim();
+  const qtdRaw = document.getElementById('fQtd').value;
+  const qtd = parseInt(qtdRaw, 10);
+  const tipo = document.getElementById('fTipo').value;
+  const dataISO = document.getElementById('fData').value || todayISO();
+  const obs = document.getElementById('fObs').value.trim();
+  const categoriaId = document.getElementById('fCategoria').value;
+
+  if(!nome){ toast('Informe o nome do material.', 'err'); return; }
+  if(qtdRaw === '' || isNaN(qtd) || qtd < 0){ toast('Informe uma quantidade válida (pode ser 0).', 'err'); return; }
+
+  const produto = localizarOuCriarProduto(nome, categoriaId);
+  const dataFmt = formatDateBR(dataISO);
+  aplicarMovimento(produto, tipo, qtd, dataFmt, 'Manual', obs);
+
+  let msgExtra = '';
+  if(tipo === 'Entrada' && qtd > 0){
+    gerarCodigosParaProduto(produto, qtd);
+    msgExtra = ` ${qtd} código${qtd===1?'':'s'} de QR gerado${qtd===1?'':'s'} (1 por unidade).`;
+  }
+
+  document.getElementById('fMaterial').value = '';
+  document.getElementById('fQtd').value = '';
+  document.getElementById('fObs').value = '';
+  document.getElementById('fCategoria').value = '';
+
+  toast(`Movimentação registrada: ${tipo} de ${qtd} em "${nome}".${msgExtra}`, 'ok');
+  updateMaterialList();
+  renderTable();
+}
+
+/* ===================== TABELA DE PRODUTOS ===================== */
+function statusQR(produtoId){
+  const tickets = Object.values(qrCodes).filter(q=>q.produtoId===produtoId);
+  const aguardandoEntrada = tickets.filter(q=>q.bips===0).length;
+  const aguardandoSaida = tickets.filter(q=>q.bips===1).length;
+  if(aguardandoEntrada===0 && aguardandoSaida===0) return { texto:'Sem QR pendente', classe:'neutral' };
+  const partes = [];
+  if(aguardandoSaida>0) partes.push(`${aguardandoSaida} aguardando saída`);
+  if(aguardandoEntrada>0) partes.push(`${aguardandoEntrada} aguardando entrada`);
+  return { texto: partes.join(' · '), classe:'warn' };
+}
+
+function categoriaBadgeHtml(p){
+  const cat = categorias.find(c=>c.id===p.categoria);
+  const badge = cat
+    ? `<span class="badge-cat"><span class="dot-col" style="background:${cat.cor};"></span>${cat.nome}</span>`
+    : `<span class="badge-cat muted">Sem categoria</span>`;
+  return `<div class="cat-cell">${badge}<button class="cat-edit-btn" title="Editar categoria" onclick="abrirModalCategoriaProduto('${p.id}')">✎</button></div>`;
+}
+
+let catProdutoIdAtual = null;
+function abrirModalCategoriaProduto(produtoId){
+  const p = produtos.find(x=>x.id===produtoId);
+  if(!p) return;
+  catProdutoIdAtual = produtoId;
+  document.getElementById('catProdutoModalTitulo').textContent = `Editar categoria · ${p.nome}`;
+  const sel = document.getElementById('catProdutoSelect');
+  sel.innerHTML = '<option value="">Sem categoria</option>' +
+    categorias.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+  sel.value = categorias.some(c=>c.id===p.categoria) ? p.categoria : '';
+  document.getElementById('catProdutoModal').classList.add('show');
+}
+function fecharModalCategoriaProduto(){
+  document.getElementById('catProdutoModal').classList.remove('show');
+  catProdutoIdAtual = null;
+}
+function salvarCategoriaProduto(){
+  const p = produtos.find(x=>x.id===catProdutoIdAtual);
+  if(!p) return;
+  p.categoria = document.getElementById('catProdutoSelect').value;
+  persistirEstado();
+  renderTable();
+  toast(`Categoria de "${p.nome}" atualizada.`, 'ok');
+  fecharModalCategoriaProduto();
+}
+
+function toggleFiltroPanel(ev){
+  if(ev) ev.stopPropagation();
+  document.getElementById('filtroPanel').classList.toggle('open');
+}
+document.addEventListener('click', (ev)=>{
+  const painel = document.getElementById('filtroPanel');
+  const wrap = document.querySelector('.filtro-wrap');
+  if(painel && painel.classList.contains('open') && wrap && !wrap.contains(ev.target)){
+    painel.classList.remove('open');
+  }
+});
+
+function updateFiltroCategoriaOptions(){
+  const sel = document.getElementById('filtroCategoria');
+  const fSel = document.getElementById('fCategoria');
+  if(!sel || !fSel) return;
+  const valAtual = sel.value;
+  sel.innerHTML = '<option value="">Todas as categorias</option>' +
+    categorias.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+  sel.value = categorias.some(c=>c.id===valAtual) ? valAtual : '';
+
+  fSel.innerHTML = '<option value="">Sem categoria</option>' +
+    categorias.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+}
+
+function renderTable(){
+  const q = document.getElementById('tableSearch').value.toLowerCase();
+  const ordenar = document.getElementById('filtroOrdenar').value;
+  const catFiltro = document.getElementById('filtroCategoria').value;
+  const tbody = document.getElementById('tbody');
+  let filtered = produtos.filter(p=>p.nome.toLowerCase().includes(q));
+  if(catFiltro) filtered = filtered.filter(p=>p.categoria === catFiltro);
+
+  if(ordenar === 'nome-az') filtered = [...filtered].sort((a,b)=>a.nome.localeCompare(b.nome, 'pt-BR'));
+  else if(ordenar === 'nome-za') filtered = [...filtered].sort((a,b)=>b.nome.localeCompare(a.nome, 'pt-BR'));
+  else if(ordenar === 'qtd-desc') filtered = [...filtered].sort((a,b)=>b.qtd - a.qtd);
+  else if(ordenar === 'qtd-asc') filtered = [...filtered].sort((a,b)=>a.qtd - b.qtd);
+
+  if(filtered.length === 0){
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Nenhum material encontrado.</td></tr>`;
+  } else {
+    tbody.innerHTML = filtered.map(p=>{
+      const st = statusQR(p.id);
+      return `
+      <tr>
+        <td>
+          <div class="mat-cell">
+            <div class="mat-icon">${matIconHtml(p)}</div>
+            <div>
+              <div class="mat-name">${p.nome}</div>
+              <span class="badge ${p.qtd<=0?'out':''}">${p.qtd<=0?'Sem estoque':'Em estoque'}</span>
+            </div>
+          </div>
+        </td>
+        <td>${categoriaBadgeHtml(p)}</td>
+        <td><span class="qty-num">${p.qtd}</span><span class="qty-unit">unidade${p.qtd===1?'':'s'}</span></td>
+        <td><span class="update-date">${p.ultimaAtualizacao}</span><span class="update-type">${p.ultimoTipo}</span></td>
+        <td><span class="badge ${st.classe}">${st.texto}</span></td>
+        <td>
+          <div class="actions-cell">
+            <button class="qr-btn" onclick="abrirModalQR('${p.id}')">▦ Gerar QR</button>
+            <button class="del-btn" onclick="removerProduto('${p.id}')">🗑</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+  document.getElementById('footerCount').textContent = `Exibindo ${filtered.length} de ${produtos.length} item${produtos.length===1?'':'s'}`;
+  document.getElementById('saldoGeral').textContent = produtos.reduce((s,p)=>s+p.qtd,0);
+}
+
+function removerProduto(id){
+  const p = produtos.find(x=>x.id===id);
+  if(!p) return;
+  if(!confirm(`Remover "${p.nome}" do estoque? Isso não apaga o histórico.`)) return;
+  produtos = produtos.filter(x=>x.id!==id);
+  Object.keys(qrCodes).forEach(tok=>{ if(qrCodes[tok].produtoId===id) delete qrCodes[tok]; });
+  persistirEstado();
+  updateMaterialList();
+  renderTable();
+  toast(`"${p.nome}" removido do estoque.`);
+}
+
+/* ===================== EXCEL / CSV / LIMPAR ===================== */
+async function exportarExcel(){
+  if(typeof ExcelJS === 'undefined'){
+    toast('Biblioteca de exportação não carregou (verifique sua conexão) e tente novamente.', 'err');
+    return;
+  }
+  toast('Gerando planilha Excel...', 'ok');
+
+  const AZUL = 'FF1D4ED8';
+  const AZUL_CLARO = 'FFE8EEFC';
+  const ZEBRA = 'FFF6F8FC';
+  const VERDE_CLARO = 'FFEAFAF0';
+  const VERDE_TXT = 'FF16A34A';
+  const VERMELHO_CLARO = 'FFFDECEA';
+  const VERMELHO_TXT = 'FFE64C3C';
+  const BRANCO = 'FFFFFFFF';
+  const BORDA = 'FFE6E9F2';
+
+  const wb = new ExcelJS.Workbook();
+  wb.creator = config.responsavel || 'Sistema de Estoque';
+  wb.created = new Date();
+
+  /* ---------- ABA 1: ESTOQUE ATUAL ---------- */
+  const ws1 = wb.addWorksheet('Estoque Atual', { views:[{ state:'frozen', ySplit:4 }] });
+
+  ws1.mergeCells('A1:F1');
+  ws1.getCell('A1').value = config.nomeUnidade || 'Planilha de Estoque';
+  ws1.getCell('A1').font = { bold:true, size:16, color:{argb:AZUL} };
+
+  ws1.mergeCells('A2:F2');
+  ws1.getCell('A2').value = `Responsável: ${config.responsavel || '-'}   ·   Exportado em: ${nowBR()}`;
+  ws1.getCell('A2').font = { size:10.5, italic:true, color:{argb:'FF667085'} };
+
+  ws1.addRow([]); // linha 3 em branco (respiro visual)
+
+  const cabecalho1 = ws1.addRow(['Material','Categoria','Quantidade','Status','Última atualização','Tipo da última movimentação']);
+  cabecalho1.eachCell(cell=>{
+    cell.font = { bold:true, color:{argb:BRANCO}, size:11 };
+    cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:AZUL} };
+    cell.alignment = { vertical:'middle', horizontal:'center' };
+  });
+  cabecalho1.height = 20;
+
+  produtos.forEach((p, idx)=>{
+    const semEstoque = p.qtd <= 0;
+    const row = ws1.addRow([
+      p.nome,
+      p.categoria || '-',
+      p.qtd,
+      semEstoque ? 'Sem estoque' : 'Em estoque',
+      p.ultimaAtualizacao,
+      p.ultimoTipo
+    ]);
+    const corFundo = semEstoque ? VERMELHO_CLARO : (idx % 2 === 0 ? ZEBRA : BRANCO);
+    row.eachCell((cell, col)=>{
+      cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:corFundo} };
+      cell.alignment = { vertical:'middle', horizontal: col===1 ? 'left' : 'center' };
+      cell.border = { bottom:{style:'hair', color:{argb:BORDA}} };
+    });
+    row.getCell(3).font = { bold:true };
+    row.getCell(4).font = { bold:true, color:{argb: semEstoque ? VERMELHO_TXT : VERDE_TXT} };
+  });
+
+  ws1.columns = [{width:30},{width:16},{width:13},{width:15},{width:20},{width:26}];
+  if(produtos.length){
+    ws1.autoFilter = { from:{row:4, column:1}, to:{row:4, column:6} };
+  }
+
+  ws1.addRow([]);
+  const totalRow = ws1.addRow(['TOTAL EM ESTOQUE', '', produtos.reduce((s,p)=>s+p.qtd,0), '', '', '']);
+  totalRow.eachCell(cell=>{ cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:AZUL_CLARO} }; });
+  totalRow.getCell(1).font = { bold:true, color:{argb:AZUL} };
+  totalRow.getCell(3).font = { bold:true, color:{argb:AZUL} };
+
+  /* ---------- ABA 2: MOVIMENTAÇÕES ---------- */
+  const ws2 = wb.addWorksheet('Movimentações', { views:[{ state:'frozen', ySplit:1 }] });
+  const cabecalho2 = ws2.addRow(['Data','Material','Tipo','Quantidade','Origem','Observação']);
+  cabecalho2.eachCell(cell=>{
+    cell.font = { bold:true, color:{argb:BRANCO}, size:11 };
+    cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:AZUL} };
+    cell.alignment = { vertical:'middle', horizontal:'center' };
+  });
+  cabecalho2.height = 20;
+
+  movimentos.forEach(m=>{
+    const entrada = m.tipo === 'Entrada';
+    const row = ws2.addRow([m.data, m.produtoNome, m.tipo, m.qtd, m.origem, m.obs || '-']);
+    row.eachCell((cell, col)=>{
+      cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb: entrada ? VERDE_CLARO : VERMELHO_CLARO} };
+      cell.alignment = { vertical:'middle', horizontal: (col===2||col===6) ? 'left' : 'center' };
+      cell.border = { bottom:{style:'hair', color:{argb:BORDA}} };
+    });
+    row.getCell(3).font = { bold:true, color:{argb: entrada ? VERDE_TXT : VERMELHO_TXT} };
+  });
+  ws2.columns = [{width:16},{width:28},{width:12},{width:13},{width:14},{width:36}];
+  if(movimentos.length){
+    ws2.autoFilter = { from:{row:1, column:1}, to:{row:1, column:6} };
+  }
+
+  /* ---------- ABA 3: RESUMO ---------- */
+  const ws3 = wb.addWorksheet('Resumo');
+  const totalEntradas = movimentos.filter(m=>m.tipo==='Entrada').reduce((s,m)=>s+m.qtd,0);
+  const totalSaidas = movimentos.filter(m=>m.tipo==='Saída').reduce((s,m)=>s+m.qtd,0);
+  const linhas = [
+    ['Indicador', 'Valor'],
+    ['Total de itens cadastrados', produtos.length],
+    ['Saldo geral em estoque', produtos.reduce((s,p)=>s+p.qtd,0)],
+    ['Itens sem estoque', produtos.filter(p=>p.qtd<=0).length],
+    ['Total de entradas registradas', totalEntradas],
+    ['Total de saídas registradas', totalSaidas],
+    ['Total de movimentações', movimentos.length],
+    ['Exportado em', nowBR()]
+  ];
+  linhas.forEach((linha, idx)=>{
+    const row = ws3.addRow(linha);
+    if(idx===0){
+      row.eachCell(cell=>{
+        cell.font = { bold:true, color:{argb:BRANCO} };
+        cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:AZUL} };
+      });
+    } else {
+      row.getCell(1).font = { bold:true };
+      row.eachCell(cell=>{ cell.border = { bottom:{style:'hair', color:{argb:BORDA}} }; });
+    }
+  });
+  ws3.columns = [{width:34},{width:20}];
+
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const nomeArquivo = `estoque-${(config.nomeUnidade||'planilha').trim().replace(/\s+/g,'-').toLowerCase()}-${todayISO()}.xlsx`;
+  a.download = nomeArquivo;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Planilha Excel exportada com sucesso.', 'ok');
+}
+
+function exportarCSV(){
+  const header = "Material,Quantidade,Última atualização,Tipo\n";
+  const rows = produtos.map(p=>`"${p.nome}",${p.qtd},"${p.ultimaAtualizacao}","${p.ultimoTipo}"`).join("\n");
+  const blob = new Blob([header+rows], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = "planilha-estoque.csv";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('CSV exportado com sucesso.', 'ok');
+}
+
+function limparDados(){
+  if(confirm('Tem certeza que deseja remover todos os registros de estoque e movimentações? Esta ação não pode ser desfeita.')){
+    produtos = [];
+    movimentos = [];
+    qrCodes = {};
+    persistirEstado();
+    renderTable();
+    updateMaterialList();
+    renderHistorico();
+    renderRelatorios();
+    toast('Todos os registros foram removidos.', 'ok');
+  }
+}
+
+/* ===================== QR CODE: GERAÇÃO ===================== */
+function gerarTokenUnico(){
+  return 'CSSL-' + Math.random().toString(36).slice(2,8).toUpperCase() + Date.now().toString(36).slice(-4).toUpperCase();
+}
+
+function construirConteudoQR(token){
+  const base = (config.urlPublica || '').trim();
+  if(!base) return token; // sem link configurado: QR carrega só o código (funciona com o leitor embutido e leitores USB)
+  let url = /^https?:\/\//i.test(base) ? base : ('https://' + base);
+  url = url.replace(/\/+$/, '');
+  return `${url}/?bip=${encodeURIComponent(token)}`;
+}
+
+// cria `quantidade` códigos QR individuais para o produto (1 por unidade)
+function gerarCodigosParaProduto(produto, quantidade){
+  const tokens = [];
+  for(let i=0;i<quantidade;i++){
+    const token = gerarTokenUnico();
+    qrCodes[token] = { produtoId: produto.id, produtoNome: produto.nome, bips:0, criadoEm: nowBR(), entradaEm:null, saidaEm:null };
+    tokens.push(token);
+  }
+  persistirEstado();
+  return tokens;
+}
+
+function abrirModalQR(produtoId){
+  const produto = produtos.find(p=>p.id===produtoId);
+  if(!produto) return;
+
+  // reúne todos os códigos ainda ativos (bips < 2) deste produto — um por unidade
+  let tokens = Object.entries(qrCodes)
+    .filter(([tok,q])=>q.produtoId===produtoId && q.bips<2)
+    .sort((a,b)=> a[1].criadoEm.localeCompare(b[1].criadoEm))
+    .map(([tok])=>tok);
+
+  // se não houver nenhum pendente, gera pelo menos 1 (fallback)
+  if(tokens.length === 0){
+    tokens = gerarCodigosParaProduto(produto, 1);
+  }
+
+  modalTokensAtuais = tokens;
+  modalIndexAtual = 0;
+  modalTokenAtual = tokens[0];
+  renderModalQR();
+  document.getElementById('qrModal').classList.add('show');
+}
+
+function navegarCodigo(delta){
+  if(!modalTokensAtuais.length) return;
+  modalIndexAtual = (modalIndexAtual + delta + modalTokensAtuais.length) % modalTokensAtuais.length;
+  modalTokenAtual = modalTokensAtuais[modalIndexAtual];
+  renderModalQR();
+}
+
+function renderModalQR(){
+  const token = modalTokenAtual;
+  const q = qrCodes[token];
+  if(!q) return;
+  document.getElementById('qrModalTitulo').textContent = q.produtoNome;
+  document.getElementById('qrTokenChip').textContent = token;
+
+  const total = modalTokensAtuais.length;
+  const info = document.getElementById('qrNavInfo');
+  if(info) info.textContent = `Código ${modalIndexAtual+1} de ${total} (1 por unidade)`;
+  const navEl = document.getElementById('qrNav');
+  if(navEl) navEl.style.display = total > 1 ? 'flex' : 'none';
+
+  const holder = document.getElementById('qrcanvas-holder');
+  holder.innerHTML = '';
+  new QRCode(holder, {
+    text: construirConteudoQR(token),
+    width: 190,
+    height: 190,
+    colorDark: "#0f1b3d",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  const aviso = document.getElementById('qrModalAviso');
+  if(aviso){
+    aviso.textContent = config.urlPublica
+      ? 'Este QR abre o sistema direto pela câmera do celular e bipa sozinho.'
+      : 'Sem link público configurado: use o leitor embutido do site ou um leitor USB/Bluetooth para bipar este código (configure o link em Configurações para ler pela câmera nativa do celular).';
+  }
+
+  const dotE = document.getElementById('dotEntrada');
+  const dotS = document.getElementById('dotSaida');
+  dotE.className = 'status-dot' + (q.bips>=1 ? ' done' : ' current');
+  dotS.className = 'status-dot' + (q.bips>=2 ? ' done' : (q.bips===1 ? ' current' : ''));
+}
+
+function fecharModalQR(){
+  document.getElementById('qrModal').classList.remove('show');
+  modalTokenAtual = null;
+  modalTokensAtuais = [];
+  modalIndexAtual = 0;
+  renderTable();
+}
+
+function gerarNovoCodigo(){
+  const atual = qrCodes[modalTokenAtual];
+  if(!atual) return;
+  const produto = produtos.find(p=>p.id===atual.produtoId);
+  if(!produto) return;
+  // adiciona mais uma unidade (novo código) ao produto, sem invalidar os existentes
+  const [novoToken] = gerarCodigosParaProduto(produto, 1);
+  modalTokensAtuais.push(novoToken);
+  modalIndexAtual = modalTokensAtuais.length - 1;
+  modalTokenAtual = novoToken;
+  renderModalQR();
+  toast('Novo código adicionado (1 unidade a mais).', 'ok');
+}
+
+function baixarQR(){
+  const holder = document.getElementById('qrcanvas-holder');
+  const img = holder.querySelector('img');
+  const canvas = holder.querySelector('canvas');
+  const src = img ? img.src : (canvas ? canvas.toDataURL('image/png') : null);
+  if(!src){ toast('Não foi possível gerar o arquivo do QR.', 'err'); return; }
+  const a = document.createElement('a');
+  a.href = src;
+  const nomeBase = qrCodes[modalTokenAtual].produtoNome.replace(/\s+/g,'-').toLowerCase();
+  a.download = `qrcode-${nomeBase}-unidade-${modalIndexAtual+1}.png`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  toast('QR Code baixado.', 'ok');
+}
+
+// baixa, em sequência, o PNG de todos os códigos ativos do produto aberto no modal
+async function baixarTodosQR(){
+  if(!modalTokensAtuais.length) return;
+  const indiceOriginal = modalIndexAtual;
+  toast(`Baixando ${modalTokensAtuais.length} código(s)... o navegador pode pedir confirmação para múltiplos downloads.`, 'ok');
+  for(let i=0;i<modalTokensAtuais.length;i++){
+    modalIndexAtual = i;
+    modalTokenAtual = modalTokensAtuais[i];
+    renderModalQR();
+    await new Promise(r=>setTimeout(r, 250)); // dá tempo do QRCode.js desenhar antes de capturar
+    baixarQR();
+    await new Promise(r=>setTimeout(r, 300)); // espaça os downloads para o navegador não bloquear
+  }
+  modalIndexAtual = indiceOriginal;
+  modalTokenAtual = modalTokensAtuais[indiceOriginal];
+  renderModalQR();
+}
+
+/* ===================== IMPRESSÃO DE ETIQUETA (49mm x 34mm) ===================== */
+function construirLabelDOM(token){
+  const q = qrCodes[token];
+  if(!q) return null;
+  const wrap = document.createElement('div');
+  wrap.className = 'print-label';
+
+  const qrHolder = document.createElement('div');
+  qrHolder.className = 'lbl-qr';
+  wrap.appendChild(qrHolder);
+  new QRCode(qrHolder, {
+    text: construirConteudoQR(token),
+    width: 420,
+    height: 420,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  const nome = document.createElement('div');
+  nome.className = 'lbl-nome';
+  nome.textContent = q.produtoNome;
+  wrap.appendChild(nome);
+
+  const tok = document.createElement('div');
+  tok.className = 'lbl-token';
+  tok.textContent = token;
+  wrap.appendChild(tok);
+
+  return wrap;
+}
+
+function imprimirEtiquetas(tokens){
+  if(!tokens || !tokens.length){ toast('Nenhum código para imprimir.', 'err'); return; }
+  const area = document.getElementById('printArea');
+  area.innerHTML = '';
+  tokens.forEach(tok=>{
+    const label = construirLabelDOM(tok);
+    if(label) area.appendChild(label);
+  });
+  // pequeno atraso para o QRCode.js terminar de desenhar cada etiqueta antes do print
+  setTimeout(()=>{ window.print(); }, 200);
+}
+
+function imprimirEtiquetaAtual(){
+  if(!modalTokenAtual){ toast('Abra um código antes de imprimir.', 'err'); return; }
+  imprimirEtiquetas([modalTokenAtual]);
+}
+
+function imprimirTodasEtiquetas(){
+  if(!modalTokensAtuais.length){ toast('Nenhum código para imprimir.', 'err'); return; }
+  imprimirEtiquetas(modalTokensAtuais);
+}
+
+/* ===================== QR CODE: BIPAGEM ===================== */
+function extrairTokenDeConteudo(conteudo){
+  const texto = (conteudo || '').trim();
+
+  // se o conteúdo lido for um link (ex: https://site.com/?bip=CSSL-XXXX), extrai o parâmetro "bip"
+  if(/^https?:\/\//i.test(texto)){
+    try{
+      const u = new URL(texto);
+      const viaParam = u.searchParams.get('bip');
+      if(viaParam) return viaParam;
+    }catch(e){ /* não é uma URL válida, segue tentando outras formas de extrair o código */ }
+  }
+
+  // alguns leitores USB (bipadores) enviam o conteúdo do QR como se fossem teclas digitadas.
+  // quando o layout de teclado do leitor não bate com o do computador, símbolos como / ? =
+  // podem ser trocados por outros caracteres (ex: "https://site.com/?bip=CSSL-XXXX" vira
+  // "https:;.site.com;?bip;CSSL-XXXX"). Letras e números não são afetadas por esse problema,
+  // então procuramos o token no formato CSSL-XXXXXXXXXX em qualquer lugar do texto recebido.
+  const match = texto.match(/CSSL-[A-Z0-9]+/i);
+  if(match) return match[0].toUpperCase();
+
+  return texto;
+}
+
+function processarBipagem(codigoBruto){
+  const codigo = extrairTokenDeConteudo(codigoBruto);
+  const resultBox = document.getElementById('scanResult');
+  if(!codigo) return;
+
+  const q = qrCodes[codigo];
+
+  if(!q){
+    resultBox.className = 'scan-result err';
+    resultBox.innerHTML = `<div class="r-title">Código não reconhecido</div><div class="r-sub">"${codigo}" não corresponde a nenhum QR Code gerado neste sistema.</div>`;
+    toast('Código de QR não reconhecido.', 'err');
+    return;
+  }
+
+  const produto = produtos.find(p=>p.id===q.produtoId);
+  if(!produto){
+    resultBox.className = 'scan-result err';
+    resultBox.innerHTML = `<div class="r-title">Produto não existe mais</div><div class="r-sub">O produto vinculado a este código foi removido do estoque.</div>`;
+    toast('Produto vinculado ao código não existe mais.', 'err');
+    return;
+  }
+
+  if(q.bips >= 2){
+    resultBox.className = 'scan-result err';
+    resultBox.innerHTML = `<div class="r-title">Código já utilizado</div><div class="r-sub">Este QR Code de "${produto.nome}" já registrou entrada e saída. Gere um novo código para movimentar novamente.</div>`;
+    toast(`Este QR Code já foi totalmente utilizado (entrada + saída).`, 'err');
+    return;
+  }
+
+  const dataFmt = nowBR();
+
+  if(q.bips === 0){
+    aplicarMovimento(produto, 'Entrada', 1, dataFmt, 'QR Code', `Bipagem 1/2 · código ${codigo}`);
+    q.bips = 1;
+    q.entradaEm = dataFmt;
+    persistirEstado();
+    resultBox.className = 'scan-result ok';
+    resultBox.innerHTML = `<div class="r-title">✔ Entrada registrada</div><div class="r-sub">+1 ${produto.nome} · saldo atual: ${produto.qtd}. Próxima leitura deste código registrará a saída.</div>`;
+    toast(`Entrada registrada: +1 ${produto.nome}.`, 'ok');
+  } else if(q.bips === 1){
+    const destinoEl = document.getElementById('scanDestino');
+    const destino = (destinoEl.value || '').trim();
+    if(!destino){
+      resultBox.className = 'scan-result err';
+      resultBox.innerHTML = `<div class="r-title">Informe o destino da saída</div><div class="r-sub">Preencha o campo "Destino da saída" (para onde ${produto.nome} está indo) antes de bipar a saída deste código.</div>`;
+      toast('Preencha o destino da saída antes de bipar.', 'err');
+      destinoEl.focus();
+      return;
+    }
+    aplicarMovimento(produto, 'Saída', 1, dataFmt, 'QR Code', `Destino: ${destino} · Bipagem 2/2 · código ${codigo}`);
+    q.bips = 2;
+    q.saidaEm = dataFmt;
+    q.destino = destino;
+    persistirEstado();
+    resultBox.className = 'scan-result ok';
+    resultBox.innerHTML = `<div class="r-title">✔ Saída registrada</div><div class="r-sub">-1 ${produto.nome} → <strong>${destino}</strong> · saldo atual: ${produto.qtd}. Este código está encerrado — gere um novo para movimentar de novo.</div>`;
+    toast(`Saída registrada: -1 ${produto.nome} → ${destino}. Código encerrado.`, 'ok');
+    destinoEl.value = '';
+  }
+
+  if(modalTokenAtual === codigo) renderModalQR();
+  updateMaterialList();
+  renderTable();
+}
+
+const scanInput = document.getElementById('scanInput');
+scanInput.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    processarBipagem(scanInput.value);
+    scanInput.value = '';
+  }
+});
+// não refocamos automaticamente ao perder o foco: isso atrapalhava a digitação em outros campos.
+// o usuário (ou o leitor USB/Bluetooth) clica no campo antes de bipar.
+
+/* ===================== CÂMERA (jsQR) ===================== */
+function mostrarErroCamera(msg){
+  const resultBox = document.getElementById('scanResult');
+  resultBox.className = 'scan-result err';
+  resultBox.innerHTML = `<div class="r-title">⚠ Câmera indisponível</div><div class="r-sub">${msg}</div>`;
+  toast(msg, 'err');
+}
+
+async function toggleCamera(){
+  const wrap = document.getElementById('camWrap');
+  const btn = document.getElementById('camBtn');
+
+  if(camStream){
+    camStream.getTracks().forEach(t=>t.stop());
+    camStream = null;
+    cancelAnimationFrame(camLoopId);
+    wrap.style.display = 'none';
+    btn.textContent = '📷 Usar câmera para bipar';
+    return;
+  }
+
+  // diagnóstico antes de tentar: contexto inseguro é a causa nº1 quando o arquivo é aberto direto no celular
+  if(!window.isSecureContext){
+    mostrarErroCamera('A câmera só funciona em conexões seguras (https) ou "localhost". Como este arquivo foi aberto direto do celular (endereço começando com "file://"), o navegador bloqueia o acesso à câmera sem avisar. Hospede este arquivo em um link https (ex: Netlify, GitHub Pages) ou use o campo de texto com um leitor USB/Bluetooth, que funciona normalmente.');
+    return;
+  }
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    mostrarErroCamera('Este navegador não tem suporte a acesso à câmera pela web. Tente abrir em outro navegador (Chrome ou Safari atualizados) ou use o campo de texto para bipar.');
+    return;
+  }
+
+  btn.textContent = '⏳ Abrindo câmera...';
+
+  const tentarComConstraint = (constraints) => navigator.mediaDevices.getUserMedia(constraints);
+
+  try{
+    let stream;
+    try{
+      stream = await tentarComConstraint({ video:{ facingMode:{ ideal:'environment' } }, audio:false });
+    } catch(e1){
+      // alguns celulares recusam facingMode 'environment'; tenta câmera genérica
+      stream = await tentarComConstraint({ video:true, audio:false });
+    }
+
+    camStream = stream;
+    const video = document.getElementById('camVideo');
+    video.srcObject = stream;
+    video.setAttribute('playsinline','true'); // obrigatório no iOS Safari
+    await video.play().catch(()=>{});
+
+    wrap.style.display = 'block';
+    btn.textContent = '✕ Fechar câmera';
+
+    const resultBox = document.getElementById('scanResult');
+    resultBox.className = 'scan-result';
+    resultBox.innerHTML = `<div class="r-title">📷 Câmera ativa</div><div class="r-sub">Aponte para o QR Code do produto. A leitura acontece automaticamente.</div>`;
+
+    loopCamera();
+
+  } catch(err){
+    camStream = null;
+    btn.textContent = '📷 Usar câmera para bipar';
+    let msg = 'Não foi possível acessar a câmera. Use o campo de texto para bipar.';
+    if(err && err.name === 'NotAllowedError') msg = 'Permissão de câmera negada. Vá nas configurações do navegador (ícone de cadeado/site na barra de endereço) e permita o acesso à câmera para esta página, depois tente de novo.';
+    else if(err && err.name === 'NotFoundError') msg = 'Nenhuma câmera foi encontrada neste dispositivo.';
+    else if(err && err.name === 'NotReadableError') msg = 'A câmera já está sendo usada por outro aplicativo. Feche outros apps que usem a câmera e tente novamente.';
+    else if(err && err.name === 'SecurityError') msg = 'O navegador bloqueou o acesso à câmera por segurança (é preciso https). Use o campo de texto com um leitor USB/Bluetooth.';
+    mostrarErroCamera(msg);
+  }
+}
+
+function loopCamera(){
+  const video = document.getElementById('camVideo');
+  const canvas = document.getElementById('camCanvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently:true });
+
+  function tick(){
+    if(!camStream) return;
+    if(video.readyState >= video.HAVE_CURRENT_DATA && video.videoWidth > 0){
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      try{
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts:'attemptBoth' });
+        if(code && code.data){
+          processarBipagem(code.data);
+          toggleCamera(); // fecha após ler para evitar múltiplas leituras seguidas
+          return;
+        }
+      } catch(e){ /* frame ainda não pronto, tenta no próximo */ }
+    }
+    camLoopId = requestAnimationFrame(tick);
+  }
+  camLoopId = requestAnimationFrame(tick);
+}
+
+/* ===================== HISTÓRICO ===================== */
+function renderHistorico(){
+  const busca = document.getElementById('histSearch').value.toLowerCase();
+  const tipo = document.getElementById('histFiltroTipo').value;
+  const origem = document.getElementById('histFiltroOrigem').value;
+
+  const filtrado = movimentos.filter(m=>
+    m.produtoNome.toLowerCase().includes(busca) &&
+    (!tipo || m.tipo===tipo) &&
+    (!origem || m.origem===origem)
+  );
+
+  const tbody = document.getElementById('histBody');
+  if(filtrado.length===0){
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Nenhuma movimentação encontrada.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtrado.map(m=>`
+    <tr>
+      <td>${m.data}</td>
+      <td class="mat-name">${m.produtoNome}</td>
+      <td><span class="badge ${m.tipo==='Saída'?'out':''}">${m.tipo}</span></td>
+      <td>${m.qtd}</td>
+      <td><span class="badge neutral">${m.origem}</span></td>
+      <td style="color:var(--text-muted);">${m.obs || '-'}</td>
+    </tr>
+  `).join('');
+}
+
+/* ===================== RELATÓRIOS ===================== */
+function renderRelatorios(){
+  const totalEntradas = movimentos.filter(m=>m.tipo==='Entrada').reduce((s,m)=>s+m.qtd,0);
+  const totalSaidas = movimentos.filter(m=>m.tipo==='Saída').reduce((s,m)=>s+m.qtd,0);
+  const saldo = produtos.reduce((s,p)=>s+p.qtd,0);
+
+  document.getElementById('repProdutos').textContent = produtos.length;
+  document.getElementById('repSaldo').textContent = saldo;
+  document.getElementById('repEntradas').textContent = totalEntradas;
+  document.getElementById('repSaidas').textContent = totalSaidas;
+
+  const max = Math.max(1, ...produtos.map(p=>p.qtd));
+  const barsHtml = produtos.length ? produtos.map(p=>`
+    <div class="bar-row">
+      <span>${p.icon} ${p.nome}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(p.qtd/max*100).toFixed(0)}%;"></div></div>
+      <span style="text-align:right;font-weight:700;">${p.qtd}</span>
+    </div>
+  `).join('') : '<p style="color:var(--text-muted);font-size:13px;">Nenhum produto cadastrado ainda.</p>';
+  document.getElementById('repBars').innerHTML = barsHtml;
+}
+
+/* ===================== CATEGORIAS ===================== */
+function addCategoria(){
+  const nome = document.getElementById('catNome').value.trim();
+  const cor = document.getElementById('catCor').value;
+  if(!nome){ toast('Informe o nome da categoria.', 'err'); return; }
+  categorias.push({ id:novoId('c'), nome, cor });
+  persistirEstado();
+  document.getElementById('catNome').value = '';
+  renderCategorias();
+  updateFiltroCategoriaOptions();
+  renderTable();
+  toast(`Categoria "${nome}" adicionada.`, 'ok');
+}
+function removerCategoria(id){
+  categorias = categorias.filter(c=>c.id!==id);
+  produtos.forEach(p=>{ if(p.categoria===id) p.categoria=''; });
+  persistirEstado();
+  renderCategorias();
+  updateFiltroCategoriaOptions();
+  renderTable();
+}
+function renderCategorias(){
+  const list = document.getElementById('catList');
+  if(categorias.length===0){
+    list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Nenhuma categoria cadastrada ainda.</p>';
+    return;
+  }
+  list.innerHTML = categorias.map(c=>`
+    <div class="chip"><span class="dot-col" style="background:${c.cor};"></span>${c.nome}<button onclick="removerCategoria('${c.id}')">✕</button></div>
+  `).join('');
+}
+
+/* ===================== FORNECEDORES ===================== */
+function addFornecedor(){
+  const nome = document.getElementById('fornNome').value.trim();
+  const contato = document.getElementById('fornContato').value.trim();
+  const tel = document.getElementById('fornTel').value.trim();
+  if(!nome){ toast('Informe o nome do fornecedor.', 'err'); return; }
+  fornecedores.push({ id:novoId('f'), nome, contato, tel });
+  persistirEstado();
+  document.getElementById('fornNome').value = '';
+  document.getElementById('fornContato').value = '';
+  document.getElementById('fornTel').value = '';
+  renderFornecedores();
+  toast(`Fornecedor "${nome}" adicionado.`, 'ok');
+}
+function removerFornecedor(id){
+  fornecedores = fornecedores.filter(f=>f.id!==id);
+  persistirEstado();
+  renderFornecedores();
+}
+function renderFornecedores(){
+  const tbody = document.getElementById('fornBody');
+  if(fornecedores.length===0){
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="4">Nenhum fornecedor cadastrado ainda.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = fornecedores.map(f=>`
+    <tr>
+      <td class="mat-name">${f.nome}</td>
+      <td>${f.contato || '-'}</td>
+      <td>${f.tel || '-'}</td>
+      <td><button class="del-btn" onclick="removerFornecedor('${f.id}')">🗑</button></td>
+    </tr>
+  `).join('');
+}
+
+/* ===================== CONFIGURAÇÕES ===================== */
+function salvarConfiguracoes(){
+  config.nomeUnidade = document.getElementById('cfgNome').value.trim() || config.nomeUnidade;
+  config.responsavel = document.getElementById('cfgResp').value.trim() || config.responsavel;
+  config.urlPublica = document.getElementById('cfgUrl').value.trim();
+  persistirEstado();
+  toast('Configurações salvas.', 'ok');
+}
+
+/* ===================== INIT ===================== */
+async function iniciarApp(){
+  iniciarTema();
+  await carregarEstado();
+  iniciarSincronizacaoTempoReal();
+
+  // reflete os dados carregados nos campos de Configurações
+  const cfgNomeEl = document.getElementById('cfgNome');
+  const cfgRespEl = document.getElementById('cfgResp');
+  const cfgUrlEl = document.getElementById('cfgUrl');
+  if(cfgNomeEl) cfgNomeEl.value = config.nomeUnidade || '';
+  if(cfgRespEl) cfgRespEl.value = config.responsavel || '';
+  if(cfgUrlEl) cfgUrlEl.value = config.urlPublica || '';
+
+  updateMaterialList();
+  updateFiltroCategoriaOptions();
+  renderTable();
+
+  // se a página foi aberta a partir de um link de QR Code (?bip=CODIGO), bipa automaticamente
+  const params = new URLSearchParams(window.location.search);
+  const bipParam = params.get('bip');
+  if(bipParam){
+    switchPage('estoque');
+    processarBipagem(bipParam);
+    history.replaceState(null, '', window.location.pathname);
+  }
+}
+iniciarAutenticacao();
+</script>
+</body>
+</html>
+</textarea>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ============================================================
+// CONFIGURAÇÃO DO SUPABASE — cole aqui os valores do seu projeto
+// (Project Settings → API, no painel do Supabase)
+// ============================================================
+var SUPABASE_URL = "https://qahkmnaqlaocbduuiuac.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhaGttbmFxbGFvY2JkdXVpdWFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTYwMzcsImV4cCI6MjEwMDEzMjAzN30.f_x08PNmXU3_ye2wrwpO-WmMpNnTwbqoSlwrLg7xXsU";
+
+var supabaseConfigurado = SUPABASE_URL.indexOf("COLOQUE_AQUI") === -1 && SUPABASE_ANON_KEY.indexOf("COLOQUE_AQUI") === -1;
+var db = supabaseConfigurado ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+if(!supabaseConfigurado){
+  document.getElementById('aviso-supabase-login').style.display = 'block';
+  document.getElementById('aviso-supabase-chamado').style.display = 'block';
+}
+
+// ---- Configuração geral ----
+var EMAIL_AUTORIZADO_ESTOQUE = "tecnologiacssl2025@gmail.com";
+var URL_ESTOQUE = "https://tecnologiacssl.github.io/estoque-DG/";
+
+var emailLogado = "";
+
+// ---- Elementos: login/cadastro ----
+var abaEntrarBtn = document.getElementById('aba-entrar-btn');
+var abaCriarBtn = document.getElementById('aba-criar-btn');
+var formLogin = document.getElementById('form-login');
+var formCriar = document.getElementById('form-criar');
+var subDinamico = document.getElementById('sub-dinamico');
+
+var emailLoginInput = document.getElementById('email-login');
+var erroLogin = document.getElementById('erro-login');
+var btnLogin = document.getElementById('btn-login');
+var carregandoLogin = document.getElementById('carregando-login');
+
+var nomeCriarInput = document.getElementById('nome-criar');
+var emailCriarInput = document.getElementById('email-criar');
+var erroCriar = document.getElementById('erro-criar');
+var sucessoCriar = document.getElementById('sucesso-criar');
+var btnCriar = document.getElementById('btn-criar');
+var carregandoCriar = document.getElementById('carregando-criar');
+
+// ---- Elementos: telas ----
+var telaLogin = document.getElementById('tela-login');
+var telaPortal = document.getElementById('tela-portal');
+var telaChamado = document.getElementById('tela-chamado');
+var emailAtualEl = document.getElementById('email-atual');
+var cardChamado = document.getElementById('card-chamado');
+var cardEstoque = document.getElementById('card-estoque');
+var seloEstoque = document.getElementById('selo-estoque');
+var tagEstoque = document.getElementById('tag-estoque');
+var avisoBloqueio = document.getElementById('aviso-bloqueio');
+var btnSair = document.getElementById('btn-sair');
+var btnVoltarPortal = document.getElementById('btn-voltar-portal');
+
+// ---- Elementos: estoque embutido ----
+var telaEstoque = document.getElementById('tela-estoque');
+var frameEstoque = document.getElementById('frame-estoque');
+var btnVoltarPortalEstoque = document.getElementById('btn-voltar-portal-estoque');
+var estoqueCarregado = false;
+
+function abrirTelaEstoque(){
+  if(!estoqueCarregado){
+    var origemEstoque = document.getElementById('estoque-html-source').value;
+    frameEstoque.srcdoc = origemEstoque;
+    estoqueCarregado = true;
+  }
+  telaPortal.style.display = 'none';
+  telaEstoque.style.display = 'block';
+}
+
+btnVoltarPortalEstoque.addEventListener('click', function(){
+  telaEstoque.style.display = 'none';
+  telaPortal.style.display = 'block';
+});
+
+// ---- Elementos: chamado ----
+var formChamado = document.getElementById('form-chamado');
+var filesChamado = document.getElementById('files-chamado');
+var msgChamado = document.getElementById('msg-chamado');
+var btnEnviarChamado = document.getElementById('btn-enviar-chamado');
+var carregandoChamado = document.getElementById('carregando-chamado');
+
+function emailValido(v){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+function esconderMsgsLogin(){
+  erroLogin.style.display = 'none';
+  erroCriar.style.display = 'none';
+  sucessoCriar.style.display = 'none';
+}
+
+// ---- Alternar entre Entrar / Criar conta ----
+abaEntrarBtn.addEventListener('click', function(){
+  abaEntrarBtn.classList.add('ativa');
+  abaCriarBtn.classList.remove('ativa');
+  formLogin.classList.remove('form-oculto');
+  formCriar.classList.add('form-oculto');
+  subDinamico.textContent = 'Informe o e-mail cadastrado';
+  esconderMsgsLogin();
+  emailLoginInput.focus();
+});
+abaCriarBtn.addEventListener('click', function(){
+  abaCriarBtn.classList.add('ativa');
+  abaEntrarBtn.classList.remove('ativa');
+  formCriar.classList.remove('form-oculto');
+  formLogin.classList.add('form-oculto');
+  subDinamico.textContent = 'Cadastre seu e-mail para acessar o portal';
+  esconderMsgsLogin();
+  nomeCriarInput.focus();
+});
+
+// ---- Cadastro ----
+formCriar.addEventListener('submit', async function(e){
+  e.preventDefault();
+  esconderMsgsLogin();
+
+  var nome = nomeCriarInput.value.trim();
+  var email = emailCriarInput.value.trim();
+
+  if(!emailValido(email)){
+    erroCriar.textContent = 'Informe um e-mail válido.';
+    erroCriar.style.display = 'block';
+    return;
+  }
+  if(!supabaseConfigurado){
+    erroCriar.textContent = 'Supabase não configurado — veja o aviso no topo do formulário.';
+    erroCriar.style.display = 'block';
+    return;
+  }
+
+  btnCriar.disabled = true;
+  carregandoCriar.style.display = 'block';
+
+  try{
+    var emailNormalizado = email.toLowerCase();
+
+    var { data: existente } = await db.from('usuarios').select('id').eq('email', emailNormalizado).maybeSingle();
+    if(existente){
+      erroCriar.textContent = 'Este e-mail já está cadastrado. Use o botão "Entrar".';
+      erroCriar.style.display = 'block';
+      return;
+    }
+
+    var { error } = await db.from('usuarios').insert({ nome: nome, email: emailNormalizado });
+    if(error){
+      erroCriar.textContent = 'Não foi possível salvar o cadastro (' + error.message + ').';
+      erroCriar.style.display = 'block';
+      return;
+    }
+
+    sucessoCriar.textContent = 'Conta criada com sucesso! Agora entre pelo botão "Entrar".';
+    sucessoCriar.style.display = 'block';
+    formCriar.reset();
+  }catch(err){
+    erroCriar.textContent = 'Erro ao cadastrar (' + (err && err.message ? err.message : 'falha desconhecida') + ').';
+    erroCriar.style.display = 'block';
+  }finally{
+    btnCriar.disabled = false;
+    carregandoCriar.style.display = 'none';
+  }
+});
+
+// ---- Login ----
+formLogin.addEventListener('submit', async function(e){
+  e.preventDefault();
+  esconderMsgsLogin();
+
+  var v = emailLoginInput.value.trim();
+  if(!emailValido(v)){
+    erroLogin.textContent = 'Informe um e-mail válido.';
+    erroLogin.style.display = 'block';
+    return;
+  }
+  if(!supabaseConfigurado){
+    erroLogin.textContent = 'Supabase não configurado — veja o aviso no topo do formulário.';
+    erroLogin.style.display = 'block';
+    return;
+  }
+
+  btnLogin.disabled = true;
+  carregandoLogin.style.display = 'block';
+
+  try{
+    var { data: registro } = await db.from('usuarios').select('id, email').eq('email', v.toLowerCase()).maybeSingle();
+
+    if(!registro){
+      erroLogin.textContent = 'E-mail não cadastrado. Clique em "Criar conta".';
+      erroLogin.style.display = 'block';
+      return;
+    }
+
+    emailLogado = v;
+    entrarNoPortal();
+  }catch(err){
+    erroLogin.textContent = 'Erro ao verificar (' + (err && err.message ? err.message : 'falha desconhecida') + ').';
+    erroLogin.style.display = 'block';
+  }finally{
+    btnLogin.disabled = false;
+    carregandoLogin.style.display = 'none';
+  }
+});
+
+function entrarNoPortal(){
+  emailAtualEl.textContent = emailLogado;
+  telaLogin.style.display = 'none';
+  telaChamado.style.display = 'none';
+  telaPortal.style.display = 'block';
+  avisoBloqueio.style.display = 'none';
+
+  var autorizado = emailLogado.toLowerCase() === EMAIL_AUTORIZADO_ESTOQUE.toLowerCase();
+
+  if(autorizado){
+    cardEstoque.classList.remove('bloqueado');
+    seloEstoque.textContent = '📦';
+    tagEstoque.className = 'tag-livre';
+    tagEstoque.innerHTML = '✓ Acesso liberado';
+  } else {
+    cardEstoque.classList.add('bloqueado');
+    seloEstoque.textContent = '🔒';
+    tagEstoque.className = 'tag-restrito';
+    tagEstoque.innerHTML = '🔒 Acesso restrito';
+  }
+}
+
+// ---- Navegação entre portal e chamado (mesma página, sem recarregar) ----
+cardChamado.addEventListener('click', function(){
+  telaPortal.style.display = 'none';
+  telaChamado.style.display = 'block';
+  msgChamado.innerHTML = '';
+});
+btnVoltarPortal.addEventListener('click', function(){
+  telaChamado.style.display = 'none';
+  telaPortal.style.display = 'block';
+});
+
+cardEstoque.addEventListener('click', function(){
+  var autorizado = emailLogado.toLowerCase() === EMAIL_AUTORIZADO_ESTOQUE.toLowerCase();
+  if(autorizado){
+    abrirTelaEstoque();
+  } else {
+    avisoBloqueio.style.display = 'block';
+  }
+});
+
+btnSair.addEventListener('click', function(){
+  emailLogado = "";
+  emailLoginInput.value = "";
+  formLogin.classList.add('form-oculto');
+  formCriar.classList.add('form-oculto');
+  abaEntrarBtn.classList.remove('ativa');
+  abaCriarBtn.classList.remove('ativa');
+  subDinamico.textContent = 'Escolha uma opção abaixo para continuar';
+  telaPortal.style.display = 'none';
+  telaChamado.style.display = 'none';
+  telaEstoque.style.display = 'none';
+  telaLogin.style.display = 'flex';
+  esconderMsgsLogin();
+});
+
+// ---- Abrir chamado ----
+async function enviarAnexos(){
+  let out = [];
+  for(const f of filesChamado.files){
+    if(f.size > 10485760){
+      alert('Arquivo acima de 10 MB: ' + f.name);
+      continue;
+    }
+    let caminho = Date.now() + '_' + f.name.replace(/[^\w.\-]+/g, '_');
+    let { error } = await db.storage.from('anexos').upload(caminho, f);
+    if(error){
+      alert('Falha ao enviar o arquivo ' + f.name + ': ' + error.message);
+      continue;
+    }
+    let { data: pub } = db.storage.from('anexos').getPublicUrl(caminho);
+    out.push({ nome: f.name, url: pub.publicUrl });
+  }
+  return out;
+}
+
+formChamado.addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  if(!supabaseConfigurado){
+    msgChamado.innerHTML = '<div class="msg-caixa erro" style="display:block">Supabase não configurado. Veja o aviso no topo do formulário.</div>';
+    return;
+  }
+
+  btnEnviarChamado.disabled = true;
+  carregandoChamado.style.display = 'block';
+  msgChamado.innerHTML = '';
+
+  try{
+    let d = Object.fromEntries(new FormData(formChamado));
+    let anexos = await enviarAnexos();
+
+    let { data, error } = await db
+      .from('chamados')
+      .insert({
+        solicitante: d.solicitante,
+        setor: d.setor,
+        categoria: d.categoria,
+        prioridade: d.prioridade,
+        descricao: d.descricao,
+        anexos: anexos
+      })
+      .select('numero')
+      .single();
+
+    if(error){
+      msgChamado.innerHTML = '<div class="msg-caixa erro" style="display:block">' + error.message + '</div>';
+      return;
+    }
+
+    msgChamado.innerHTML = '<div class="msg-caixa sucesso" style="display:block">Chamado nº ' + String(data.numero).padStart(5,'0') + ' aberto com sucesso. Anote esse número.</div>';
+    formChamado.reset();
+  }catch(err){
+    msgChamado.innerHTML = '<div class="msg-caixa erro" style="display:block">Erro ao enviar (' + (err && err.message ? err.message : 'falha desconhecida') + ').</div>';
+  }finally{
+    btnEnviarChamado.disabled = false;
+    carregandoChamado.style.display = 'none';
+  }
+});
+</script>
+
+<!-- ============================================================
+     ADIÇÃO: Painel de Chamados + Admin (tecnologiacssl2025@gmail.com)
+     Este bloco é 100% novo e não altera nada do script acima.
+
+     IMPORTANTE: rode isso uma vez no SQL Editor do Supabase para
+     as colunas existirem (se ainda não existirem):
+
+     ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS admin boolean DEFAULT false;
+     ALTER TABLE chamados ADD COLUMN IF NOT EXISTS status text DEFAULT 'Aberto';
+     ============================================================ -->
+<script>
+(function(){
+  var EMAIL_ADMIN_PRINCIPAL = "tecnologiacssl2025@gmail.com";
+
+  var cardPainel = document.getElementById('card-painel');
+  var seloPainel = document.getElementById('selo-painel');
+  var tagPainel = document.getElementById('tag-painel');
+  var avisoBloqueioPainel = document.getElementById('aviso-bloqueio-painel');
+  var telaPainelEl = document.getElementById('tela-painel');
+  var btnVoltarPortalPainel = document.getElementById('btn-voltar-portal-painel');
+  var listaChamadosEl = document.getElementById('lista-chamados');
+  var blocoAdminUsuarios = document.getElementById('bloco-admin-usuarios');
+  var listaUsuariosEl = document.getElementById('lista-usuarios');
+
+  var usuarioEhAdmin = false;
+
+  function classePrioridade(p){
+    if(p === 'Urgente') return 'urgente';
+    if(p === 'Leve') return 'leve';
+    return 'normal';
+  }
+
+  async function verificarAdmin(email){
+    if(!supabaseConfigurado) return false;
+    if(email.toLowerCase() === EMAIL_ADMIN_PRINCIPAL.toLowerCase()) return true;
+    try{
+      var { data } = await db.from('usuarios').select('admin').eq('email', email.toLowerCase()).maybeSingle();
+      return !!(data && data.admin);
+    }catch(err){
+      return false;
+    }
+  }
+
+  async function carregarChamados(){
+    listaChamadosEl.innerHTML = '<p class="small">Carregando chamados...</p>';
+    try{
+      var { data, error } = await db.from('chamados').select('*').order('numero', { ascending:false });
+      if(error){
+        listaChamadosEl.innerHTML = '<p class="small">Erro ao carregar chamados: ' + error.message + '</p>';
+        return;
+      }
+      if(!data || !data.length){
+        listaChamadosEl.innerHTML = '<p class="small">Nenhum chamado registrado ainda.</p>';
+        return;
+      }
+      listaChamadosEl.innerHTML = '';
+      data.forEach(function(c){
+        var div = document.createElement('div');
+        div.className = 'linha-chamado';
+        var anexosHtml = '';
+        if(c.anexos && c.anexos.length){
+          anexosHtml = c.anexos.map(function(a){
+            return '<a href="' + a.url + '" target="_blank" style="color:var(--azul-claro)">' + a.nome + '</a>';
+          }).join(', ');
+        }
+        div.innerHTML =
+          '<div class="topo-linha">' +
+            '<span class="num">Chamado #' + String(c.numero).padStart(5,'0') + '</span>' +
+            '<span class="badge ' + classePrioridade(c.prioridade) + '">' + (c.prioridade || 'Normal') + '</span>' +
+          '</div>' +
+          '<div class="meta">' + (c.solicitante||'') + ' — ' + (c.setor||'') + ' — ' + (c.categoria||'') + '</div>' +
+          '<div class="meta">' + (c.descricao||'') + '</div>' +
+          (anexosHtml ? '<div class="meta">Anexos: ' + anexosHtml + '</div>' : '') +
+          '<select data-numero="' + c.numero + '">' +
+            ['Aberto','Em andamento','Concluído'].map(function(s){
+              return '<option' + ((c.status||'Aberto') === s ? ' selected' : '') + '>' + s + '</option>';
+            }).join('') +
+          '</select>';
+        listaChamadosEl.appendChild(div);
+      });
+      listaChamadosEl.querySelectorAll('select').forEach(function(sel){
+        sel.addEventListener('change', async function(){
+          try{
+            await db.from('chamados').update({ status: sel.value }).eq('numero', sel.getAttribute('data-numero'));
+          }catch(err){
+            alert('Não foi possível atualizar o status (a coluna "status" existe na tabela chamados?).');
+          }
+        });
+      });
+    }catch(err){
+      listaChamadosEl.innerHTML = '<p class="small">Erro ao carregar chamados.</p>';
+    }
+  }
+
+  async function carregarUsuarios(){
+    listaUsuariosEl.innerHTML = '<p class="small">Carregando usuários...</p>';
+    try{
+      var { data, error } = await db.from('usuarios').select('*').order('nome', { ascending:true });
+      if(error){
+        listaUsuariosEl.innerHTML = '<p class="small">Erro ao carregar usuários: ' + error.message + '</p>';
+        return;
+      }
+      listaUsuariosEl.innerHTML = '';
+      (data||[]).forEach(function(u){
+        var ehPrincipal = u.email.toLowerCase() === EMAIL_ADMIN_PRINCIPAL.toLowerCase();
+        var div = document.createElement('div');
+        div.className = 'linha-usuario';
+        div.innerHTML =
+          '<div class="info"><b>' + (u.nome||u.email) + '</b><span>' + u.email + (u.admin || ehPrincipal ? ' — admin' : '') + '</span></div>';
+        if(!ehPrincipal){
+          var btn = document.createElement('button');
+          btn.className = 'btn-secundario';
+          btn.textContent = u.admin ? 'Remover admin' : 'Tornar admin';
+          btn.addEventListener('click', async function(){
+            try{
+              await db.from('usuarios').update({ admin: !u.admin }).eq('id', u.id);
+              carregarUsuarios();
+            }catch(err){
+              alert('Não foi possível atualizar (a coluna "admin" existe na tabela usuarios?).');
+            }
+          });
+          div.appendChild(btn);
+        }
+        listaUsuariosEl.appendChild(div);
+      });
+    }catch(err){
+      listaUsuariosEl.innerHTML = '<p class="small">Erro ao carregar usuários.</p>';
+    }
+  }
+
+  async function aoEntrarExtra(){
+    usuarioEhAdmin = await verificarAdmin(emailLogado);
+    if(usuarioEhAdmin){
+      cardPainel.classList.remove('bloqueado');
+      seloPainel.textContent = '🎧';
+      tagPainel.className = 'tag-livre';
+      tagPainel.innerHTML = '✓ Acesso liberado';
+    } else {
+      cardPainel.classList.add('bloqueado');
+      seloPainel.textContent = '🔒';
+      tagPainel.className = 'tag-restrito';
+      tagPainel.innerHTML = '🔒 Acesso restrito';
+    }
+    avisoBloqueioPainel.style.display = 'none';
+  }
+
+  // Encapsula (sem editar) a função de login já existente
+  var _entrarNoPortalOriginal = window.entrarNoPortal;
+  window.entrarNoPortal = function(){
+    _entrarNoPortalOriginal();
+    telaPainelEl.style.display = 'none';
+    aoEntrarExtra();
+  };
+
+  cardPainel.addEventListener('click', function(){
+    if(usuarioEhAdmin){
+      document.getElementById('tela-portal').style.display = 'none';
+      telaPainelEl.style.display = 'block';
+      carregarChamados();
+      if(emailLogado.toLowerCase() === EMAIL_ADMIN_PRINCIPAL.toLowerCase()){
+        blocoAdminUsuarios.style.display = 'block';
+        carregarUsuarios();
+      } else {
+        blocoAdminUsuarios.style.display = 'none';
+      }
+    } else {
+      avisoBloqueioPainel.style.display = 'block';
+    }
+  });
+
+  btnVoltarPortalPainel.addEventListener('click', function(){
+    telaPainelEl.style.display = 'none';
+    document.getElementById('tela-portal').style.display = 'block';
+  });
+
+  // Ao sair, some com a tela do painel também
+  document.getElementById('btn-sair').addEventListener('click', function(){
+    telaPainelEl.style.display = 'none';
+    usuarioEhAdmin = false;
+  });
+})();
+</script>
+
+</body>
+</html>
