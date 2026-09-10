@@ -35,22 +35,39 @@ self.addEventListener('push', function (event) {
     // não atrapalha nos que não respeitam).
     opcoes.vibrate = [300, 150, 300, 150, 300];
     opcoes.requireInteraction = true;
+    // ADIÇÃO: botões de ação direto na notificação — só o Chrome/Android
+    // mostra isso (é ignorado sem erro em quem não suporta, como o iPhone),
+    // mas onde funciona deixa a pessoa atender ou recusar sem nem precisar
+    // abrir o site, o mais perto que dá de "ligação sobrepondo a tela" fora
+    // de um app nativo de verdade (ver notificationclick logo abaixo).
+    opcoes.actions = [
+      { action: 'atender', title: '✅ Atender' },
+      { action: 'recusar', title: '❌ Recusar' }
+    ];
   }
   event.waitUntil(self.registration.showNotification(titulo, opcoes));
 });
 
-// Quando o usuário toca na notificação: foca a aba já aberta (ou abre uma
-// nova) e avisa a página o que fazer — abrir o Painel de Chamados (chamado
-// novo) ou ir direto pra conversa de quem ligou (ligação).
-// ALTERADO: agora distingue os dois casos usando notification.data.tipo.
+// Quando o usuário toca na notificação (ou em um dos botões dela): foca a
+// aba já aberta (ou abre uma nova) e avisa a página o que fazer — abrir o
+// Painel de Chamados (chamado novo) ou ir direto pra conversa de quem ligou,
+// já atendendo automaticamente se foi o botão "Atender" (ligação).
+// ALTERADO: agora distingue os dois casos usando notification.data.tipo, e
+// trata os botões de ação (event.action) quando o navegador suporta.
 self.addEventListener('notificationclick', function (event) {
   var dados = event.notification.data || {};
   var ehChamada = dados.tipo === 'chamada';
   event.notification.close();
+
+  // ADIÇÃO: tocou em "Recusar" direto na notificação — só fecha, sem abrir
+  // o site. Ninguém "atende" mesmo, então o esperado (a ligação parar de
+  // tocar do lado de quem chamou, por falta de resposta) já acontece sozinho.
+  if (ehChamada && event.action === 'recusar') return;
+
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
       var mensagem = ehChamada
-        ? { tipo: 'chamada-recebida', deEmail: dados.deEmail || '' }
+        ? { tipo: 'chamada-recebida', deEmail: dados.deEmail || '', atender: event.action === 'atender' }
         : { tipo: 'abrir-painel-chamados' };
       for (var i = 0; i < list.length; i++) {
         var c = list[i];
