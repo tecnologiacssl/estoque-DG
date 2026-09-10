@@ -66,9 +66,21 @@ self.addEventListener('notificationclick', function (event) {
 
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
-      var mensagem = ehChamada
-        ? { tipo: 'chamada-recebida', deEmail: dados.deEmail || '', atender: event.action === 'atender' }
-        : { tipo: 'abrir-painel-chamados' };
+      // ALTERADO: além de chamada e chamado novo, agora também trata push de
+      // mensagem 1-a-1 nova (Edge Function send-mensagem-push) e de @menção
+      // em grupo (Edge Function send-mencao-grupo-push) — cada um manda a
+      // pessoa direto pro lugar certo (a conversa de quem mandou, ou o grupo
+      // onde foi mencionada) em vez de abrir só o Painel de Chamados.
+      var mensagem;
+      if (ehChamada) {
+        mensagem = { tipo: 'chamada-recebida', deEmail: dados.deEmail || '', atender: event.action === 'atender' };
+      } else if (dados.tipo === 'mensagem') {
+        mensagem = { tipo: 'mensagem-recebida', deEmail: dados.deEmail || '' };
+      } else if (dados.tipo === 'mencao-grupo') {
+        mensagem = { tipo: 'mencao-recebida', setor: dados.setor || '' };
+      } else {
+        mensagem = { tipo: 'abrir-painel-chamados' };
+      }
       for (var i = 0; i < list.length; i++) {
         var c = list[i];
         if ('focus' in c) {
