@@ -1611,6 +1611,26 @@ table.pc-tabela tbody tr:last-child td{border-bottom:none}
    excluir) fica escondido quando #tela-wifi ganha a classe wifi-modo-basico. */
 #tela-wifi.wifi-modo-basico .wifi-somente-admin{display:none !important}
 
+/* ADIÇÃO: campo "visível na página pública" no formulário + badge que
+   indica isso na lista (ver wifi-publico.html, página separada e sem
+   login pra visitantes/pacientes). */
+.wifi-campo-publico{margin-top:14px}
+.wifi-check-publico{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border-radius:12px;background:rgba(76,111,242,.08);border:1px solid rgba(129,140,248,.22);cursor:pointer;font-size:13px;color:#e4e4e7;line-height:1.4}
+.wifi-check-publico input{margin-top:2px;flex-shrink:0;width:16px;height:16px;accent-color:var(--azul)}
+.wifi-badge-publico{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:2px 9px;border-radius:999px;background:rgba(34,197,94,.14);color:var(--verde);font-size:11px;font-weight:700;vertical-align:middle;white-space:nowrap}
+
+/* ADIÇÃO: menu de andares na aba Wi-Fi do admin — separa as redes por
+   andar em vez de uma tabela única, mesmo espírito visual dos outros
+   cards do portal (.cartao-escuro/.pc-tabela). */
+.wifi-andares-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.wifi-andar-card{display:flex;flex-direction:column;gap:10px;padding:18px 16px;border-radius:14px;background:var(--vidro);border:1px solid var(--borda);cursor:pointer;text-align:left;font-family:inherit;color:#fff;transition:background .15s ease,border-color .15s ease,transform .1s ease}
+.wifi-andar-card:hover{background:rgba(99,102,241,.1);border-color:rgba(129,140,248,.4)}
+.wifi-andar-card:active{transform:scale(.98)}
+.wifi-andar-card .wifi-andar-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;background:rgba(99,102,241,.16)}
+.wifi-andar-card .wifi-andar-nome{font-size:14.5px;font-weight:700}
+.wifi-andar-card .wifi-andar-qtd{font-size:12px;color:var(--cinza-claro)}
+.wifi-andar-card.wifi-andar-todas .wifi-andar-ico{background:rgba(34,197,94,.16)}
+
 /* ---- TVs (controle e inventário) ---- */
 /* ADIÇÃO: badges discretos de status (Wi-Fi/Antena-Cabo/Controle/Smart) —
    mesmo espírito do .pc-status (pontinho + fundo suave), sem cores
@@ -2675,6 +2695,32 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
   .cpn-status-tab{min-width:0;padding:10px;gap:8px}
   .cpn-status-tab-icone{width:28px;height:28px}
   .cpn-status-tab-txt{font-size:12.5px;min-width:0}
+}
+
+/* ---- Comemoração de marcos (100, 200, 300... chamados concluídos) ---- */
+#marco-overlay{position:fixed;inset:0;z-index:900;background:rgba(3,4,10,.72);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
+#marco-overlay.mostrar{opacity:1;pointer-events:auto}
+#marco-confete{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.marco-pedaco{position:absolute;top:-24px;width:9px;height:14px;border-radius:2px;opacity:.9;animation:marcoCair linear forwards}
+@keyframes marcoCair{
+  0%{transform:translateY(0) rotate(0deg);opacity:.95}
+  100%{transform:translateY(110vh) rotate(540deg);opacity:0}
+}
+.marco-cartao{position:relative;max-width:340px;width:calc(100% - 40px);background:var(--superficie,#101522);border:1px solid rgba(129,140,248,.3);border-radius:20px;padding:34px 26px 28px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.55);transform:scale(.85) translateY(10px);opacity:0;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s ease}
+.marco-cartao.mostrar{transform:scale(1) translateY(0);opacity:1}
+.marco-ico{font-size:42px;margin-bottom:6px;display:inline-block;animation:marcoBalanco 1.6s ease-in-out infinite}
+@keyframes marcoBalanco{
+  0%,100%{transform:rotate(-8deg)}
+  50%{transform:rotate(8deg)}
+}
+.marco-numero{font-size:44px;font-weight:800;background:linear-gradient(135deg,#82a0ff,#4c6ff2);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.1}
+.marco-titulo{font-size:16px;font-weight:700;color:#fff;margin-top:2px}
+.marco-sub{font-size:13px;color:var(--cinza-claro,#a6a6ac);margin-top:8px;line-height:1.5}
+.marco-fechar{margin-top:20px;width:auto;padding:11px 26px;border:none;border-radius:12px;background:linear-gradient(135deg,#3355d8,#4c6ff2);color:#fff;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer}
+.marco-fechar:hover{filter:brightness(1.08)}
+@media (prefers-reduced-motion:reduce){
+  .marco-pedaco{animation:none;display:none}
+  .marco-ico{animation:none}
 }
 </style>
 </head>
@@ -4295,10 +4341,29 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
       <button class="btn-secundario btn-voltar-portal" id="btn-voltar-portal-wifi">Voltar</button>
     </div>
 
-    <div class="cartao-escuro card-chamado-form">
+    <!-- ADIÇÃO: menu de andares — primeira coisa que aparece ao abrir a aba
+         Wi-Fi, pra separar as redes por andar em vez de uma lista única e
+         gigante. Cada card mostra o andar + quantas redes tem nele; clicar
+         abre a lista filtrada (mesma tabela/cards de antes, só que agora
+         com o andar já escolhido). -->
+    <div class="cartao-escuro card-chamado-form" id="wifi-andares-menu">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
-        <h3 style="margin:0;color:#fff;font-size:16px">Redes cadastradas</h3>
+        <h3 style="margin:0;color:#fff;font-size:16px">Redes por andar</h3>
         <button class="btn-principal wifi-somente-admin" id="wifi-btn-nova" style="width:auto;margin:0" type="button">+ Nova rede</button>
+      </div>
+      <div class="wifi-andares-grid" id="wifi-andares-grid"></div>
+      <div class="pc-vazio" id="wifi-andares-vazio" style="display:none">
+        <div class="ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg></div>
+        <p>Nenhuma rede cadastrada ainda.</p>
+      </div>
+    </div>
+
+    <div class="cartao-escuro card-chamado-form" id="wifi-lista-andar" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <button class="btn-secundario" id="wifi-btn-voltar-andares" style="width:auto" type="button">‹ Andares</button>
+          <h3 style="margin:0;color:#fff;font-size:16px" id="wifi-andar-atual-titulo">Redes cadastradas</h3>
+        </div>
       </div>
 
       <!-- ALTERADO: lista virou uma tabela (mesmo estilo da tabela do módulo
@@ -4395,6 +4460,13 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
           </select>
         </div>
         <div class="pc-campo"><label>Observação</label><input type="text" id="wifi-input-obs" placeholder="Ex.: roteador da sala 3..."></div>
+      </div>
+
+      <div class="wifi-campo-publico">
+        <label class="wifi-check-publico">
+          <input type="checkbox" id="wifi-input-visivel-visitante">
+          <span>📶 Visível na página pública de Wi-Fi (sem login, para visitantes/pacientes)</span>
+        </label>
       </div>
 
       <div class="pc-modal-acoes">
@@ -7526,7 +7598,11 @@ var CARDS_PERMISSIVEIS = [
   { key:'sugestoes', label:'Sugestões recebidas' }
 ];
 var DEFAULT_PERMISSOES_CARDS = {
-  chamado: true, solicitacao: true, historico: true, wifi: true,
+  // ALTERADO: Wi-Fi volta a ser só para admin por padrão (era "true" —
+  // visível pra todo mundo). Quem já tinha uma permissão específica salva
+  // pra "wifi" em "Gerenciar usuários" continua com o que foi configurado
+  // lá — esse padrão só vale pra quem nunca foi configurado.
+  chamado: true, solicitacao: true, historico: true, wifi: false,
   estoque: false, computadores: false, chat: false, tv: false, agenda: false,
   sugestoes: false // ADIÇÃO: tela de sugestões recebidas — só admins, salvo liberação
 };
@@ -16441,6 +16517,16 @@ formSolicitacao.addEventListener('submit', async function(e){
   var tabelaCorpoEl = document.getElementById('wifi-tabela-corpo');
   var cardsMobileEl = document.getElementById('wifi-cards-mobile');
   var listaVaziaEl = document.getElementById('wifi-lista-vazia');
+  // ADIÇÃO: menu de andares — mostrado primeiro ao abrir a aba; escolher um
+  // andar abre a lista filtrada (elementos abaixo já existentes).
+  var menuAndaresEl = document.getElementById('wifi-andares-menu');
+  var gridAndaresEl = document.getElementById('wifi-andares-grid');
+  var andaresVazioEl = document.getElementById('wifi-andares-vazio');
+  var listaAndarEl = document.getElementById('wifi-lista-andar');
+  var tituloAndarAtualEl = document.getElementById('wifi-andar-atual-titulo');
+  var btnVoltarAndares = document.getElementById('wifi-btn-voltar-andares');
+  var wifiAndarAtual = null; // null = no menu; '__todas__' = todas juntas; senão o nome do andar
+  var ORDEM_ANDARES = ['Térreo', '1º Andar', '2º Andar', '3º Andar'];
   var modalFormEl = document.getElementById('wifi-modal-form');
   var inputIdEdicao = document.getElementById('wifi-form-id');
   var inputNome = document.getElementById('wifi-input-nome');
@@ -16453,6 +16539,9 @@ formSolicitacao.addEventListener('submit', async function(e){
   var inputBanda = document.getElementById('wifi-input-banda');
   var inputAndar = document.getElementById('wifi-input-andar');
   var tituloForm = document.getElementById('wifi-form-titulo');
+  // ADIÇÃO: marca a rede como visível na página pública de Wi-Fi (sem
+  // login) — ver wifi-publico.html.
+  var inputVisivelVisitante = document.getElementById('wifi-input-visivel-visitante');
 
   // ADIÇÃO: elementos do modal de QR Code pra "conectar" na rede.
   var modalQrEl = document.getElementById('wifi-modal-qr');
@@ -16563,6 +16652,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(inputGiga) inputGiga.value = 'nao';
     if(inputBanda) inputBanda.value = '';
     if(inputAndar) inputAndar.value = '';
+    if(inputVisivelVisitante) inputVisivelVisitante.checked = false;
     if(tituloForm) tituloForm.textContent = 'Nova rede de Wi-Fi';
   }
 
@@ -16592,13 +16682,111 @@ formSolicitacao.addEventListener('submit', async function(e){
     '</div>';
   }
 
+  // ADIÇÃO: nome de exibição de um andar, com fallback pra rede sem andar
+  // definido (dado antigo, cadastrado antes desse campo existir).
+  function wifiNomeAndar(andar){
+    return (andar && String(andar).trim()) || 'Sem andar definido';
+  }
+
+  // ADIÇÃO: ordena os andares na ordem "física" conhecida (Térreo, 1º, 2º,
+  // 3º...); qualquer nome fora dessa lista (ou "Sem andar definido") vai
+  // pro fim, em ordem alfabética.
+  function wifiOrdenarAndares(nomes){
+    return nomes.slice().sort(function(a, b){
+      var ia = ORDEM_ANDARES.indexOf(a), ib = ORDEM_ANDARES.indexOf(b);
+      if(ia === -1 && ib === -1) return a.localeCompare(b, 'pt-BR');
+      if(ia === -1) return 1;
+      if(ib === -1) return -1;
+      return ia - ib;
+    });
+  }
+
+  // ADIÇÃO: subconjunto de redes que deve aparecer na lista agora, de
+  // acordo com o andar escolhido no menu ('__todas__' = sem filtro).
+  function wifiRedesFiltradas(){
+    if(!wifiAndarAtual || wifiAndarAtual === '__todas__') return wifiRedes;
+    return wifiRedes.filter(function(r){ return wifiNomeAndar(r.andar) === wifiAndarAtual; });
+  }
+
+  // ADIÇÃO: monta os cards do menu de andares (um por andar + um "Todas as
+  // redes"), com a contagem de redes de cada um.
+  function renderMenuAndares(){
+    if(!gridAndaresEl || !andaresVazioEl) return;
+    if(wifiRedes.length === 0){
+      gridAndaresEl.innerHTML = '';
+      andaresVazioEl.style.display = 'block';
+      return;
+    }
+    andaresVazioEl.style.display = 'none';
+
+    var porAndar = {};
+    wifiRedes.forEach(function(r){
+      var nome = wifiNomeAndar(r.andar);
+      porAndar[nome] = (porAndar[nome] || 0) + 1;
+    });
+    var andares = wifiOrdenarAndares(Object.keys(porAndar));
+
+    var cardTodas = '<button type="button" class="wifi-andar-card wifi-andar-todas" data-andar="__todas__">' +
+      '<div class="wifi-andar-ico">📶</div>' +
+      '<div class="wifi-andar-nome">Todas as redes</div>' +
+      '<div class="wifi-andar-qtd">' + wifiRedes.length + (wifiRedes.length === 1 ? ' rede' : ' redes') + '</div>' +
+    '</button>';
+
+    var cardsAndares = andares.map(function(nome){
+      var qtd = porAndar[nome];
+      return '<button type="button" class="wifi-andar-card" data-andar="' + wifiEsc(nome) + '">' +
+        '<div class="wifi-andar-ico">🏢</div>' +
+        '<div class="wifi-andar-nome">' + wifiEsc(nome) + '</div>' +
+        '<div class="wifi-andar-qtd">' + qtd + (qtd === 1 ? ' rede' : ' redes') + '</div>' +
+      '</button>';
+    }).join('');
+
+    gridAndaresEl.innerHTML = cardTodas + cardsAndares;
+
+    gridAndaresEl.querySelectorAll('[data-andar]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        abrirAndar(btn.getAttribute('data-andar'));
+      });
+    });
+  }
+
+  // ADIÇÃO: abre a lista filtrada de um andar (ou "__todas__"), escondendo
+  // o menu de cards.
+  function abrirAndar(andar){
+    wifiAndarAtual = andar;
+    if(tituloAndarAtualEl){
+      tituloAndarAtualEl.textContent = andar === '__todas__' ? 'Todas as redes' : andar;
+    }
+    if(menuAndaresEl) menuAndaresEl.style.display = 'none';
+    if(listaAndarEl) listaAndarEl.style.display = 'block';
+    renderListaWifi();
+  }
+
+  // ADIÇÃO: volta pro menu de andares (recalcula os cards, já que a lista
+  // pode ter mudado — rede editada/excluída/criada enquanto via um andar).
+  function voltarAoMenuAndares(){
+    wifiAndarAtual = null;
+    if(listaAndarEl) listaAndarEl.style.display = 'none';
+    if(menuAndaresEl) menuAndaresEl.style.display = 'block';
+    renderMenuAndares();
+  }
+  if(btnVoltarAndares) btnVoltarAndares.addEventListener('click', voltarAoMenuAndares);
+
+  // ADIÇÃO: atualiza os dois — o menu de andares (contagens) e a lista do
+  // andar atualmente aberto — depois de qualquer mudança nos dados.
+  function renderWifiTudo(){
+    renderMenuAndares();
+    renderListaWifi();
+  }
+
   // ADIÇÃO: renderiza a lista de redes de Wi-Fi como tabela (desktop) +
   // cards (celular) — mesmo estilo/classes CSS já usados no módulo de
   // Computadores (.pc-tabela/.pc-cards-mobile), com IP e MAC em colunas
   // próprias e a senha escondida por padrão (botão "olho" mostra/esconde).
   function renderListaWifi(){
     if(!tabelaCorpoEl || !cardsMobileEl || !listaVaziaEl) return;
-    if(wifiRedes.length === 0){
+    var redesDoAndar = wifiRedesFiltradas();
+    if(redesDoAndar.length === 0){
       tabelaCorpoEl.innerHTML = '';
       cardsMobileEl.innerHTML = '';
       listaVaziaEl.style.display = 'block';
@@ -16606,10 +16794,10 @@ formSolicitacao.addEventListener('submit', async function(e){
     }
     listaVaziaEl.style.display = 'none';
 
-    tabelaCorpoEl.innerHTML = wifiRedes.map(function(r){
+    tabelaCorpoEl.innerHTML = redesDoAndar.map(function(r){
       var freq = (r.banda ? wifiEsc(r.banda) : '—') + (r.giga ? ' ⚡Giga' : '');
       return '<tr>' +
-        '<td>' + wifiEsc(r.nome) + (r.observacao ? '<div class="wifi-obs">' + wifiEsc(r.observacao) + '</div>' : '') + '</td>' +
+        '<td>' + wifiEsc(r.nome) + (r.visivel_visitante ? '<span class="wifi-badge-publico" title="Aparece na página pública de Wi-Fi">📶 Pública</span>' : '') + (r.observacao ? '<div class="wifi-obs">' + wifiEsc(r.observacao) + '</div>' : '') + '</td>' +
         '<td class="wifi-somente-admin">' + wifiEsc(r.setor || '—') + '</td>' +
         '<td>' + wifiEsc(r.andar || '—') + '</td>' +
         '<td class="wifi-somente-admin">' + freq + '</td>' +
@@ -16620,10 +16808,10 @@ formSolicitacao.addEventListener('submit', async function(e){
       '</tr>';
     }).join('');
 
-    cardsMobileEl.innerHTML = wifiRedes.map(function(r){
+    cardsMobileEl.innerHTML = redesDoAndar.map(function(r){
       var freq = (r.banda ? wifiEsc(r.banda) : '—') + (r.giga ? ' ⚡Giga' : '');
       return '<div class="pc-card-item">' +
-        '<div class="linha1"><div><div class="nome">' + wifiEsc(r.nome) + '</div>' +
+        '<div class="linha1"><div><div class="nome">' + wifiEsc(r.nome) + (r.visivel_visitante ? '<span class="wifi-badge-publico" title="Aparece na página pública de Wi-Fi">📶 Pública</span>' : '') + '</div>' +
           (r.observacao ? '<div class="pat">' + wifiEsc(r.observacao) + '</div>' : '') + '</div></div>' +
         '<div class="linha-info wifi-somente-admin"><span>Setor</span><b>' + wifiEsc(r.setor || '—') + '</b></div>' +
         '<div class="linha-info"><span>Andar</span><b>' + wifiEsc(r.andar || '—') + '</b></div>' +
@@ -16694,6 +16882,7 @@ formSolicitacao.addEventListener('submit', async function(e){
         if(inputGiga) inputGiga.value = r.giga ? 'sim' : 'nao';
         if(inputBanda) inputBanda.value = r.banda || '';
         if(inputAndar) inputAndar.value = r.andar || '';
+        if(inputVisivelVisitante) inputVisivelVisitante.checked = !!r.visivel_visitante;
         if(tituloForm) tituloForm.textContent = 'Editar rede de Wi-Fi';
         abrirModalForm();
       });
@@ -16709,7 +16898,7 @@ formSolicitacao.addEventListener('submit', async function(e){
         var resp = await db.from('wifi_redes').delete().eq('id', r.id);
         if(resp.error){ console.error(resp.error); wifiToast('Erro ao excluir a rede.', 'err'); return; }
         wifiRedes = wifiRedes.filter(function(x){ return x.id !== r.id; });
-        renderListaWifi();
+        renderWifiTudo();
         wifiToast('Rede excluída.', 'ok');
       });
     });
@@ -16720,28 +16909,28 @@ formSolicitacao.addEventListener('submit', async function(e){
     var resp = await db.from('wifi_redes').select('*').order('nome', { ascending:true });
     if(resp.error){ console.error(resp.error); wifiToast('Não foi possível carregar as redes de Wi-Fi.', 'err'); return; }
     wifiRedes = resp.data || [];
-    renderListaWifi();
+    renderWifiTudo();
   }
 
-  // ALTERADO: a pedido, a aba Wi-Fi agora é visível pra todo mundo — admin
-  // continua vendo tudo (setor/andar/frequência/IP/MAC/ações), quem não é
-  // admin só vê Nome e Senha (classe wifi-somente-admin, ver CSS). A classe
-  // é recalculada a cada abertura, pra refletir o login atual.
+  // ALTERADO: a pedido, o Wi-Fi volta a ser só pra admin (DEFAULT_PERMISSOES_CARDS.wifi
+  // agora é false) — quem não é admin e não tem uma liberação específica
+  // salva em "Gerenciar usuários" nem chega a ver o card (escondido em
+  // aoEntrarExtra()); essa checagem aqui é só uma segunda trava, igual já
+  // existia antes.
   cardWifi.addEventListener('click', async function(){
-    // ADIÇÃO: checagem defensiva de entrada — antes o Wi-Fi era aberto pra
-    // todo mundo sem nenhum controle; agora usa window.csslPodeVer('wifi'),
-    // que por padrão continua liberado pra todo mundo (DEFAULT_PERMISSOES_CARDS),
-    // então nada muda até o admin restringir pela tela "Gerenciar usuários".
-    // Na prática o card já fica escondido em aoEntrarExtra() quando negado.
     if(window.csslPodeVer && !window.csslPodeVer('wifi')) return;
     // ALTERADO/MANTIDO: o modo básico (esconder colunas técnicas) continua
     // decidido pelo status REAL de admin (window.csslEhAdmin), não pela
     // permissão configurável acima — são coisas diferentes: uma controla se
-    // a pessoa entra na tela, a outra o que ela vê dentro dela.
+    // a pessoa entra na tela, a outra o que ela vê dentro dela (útil pra
+    // quem foi liberado individualmente mas não é admin de verdade).
     var ehAdmin = !!(window.csslEhAdmin && window.csslEhAdmin());
     telaWifiEl.classList.toggle('wifi-modo-basico', !ehAdmin);
     document.getElementById('tela-portal').style.display = 'none';
     telaWifiEl.style.display = 'block';
+    // ADIÇÃO: toda entrada na aba começa pelo menu de andares, nunca com um
+    // andar antigo ainda selecionado de uma visita anterior.
+    voltarAoMenuAndares();
     await carregarWifi();
   });
 
@@ -16779,12 +16968,15 @@ formSolicitacao.addEventListener('submit', async function(e){
       var giga = inputGiga.value === 'sim';
       var banda = (inputBanda.value || '').trim();
       var andar = (inputAndar.value || '').trim();
+      var visivelVisitante = !!(inputVisivelVisitante && inputVisivelVisitante.checked);
       if(!nome){ wifiToast('Digite o nome da rede.', 'err'); return; }
       if(!senha){ wifiToast('Digite a senha da rede.', 'err'); return; }
+      if(visivelVisitante && !andar){ wifiToast('Pra marcar como pública, selecione o andar da rede.', 'err'); return; }
       var idEdicao = inputIdEdicao.value;
       var payload = {
         nome: nome, senha: senha, setor: setor || null, observacao: obs || null,
-        ip: ip || null, mac: mac || null, giga: giga, banda: banda || null, andar: andar || null
+        ip: ip || null, mac: mac || null, giga: giga, banda: banda || null, andar: andar || null,
+        visivel_visitante: visivelVisitante
       };
       var resp;
       if(idEdicao){
@@ -19022,6 +19214,109 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
       }
     }
   });
+})();
+</script>
+
+<!-- CORREÇÃO: o #toastWrap "oficial" (lá perto do topo do body) fica preso
+     dentro do <textarea id="estoque-html-source">, que guarda um documento
+     HTML inteiro como texto puro — e a leitura de texto bruto de uma
+     <textarea> no navegador termina no primeiro "</textarea>" literal que
+     encontra, então tudo que vem depois disso, inclusive aquele
+     #toastWrap, nunca vira DOM de verdade (document.getElementById sempre
+     retornava null ali). Esse aqui é um #toastWrap real, fora dessa
+     armadilha — mesmo padrão já usado pro bloco de chamada de áudio do
+     Chat Interno, colocado de propósito fora de #shell/#mainArea. -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<div id="marco-overlay" aria-hidden="true">
+  <div id="marco-confete"></div>
+  <div class="marco-cartao" role="alertdialog" aria-live="polite">
+    <div class="marco-ico">🎉</div>
+    <div class="marco-numero" id="marco-numero">100</div>
+    <div class="marco-titulo">chamados concluídos!</div>
+    <div class="marco-sub">Obrigado, equipe de TI — mais um marco na conta. 🙌</div>
+    <button type="button" class="marco-fechar" id="marco-fechar">Show de bola!</button>
+  </div>
+</div>
+<script>
+(function(){
+  'use strict';
+  var LS_CHAVE = 'cssl_marco_concluidos_ultimo';
+  var TETO = 10000;
+  var overlay = document.getElementById('marco-overlay');
+  var confeteWrap = document.getElementById('marco-confete');
+  var numeroEl = document.getElementById('marco-numero');
+  var btnFechar = document.getElementById('marco-fechar');
+  if(!overlay || !confeteWrap || !numeroEl || !btnFechar) return;
+
+  var CORES_CONFETE = ['#4c6ff2','#82a0ff','#22c55e','#f59e0b','#f87171','#c7d2fe'];
+
+  function lerUltimoMarco(){
+    try{ return Number(localStorage.getItem(LS_CHAVE) || 0) || 0; }catch(e){ return 0; }
+  }
+  function gravarUltimoMarco(valor){
+    try{ localStorage.setItem(LS_CHAVE, String(valor)); }catch(e){}
+  }
+
+  function soltarConfete(){
+    confeteWrap.innerHTML = '';
+    for(var i = 0; i < 70; i++){
+      var p = document.createElement('div');
+      p.className = 'marco-pedaco';
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.background = CORES_CONFETE[Math.floor(Math.random() * CORES_CONFETE.length)];
+      var duracao = 2.4 + Math.random() * 1.6;
+      var atraso = Math.random() * 0.5;
+      p.style.animationDuration = duracao + 's';
+      p.style.animationDelay = atraso + 's';
+      p.style.transform = 'rotate(' + Math.floor(Math.random() * 360) + 'deg)';
+      confeteWrap.appendChild(p);
+    }
+  }
+
+  function mostrarComemoracao(marco){
+    numeroEl.textContent = marco.toLocaleString('pt-BR');
+    soltarConfete();
+    overlay.classList.add('mostrar');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  function fecharComemoracao(){
+    overlay.classList.remove('mostrar');
+    overlay.setAttribute('aria-hidden', 'true');
+    setTimeout(function(){ confeteWrap.innerHTML = ''; }, 350);
+  }
+  btnFechar.addEventListener('click', fecharComemoracao);
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) fecharComemoracao(); });
+
+  // ADIÇÃO: helper de teste manual no console — csslTestarMarco(500) mostra
+  // a comemoração na hora, sem depender da contagem real nem do
+  // localStorage (só visual, seguro de chamar quantas vezes quiser).
+  window.csslTestarMarco = function(numero){ mostrarComemoracao(numero || 100); };
+
+  async function verificarMarco(){
+    if(typeof db === 'undefined' || !db) return;
+    try{
+      var resultados = await Promise.all([
+        db.from('chamados').select('numero', { count:'exact', head:true }).eq('status', 'Concluído'),
+        db.from('solicitacoes').select('numero', { count:'exact', head:true }).eq('status', 'Concluído')
+      ]);
+      var resC = resultados[0], resS = resultados[1];
+      var total = (resC.error ? 0 : (resC.count || 0)) + (resS.error ? 0 : (resS.count || 0));
+      var marcoAtual = Math.floor(total / 100) * 100;
+      if(marcoAtual < 100 || marcoAtual > TETO) return;
+      var ultimo = lerUltimoMarco();
+      if(marcoAtual > ultimo){
+        gravarUltimoMarco(marcoAtual);
+        mostrarComemoracao(marcoAtual);
+      }
+    }catch(e){ /* silencioso — não deve travar o login por causa disso */ }
+  }
+
+  var _entrarNoPortalAntesMarco = window.entrarNoPortal;
+  window.entrarNoPortal = function(){
+    if(_entrarNoPortalAntesMarco) _entrarNoPortalAntesMarco();
+    setTimeout(verificarMarco, 900);
+  };
 })();
 </script>
 
