@@ -43,6 +43,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <!-- ADIÇÃO: biblioteca leve de QR Code (via CDN) usada pelo módulo de Controle de Computadores para gerar os QR Codes das etiquetas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- ADIÇÃO: JSZip (via CDN) — usado só pelo módulo de Wi-Fi pra montar o
+     .docx do botão "Baixar em Word" direto no navegador (ver script do
+     módulo de Wi-Fi, mais abaixo). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <!-- CORREÇÃO: conserta a duração (metadados do próprio arquivo .webm) das
      mensagens de voz gravadas pelo microfone no Chat Interno — sem isso o
      player mostra uma duração maluca (ex.: 6:54:28 pra um áudio de 6s), um
@@ -4352,7 +4356,14 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
     <div class="cartao-escuro card-chamado-form" id="wifi-andares-menu">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
         <h3 style="margin:0;color:#fff;font-size:16px">Redes por andar</h3>
-        <button class="btn-principal wifi-somente-admin" id="wifi-btn-nova" style="width:auto;margin:0" type="button">+ Nova rede</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <!-- ADIÇÃO: gera e baixa a mesma folha de cartõezinhos (rede+senha
+               por andar, repetidos pra imprimir e recortar) já usada na
+               página pública de Wi-Fi — só com as redes marcadas como
+               "pública" (visivel_visitante), o mesmo recorte que aparece lá. -->
+          <button class="btn-secundario" id="wifi-btn-word" style="width:auto;margin:0" type="button">⬇️ Baixar em Word</button>
+          <button class="btn-principal wifi-somente-admin" id="wifi-btn-nova" style="width:auto;margin:0" type="button">+ Nova rede</button>
+        </div>
       </div>
       <div class="wifi-andares-grid" id="wifi-andares-grid"></div>
       <div class="pc-vazio" id="wifi-andares-vazio" style="display:none">
@@ -16942,6 +16953,204 @@ formSolicitacao.addEventListener('submit', async function(e){
     renderWifiTudo();
   }
 
+  // ==================================================================
+  // ADIÇÃO: Exportar para Word (.docx) — mesmo gerador (montado "na mão"
+  // em XML + JSZip, ver comentário completo em wifi-publico.html) usado
+  // na página pública, só que aqui a fonte dos dados é wifiRedes (já
+  // carregado pelo admin), FILTRADO só pras redes marcadas como
+  // "pública" (visivel_visitante) — mesmo recorte que aparece pros
+  // visitantes, pra não vazar rede/senha de setor interno num papel.
+  // ==================================================================
+  function wifiDocxEsc(v){
+    return String(v === undefined || v === null ? '' : v).replace(/[&<>"']/g, function(c){
+      return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&apos;' })[c];
+    });
+  }
+
+  var WD_COL_NOME = 2500, WD_COL_SENHA = 1800;
+  var WD_LARGURA = WD_COL_NOME + WD_COL_SENHA;
+  var WD_AZUL_ESCURO = '1F3864', WD_AZUL_CLARO = 'DCE6F1', WD_BRANCO = 'FFFFFF', WD_CINZA_BORDA = 'B7C6DB';
+
+  function wdBordas(cor){
+    return '<w:top w:val="single" w:sz="4" w:color="' + cor + '"/>' +
+      '<w:left w:val="single" w:sz="4" w:color="' + cor + '"/>' +
+      '<w:bottom w:val="single" w:sz="4" w:color="' + cor + '"/>' +
+      '<w:right w:val="single" w:sz="4" w:color="' + cor + '"/>';
+  }
+
+  function wdCelula(texto, w, negrito, fundo){
+    return '<w:tc><w:tcPr>' +
+      '<w:tcW w:w="' + w + '" w:type="dxa"/>' +
+      '<w:tcBorders>' + wdBordas(WD_CINZA_BORDA) + '</w:tcBorders>' +
+      '<w:shd w:val="clear" w:color="auto" w:fill="' + fundo + '"/>' +
+      '<w:tcMar><w:top w:w="40" w:type="dxa"/><w:left w:w="100" w:type="dxa"/><w:bottom w:w="40" w:type="dxa"/><w:right w:w="100" w:type="dxa"/></w:tcMar>' +
+      '<w:vAlign w:val="center"/>' +
+      '</w:tcPr><w:p><w:pPr><w:spacing w:after="0"/></w:pPr>' +
+      '<w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>' + (negrito ? '<w:b/><w:bCs/>' : '') + '<w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr>' +
+      '<w:t xml:space="preserve">' + wifiDocxEsc(texto) + '</w:t></w:r></w:p></w:tc>';
+  }
+
+  function wdCelulaHeader(andar){
+    return '<w:tc><w:tcPr>' +
+      '<w:tcW w:w="' + WD_LARGURA + '" w:type="dxa"/>' +
+      '<w:gridSpan w:val="2"/>' +
+      '<w:tcBorders>' + wdBordas(WD_CINZA_BORDA) + '</w:tcBorders>' +
+      '<w:shd w:val="clear" w:color="auto" w:fill="' + WD_AZUL_ESCURO + '"/>' +
+      '<w:tcMar><w:top w:w="60" w:type="dxa"/><w:left w:w="100" w:type="dxa"/><w:bottom w:w="60" w:type="dxa"/><w:right w:w="100" w:type="dxa"/></w:tcMar>' +
+      '<w:vAlign w:val="center"/>' +
+      '</w:tcPr><w:p><w:pPr><w:spacing w:after="0"/><w:jc w:val="center"/></w:pPr>' +
+      '<w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:b/><w:bCs/><w:color w:val="' + WD_BRANCO + '"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr>' +
+      '<w:t xml:space="preserve">' + wifiDocxEsc(String(andar).toUpperCase()) + '</w:t></w:r></w:p></w:tc>';
+  }
+
+  function wdCartaoAndar(andar, redes){
+    var linhas = '<w:tr><w:trPr><w:cantSplit/><w:tblHeader/></w:trPr>' + wdCelulaHeader(andar) + '</w:tr>';
+    redes.forEach(function(r, i){
+      var fundo = i % 2 === 0 ? WD_AZUL_CLARO : WD_BRANCO;
+      linhas += '<w:tr><w:trPr><w:cantSplit/></w:trPr>' +
+        wdCelula(r.nome, WD_COL_NOME, true, fundo) +
+        wdCelula(r.senha, WD_COL_SENHA, false, fundo) +
+        '</w:tr>';
+    });
+    return '<w:tbl><w:tblPr><w:tblW w:w="' + WD_LARGURA + '" w:type="dxa"/>' +
+      '<w:tblBorders>' + wdBordas(WD_CINZA_BORDA) + '</w:tblBorders>' +
+      '<w:tblLayout w:type="fixed"/></w:tblPr>' +
+      '<w:tblGrid><w:gridCol w:w="' + WD_COL_NOME + '"/><w:gridCol w:w="' + WD_COL_SENHA + '"/></w:tblGrid>' +
+      linhas + '</w:tbl>';
+  }
+
+  function wdCartaoInteiro(andar, redes){
+    return '<w:tbl><w:tblPr><w:tblW w:w="' + WD_LARGURA + '" w:type="dxa"/>' +
+      '<w:tblLayout w:type="fixed"/></w:tblPr>' +
+      '<w:tblGrid><w:gridCol w:w="' + WD_LARGURA + '"/></w:tblGrid>' +
+      '<w:tr><w:trPr><w:cantSplit/></w:trPr>' +
+      '<w:tc><w:tcPr>' +
+      '<w:tcW w:w="' + WD_LARGURA + '" w:type="dxa"/>' +
+      '<w:tcBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/></w:tcBorders>' +
+      '<w:tcMar><w:top w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tcMar>' +
+      '</w:tcPr>' +
+      wdCartaoAndar(andar, redes) +
+      '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr></w:p>' +
+      '</w:tc></w:tr></w:tbl>';
+  }
+
+  function wdPaginaAndar(andar, redes){
+    var copias = redes.length <= 2 ? 14 : 10;
+    var xml = '';
+    for(var i = 0; i < copias; i++){
+      xml += wdCartaoInteiro(andar, redes);
+      xml += '<w:p><w:pPr><w:spacing w:after="160"/></w:pPr></w:p>';
+    }
+    return xml;
+  }
+
+  var WD_SECT_PR = '<w:type w:val="nextPage"/>' +
+    '<w:pgSz w:w="12240" w:h="15840" w:orient="portrait"/>' +
+    '<w:pgMar w:top="700" w:right="900" w:bottom="700" w:left="900" w:header="708" w:footer="708" w:gutter="0"/>' +
+    '<w:cols w:num="2" w:space="500"/>' +
+    '<w:docGrid w:linePitch="360"/>';
+
+  function wdDocumentoXml(porAndar){
+    var andares = Object.keys(porAndar);
+    var corpo = '';
+    andares.forEach(function(andar, idx){
+      corpo += wdPaginaAndar(andar, porAndar[andar]);
+      if(idx < andares.length - 1){
+        corpo += '<w:p><w:pPr><w:sectPr>' + WD_SECT_PR + '</w:sectPr></w:pPr></w:p>';
+      }
+    });
+    corpo += '<w:sectPr>' + WD_SECT_PR + '</w:sectPr>';
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+      '<w:body>' + corpo + '</w:body></w:document>';
+  }
+
+  var WD_CONTENT_TYPES_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+    '<Default Extension="xml" ContentType="application/xml"/>' +
+    '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+    '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>' +
+    '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>' +
+    '</Types>';
+
+  var WD_RELS_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>' +
+    '</Relationships>';
+
+  var WD_DOC_RELS_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+    '</Relationships>';
+
+  var WD_STYLES_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
+    '<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="22"/></w:rPr></w:rPrDefault></w:docDefaults>' +
+    '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>' +
+    '</w:styles>';
+
+  var WD_CORE_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">' +
+    '<dc:title>Wi-Fi visitantes</dc:title></cp:coreProperties>';
+
+  // ADIÇÃO: agrupa por andar só as redes marcadas como "pública" — mesmo
+  // recorte da página wifi-publico.html.
+  function wifiPorAndarPublico(){
+    var porAndar = {};
+    wifiRedes.forEach(function(r){
+      if(!r.visivel_visitante) return;
+      var andar = (r.andar && String(r.andar).trim()) || '';
+      if(!andar) return;
+      if(!porAndar[andar]) porAndar[andar] = [];
+      porAndar[andar].push({ nome: r.nome, senha: r.senha });
+    });
+    return porAndar;
+  }
+
+  async function wifiBaixarWord(){
+    if(!window.JSZip){
+      wifiToast('Não foi possível montar o arquivo agora — recarregue a página e tente de novo.', 'err');
+      return;
+    }
+    var porAndar = wifiPorAndarPublico();
+    if(!Object.keys(porAndar).length){
+      wifiToast('Nenhuma rede marcada como "pública" (visível pro visitante) ainda.', 'err');
+      return;
+    }
+    var textoOriginal = btnWord.textContent;
+    btnWord.disabled = true;
+    btnWord.textContent = 'Gerando...';
+    try{
+      var zip = new JSZip();
+      zip.file('[Content_Types].xml', WD_CONTENT_TYPES_XML);
+      zip.file('_rels/.rels', WD_RELS_XML);
+      zip.file('word/document.xml', wdDocumentoXml(porAndar));
+      zip.file('word/_rels/document.xml.rels', WD_DOC_RELS_XML);
+      zip.file('word/styles.xml', WD_STYLES_XML);
+      zip.file('docProps/core.xml', WD_CORE_XML);
+      var blob = await zip.generateAsync({
+        type: 'blob',
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'wifi-visitantes.docx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    }catch(e){
+      console.error(e);
+      wifiToast('Não foi possível gerar o arquivo — tente de novo.', 'err');
+    }finally{
+      btnWord.disabled = false;
+      btnWord.textContent = textoOriginal;
+    }
+  }
+
   // ALTERADO: a pedido, o Wi-Fi volta a ser só pra admin (DEFAULT_PERMISSOES_CARDS.wifi
   // agora é false) — quem não é admin e não tem uma liberação específica
   // salva em "Gerenciar usuários" nem chega a ver o card (escondido em
@@ -16978,6 +17187,11 @@ formSolicitacao.addEventListener('submit', async function(e){
       limparForm();
       abrirModalForm();
     });
+  }
+
+  var btnWord = document.getElementById('wifi-btn-word');
+  if(btnWord){
+    btnWord.addEventListener('click', wifiBaixarWord);
   }
 
   var btnFecharForm = document.getElementById('wifi-form-fechar');
