@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
@@ -111,6 +112,18 @@ body{
 .toast-wrap{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
 .toast{background:#17171b;color:#fff;padding:10px 16px;border-radius:10px;font-size:12.5px;font-weight:600;border:1px solid var(--borda);opacity:0;transform:translateY(6px);transition:opacity .2s ease,transform .2s ease;box-shadow:0 10px 26px -10px rgba(0,0,0,.6)}
 .toast.show{opacity:1;transform:translateY(0)}
+
+/* ADIÇÃO: botão "Baixar em Word" — fica FORA de #conteudo (que é trocado
+   por inteiro a cada tela) pra não sumir ao trocar de andar/tela; só
+   aparece depois que pelo menos uma rede pública carregou com sucesso. */
+.acoes-globais{max-width:480px;width:100%;margin:0 auto;padding:0 16px 6px;display:none}
+.btn-word{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 16px;border-radius:12px;
+  background:rgba(255,255,255,.05);border:1px solid var(--borda);color:#fff;cursor:pointer;font-family:inherit;
+  font-size:13px;font-weight:700;
+}
+.btn-word:hover{background:rgba(255,255,255,.09)}
+.btn-word:disabled{opacity:.5;cursor:default}
 </style>
 </head>
 <body>
@@ -126,6 +139,10 @@ body{
     <div class="spin"></div>
     <span>Carregando redes disponíveis...</span>
   </div>
+</div>
+
+<div class="acoes-globais" id="acoes-globais">
+  <button type="button" class="btn-word" id="btn-baixar-word">⬇️ Baixar tabela em Word (pra imprimir e recortar)</button>
 </div>
 
 <div class="modal-overlay" id="modal-qr">
@@ -162,6 +179,12 @@ body{
   var qrHolder = document.getElementById('qr-holder');
   var qrNomeRede = document.getElementById('qr-nome-rede');
   var btnQrFechar = document.getElementById('qr-fechar');
+  // ADIÇÃO: guarda os dados já carregados (agrupados por andar) pra poder
+  // gerar o Word a qualquer momento, sem precisar consultar o Supabase de
+  // novo — ver "Exportar para Word" mais abaixo.
+  var acoesGlobaisEl = document.getElementById('acoes-globais');
+  var btnBaixarWord = document.getElementById('btn-baixar-word');
+  var porAndarCarregado = null;
 
   // ---- Ordem preferida dos andares (bate com o cadastro do admin);
   // qualquer valor fora dessa lista aparece depois, em ordem alfabética. ----
@@ -313,6 +336,201 @@ body{
     });
   }
 
+  // ==================================================================
+  // ADIÇÃO: Exportar para Word (.docx) — mesma folha de cartõezinhos
+  // (rede + senha, agrupados por andar, repetidos em 2 colunas pra
+  // imprimir e recortar) que antes só era gerada manualmente. Como não
+  // dá pra rodar o pacote "docx" do Node no navegador, o .docx é montado
+  // "na mão" aqui: as mesmas partes XML de um Word válido (documento,
+  // relações, estilos) são escritas como texto e compactadas com o
+  // JSZip (carregado no <head>) — o resultado é um .docx de verdade,
+  // que abre normal no Word/LibreOffice/Google Docs.
+  // ==================================================================
+  function wifiDocxEsc(v){
+    return String(v === undefined || v === null ? '' : v).replace(/[&<>"']/g, function(c){
+      return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&apos;' })[c];
+    });
+  }
+
+  var WD_COL_NOME = 2500, WD_COL_SENHA = 1800;
+  var WD_LARGURA = WD_COL_NOME + WD_COL_SENHA;
+  var WD_AZUL_ESCURO = '1F3864', WD_AZUL_CLARO = 'DCE6F1', WD_BRANCO = 'FFFFFF', WD_CINZA_BORDA = 'B7C6DB';
+
+  function wdBordas(cor){
+    return '<w:top w:val="single" w:sz="4" w:color="' + cor + '"/>' +
+      '<w:left w:val="single" w:sz="4" w:color="' + cor + '"/>' +
+      '<w:bottom w:val="single" w:sz="4" w:color="' + cor + '"/>' +
+      '<w:right w:val="single" w:sz="4" w:color="' + cor + '"/>';
+  }
+
+  function wdCelula(texto, w, negrito, fundo){
+    return '<w:tc><w:tcPr>' +
+      '<w:tcW w:w="' + w + '" w:type="dxa"/>' +
+      '<w:tcBorders>' + wdBordas(WD_CINZA_BORDA) + '</w:tcBorders>' +
+      '<w:shd w:val="clear" w:color="auto" w:fill="' + fundo + '"/>' +
+      '<w:tcMar><w:top w:w="40" w:type="dxa"/><w:left w:w="100" w:type="dxa"/><w:bottom w:w="40" w:type="dxa"/><w:right w:w="100" w:type="dxa"/></w:tcMar>' +
+      '<w:vAlign w:val="center"/>' +
+      '</w:tcPr><w:p><w:pPr><w:spacing w:after="0"/></w:pPr>' +
+      '<w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>' + (negrito ? '<w:b/><w:bCs/>' : '') + '<w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr>' +
+      '<w:t xml:space="preserve">' + wifiDocxEsc(texto) + '</w:t></w:r></w:p></w:tc>';
+  }
+
+  function wdCelulaHeader(andar){
+    return '<w:tc><w:tcPr>' +
+      '<w:tcW w:w="' + WD_LARGURA + '" w:type="dxa"/>' +
+      '<w:gridSpan w:val="2"/>' +
+      '<w:tcBorders>' + wdBordas(WD_CINZA_BORDA) + '</w:tcBorders>' +
+      '<w:shd w:val="clear" w:color="auto" w:fill="' + WD_AZUL_ESCURO + '"/>' +
+      '<w:tcMar><w:top w:w="60" w:type="dxa"/><w:left w:w="100" w:type="dxa"/><w:bottom w:w="60" w:type="dxa"/><w:right w:w="100" w:type="dxa"/></w:tcMar>' +
+      '<w:vAlign w:val="center"/>' +
+      '</w:tcPr><w:p><w:pPr><w:spacing w:after="0"/><w:jc w:val="center"/></w:pPr>' +
+      '<w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:b/><w:bCs/><w:color w:val="' + WD_BRANCO + '"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr>' +
+      '<w:t xml:space="preserve">' + wifiDocxEsc(String(andar).toUpperCase()) + '</w:t></w:r></w:p></w:tc>';
+  }
+
+  function wdCartaoAndar(andar, redes){
+    var linhas = '<w:tr><w:trPr><w:cantSplit/><w:tblHeader/></w:trPr>' + wdCelulaHeader(andar) + '</w:tr>';
+    redes.forEach(function(r, i){
+      var fundo = i % 2 === 0 ? WD_AZUL_CLARO : WD_BRANCO;
+      linhas += '<w:tr><w:trPr><w:cantSplit/></w:trPr>' +
+        wdCelula(r.nome, WD_COL_NOME, true, fundo) +
+        wdCelula(r.senha, WD_COL_SENHA, false, fundo) +
+        '</w:tr>';
+    });
+    return '<w:tbl><w:tblPr><w:tblW w:w="' + WD_LARGURA + '" w:type="dxa"/>' +
+      '<w:tblBorders>' + wdBordas(WD_CINZA_BORDA) + '</w:tblBorders>' +
+      '<w:tblLayout w:type="fixed"/></w:tblPr>' +
+      '<w:tblGrid><w:gridCol w:w="' + WD_COL_NOME + '"/><w:gridCol w:w="' + WD_COL_SENHA + '"/></w:tblGrid>' +
+      linhas + '</w:tbl>';
+  }
+
+  // Embrulha o cartão numa tabela-envelope de 1x1 com "cantSplit" na
+  // linha, pra ele nunca ser cortado no meio entre uma coluna/página e
+  // outra (sem isso, um cartão grande podia ficar com parte no fim de
+  // uma coluna e o resto no topo da seguinte, repetindo o cabeçalho).
+  function wdCartaoInteiro(andar, redes){
+    return '<w:tbl><w:tblPr><w:tblW w:w="' + WD_LARGURA + '" w:type="dxa"/>' +
+      '<w:tblLayout w:type="fixed"/></w:tblPr>' +
+      '<w:tblGrid><w:gridCol w:w="' + WD_LARGURA + '"/></w:tblGrid>' +
+      '<w:tr><w:trPr><w:cantSplit/></w:trPr>' +
+      '<w:tc><w:tcPr>' +
+      '<w:tcW w:w="' + WD_LARGURA + '" w:type="dxa"/>' +
+      '<w:tcBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/></w:tcBorders>' +
+      '<w:tcMar><w:top w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tcMar>' +
+      '</w:tcPr>' +
+      wdCartaoAndar(andar, redes) +
+      '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr></w:p>' +
+      '</w:tc></w:tr></w:tbl>';
+  }
+
+  function wdPaginaAndar(andar, redes){
+    var copias = redes.length <= 2 ? 14 : 10;
+    var xml = '';
+    for(var i = 0; i < copias; i++){
+      xml += wdCartaoInteiro(andar, redes);
+      xml += '<w:p><w:pPr><w:spacing w:after="160"/></w:pPr></w:p>';
+    }
+    return xml;
+  }
+
+  var WD_SECT_PR = '<w:type w:val="nextPage"/>' +
+    '<w:pgSz w:w="12240" w:h="15840" w:orient="portrait"/>' +
+    '<w:pgMar w:top="700" w:right="900" w:bottom="700" w:left="900" w:header="708" w:footer="708" w:gutter="0"/>' +
+    '<w:cols w:num="2" w:space="500"/>' +
+    '<w:docGrid w:linePitch="360"/>';
+
+  function wdDocumentoXml(porAndar){
+    var andares = Object.keys(porAndar);
+    var corpo = '';
+    andares.forEach(function(andar, idx){
+      corpo += wdPaginaAndar(andar, porAndar[andar]);
+      if(idx < andares.length - 1){
+        corpo += '<w:p><w:pPr><w:sectPr>' + WD_SECT_PR + '</w:sectPr></w:pPr></w:p>';
+      }
+    });
+    corpo += '<w:sectPr>' + WD_SECT_PR + '</w:sectPr>';
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+      '<w:body>' + corpo + '</w:body></w:document>';
+  }
+
+  var WD_CONTENT_TYPES_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+    '<Default Extension="xml" ContentType="application/xml"/>' +
+    '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+    '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>' +
+    '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>' +
+    '</Types>';
+
+  var WD_RELS_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>' +
+    '</Relationships>';
+
+  var WD_DOC_RELS_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+    '</Relationships>';
+
+  var WD_STYLES_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
+    '<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="22"/></w:rPr></w:rPrDefault></w:docDefaults>' +
+    '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>' +
+    '</w:styles>';
+
+  var WD_CORE_XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">' +
+    '<dc:title>Wi-Fi visitantes</dc:title></cp:coreProperties>';
+
+  async function wifiBaixarWord(porAndar){
+    if(!window.JSZip){
+      toast('Não foi possível montar o arquivo agora — recarregue a página e tente de novo.');
+      return;
+    }
+    if(!porAndar || !Object.keys(porAndar).length){
+      toast('Nenhuma rede pública carregada ainda.');
+      return;
+    }
+    btnBaixarWord.disabled = true;
+    var textoOriginal = btnBaixarWord.textContent;
+    btnBaixarWord.textContent = 'Gerando...';
+    try{
+      var zip = new JSZip();
+      zip.file('[Content_Types].xml', WD_CONTENT_TYPES_XML);
+      zip.file('_rels/.rels', WD_RELS_XML);
+      zip.file('word/document.xml', wdDocumentoXml(porAndar));
+      zip.file('word/_rels/document.xml.rels', WD_DOC_RELS_XML);
+      zip.file('word/styles.xml', WD_STYLES_XML);
+      zip.file('docProps/core.xml', WD_CORE_XML);
+      var blob = await zip.generateAsync({
+        type: 'blob',
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'wifi-visitantes.docx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    }catch(e){
+      console.error(e);
+      toast('Não foi possível gerar o arquivo — tente de novo.');
+    }finally{
+      btnBaixarWord.disabled = false;
+      btnBaixarWord.textContent = textoOriginal;
+    }
+  }
+
+  if(btnBaixarWord){
+    btnBaixarWord.addEventListener('click', function(){
+      wifiBaixarWord(porAndarCarregado);
+    });
+  }
+
   async function iniciar(){
     if(!db){
       renderErro();
@@ -334,6 +552,10 @@ body{
       } else {
         renderMenuAndares(porAndar);
       }
+      // ADIÇÃO: dados carregados com sucesso — guarda pro botão de Word e
+      // revela o botão (fica escondido em erro/vazio).
+      porAndarCarregado = porAndar;
+      if(acoesGlobaisEl) acoesGlobaisEl.style.display = 'block';
     }catch(e){
       console.error(e);
       renderErro();
