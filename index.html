@@ -47,6 +47,10 @@
      .docx do botão "Baixar em Word" direto no navegador (ver script do
      módulo de Wi-Fi, mais abaixo). -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- ADIÇÃO: ExcelJS (via CDN) — usado pelo botão "Exportar Excel" da aba
+     Relatórios do módulo de Computadores (mesma lib já usada na Planilha
+     de Estoque embutida, ver função exportarExcel() mais abaixo). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <!-- CORREÇÃO: conserta a duração (metadados do próprio arquivo .webm) das
      mensagens de voz gravadas pelo microfone no Chat Interno — sem isso o
      player mostra uma duração maluca (ex.: 6:54:28 pra um áudio de 6s), um
@@ -1589,6 +1593,42 @@ table.pc-tabela tbody tr:last-child td{border-bottom:none}
 .pc-rel-card .s{font-size:11.5px;color:var(--cinza-claro);margin-top:3px}
 .pc-rel-resultado{margin-top:10px}
 .pc-rel-vazio{text-align:center;padding:30px;color:var(--cinza-claro);font-size:13px}
+
+/* ADIÇÃO: documento "de papel" do relatório de Computadores (fundo branco)
+   usado na exportação em PDF — reaproveita as MESMAS classes .rel-doc/
+   .rel-pagina/.rel-header/.rel-card/.rel-secao-titulo/table.rel-tabela já
+   definidas mais acima para o relatório do Painel de Chamados (mesmo
+   "papel timbrado"), e adiciona só o que é específico daqui. */
+.pc-rel-tabela-card{background:#fff;border:1px solid #e6e9f2;border-radius:12px;padding:2px 15px 13px;margin-bottom:14px}
+.pc-rel-tabela-card h4{margin:0;padding:11px 0 8px;font-size:11px;font-weight:800;color:#0f1b3d;text-transform:uppercase;letter-spacing:.02em;border-bottom:1px solid #f1f3f8}
+.pc-rel-tabela-card table.rel-tabela{margin-top:8px}
+.pc-rel-tabela-card table.rel-tabela td.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;color:#475467}
+.pc-rel-filtros-linha{font-size:10.5px;color:#667085;text-align:center;margin:-10px 0 16px}
+.pc-rel-filtros-linha b{color:#0f1b3d}
+.pc-rel-grupo-titulo{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px}
+.pc-rel-grupo-titulo h4{margin:0;font-size:11.5px;font-weight:800;color:#0f1b3d;text-transform:uppercase;letter-spacing:.02em}
+.pc-rel-grupo-titulo span{font-size:10px;color:#8a94a8;font-weight:700}
+.pc-status-pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700}
+.pc-status-pill .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.pc-status-pill.st-ativo .dot{background:#16a34a} .pc-status-pill.st-ativo{color:#16a34a}
+.pc-status-pill.st-manutencao .dot{background:#d99a1a} .pc-status-pill.st-manutencao{color:#a5730f}
+.pc-status-pill.st-inativo .dot{background:#e64c3c} .pc-status-pill.st-inativo{color:#e64c3c}
+.pc-status-pill.st-baixado .dot{background:#8a94a8} .pc-status-pill.st-baixado{color:#667085}
+
+/* ADIÇÃO: isola SÓ o relatório de Computadores na hora de imprimir — mesma
+   técnica (e mesmo motivo) já usada em ".rel-imprimindo" pro relatório do
+   Painel de Chamados, só que mirando "#pc-rel-doc" em vez de
+   "#rel-chamados-doc". As duas nunca ficam ativas ao mesmo tempo (cada
+   botão liga só a sua própria classe antes de imprimir), então não brigam
+   entre si. */
+@media print{
+  body.pcrel-imprimindo *{visibility:hidden}
+  body.pcrel-imprimindo #pc-rel-doc,
+  body.pcrel-imprimindo #pc-rel-doc *{visibility:visible}
+  body.pcrel-imprimindo #pc-rel-doc{position:absolute;left:0;top:0;width:100%;box-shadow:none;border-radius:0;display:block !important}
+  body.pcrel-imprimindo .rel-pagina{padding:9mm 11mm}
+  body.pcrel-imprimindo .rel-card,body.pcrel-imprimindo .pc-rel-tabela-card{page-break-inside:avoid}
+}
 
 /* ---- setores ---- */
 .pc-setor-linha{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 4px;border-bottom:1px solid rgba(255,255,255,.06)}
@@ -3969,10 +4009,27 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
         <div class="pc-busca">
           <input type="text" id="pc-busca-input" placeholder="Pesquisar por nome, patrimônio, IP ou MAC...">
         </div>
-        <div class="pc-filtro">
+        <!-- ALTERADO: os filtros de Setor/Status/Sistema agora ficam escondidos
+             atrás do botão "Filtros" (ícone de funil) — mesmo padrão já usado
+             no Painel de Chamados (.cpn-filtros-toggle-btn/.cpn-filtros-row),
+             a pedido do usuário. -->
+        <button type="button" class="cpn-filtros-toggle-btn" id="pc-filtros-toggle-btn" aria-expanded="false">
+          <span class="cpn-filtros-toggle-icone"></span>
+          <span>Filtros</span>
+          <svg class="cpn-filtros-toggle-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="pc-toolbar-btns">
+          <button class="btn-principal" id="pc-btn-novo" style="width:auto;margin:0" type="button">+ Novo computador</button>
+        </div>
+      </div>
+
+      <div class="cpn-filtros-row" id="pc-filtros-row">
+        <div class="cpn-filtro-campo">
+          <label>Setor</label>
           <select id="pc-filtro-setor"><option value="">Todos os setores</option></select>
         </div>
-        <div class="pc-filtro">
+        <div class="cpn-filtro-campo">
+          <label>Status</label>
           <select id="pc-filtro-status">
             <option value="">Todos os status</option>
             <option value="Ativo">🟢 Ativo</option>
@@ -3981,11 +4038,9 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
             <option value="Baixado">⚫ Baixado</option>
           </select>
         </div>
-        <div class="pc-filtro">
+        <div class="cpn-filtro-campo">
+          <label>Sistema operacional</label>
           <select id="pc-filtro-so"><option value="">Todos os sistemas</option></select>
-        </div>
-        <div class="pc-toolbar-btns">
-          <button class="btn-principal" id="pc-btn-novo" style="width:auto;margin:0" type="button">+ Novo computador</button>
         </div>
       </div>
 
@@ -4078,6 +4133,16 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
 
         <div class="pc-rel-resultado" id="pc-rel-resultado">
           <div class="pc-rel-vazio">Selecione um relatório acima para ver o resultado.</div>
+        </div>
+
+        <!-- ADIÇÃO: documento "de papel" (fundo branco, papel timbrado) usado
+             SÓ na hora de exportar — Excel lê os dados direto (não usa este
+             HTML), e o PDF usa este container escondido + window.print(),
+             mesmo padrão já usado no relatório do Painel de Chamados
+             (#rel-chamados-doc/.rel-imprimindo). Fica fora da visão normal
+             (display:none) e só aparece durante a impressão. -->
+        <div class="rel-doc" id="pc-rel-doc" style="display:none">
+          <div class="rel-pagina" id="pc-rel-pagina"></div>
         </div>
       </div>
     </div>
@@ -4527,7 +4592,23 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
         <div class="pc-busca">
           <input type="text" id="tv-busca-input" placeholder="Pesquisar por leito ou modelo...">
         </div>
-        <div class="pc-filtro">
+        <!-- ALTERADO: filtros escondidos atrás do botão "Filtros" (ícone de
+             funil) — mesmo padrão já usado no Painel de Chamados
+             (.cpn-filtros-toggle-btn/.cpn-filtros-row), a pedido do usuário. -->
+        <button type="button" class="cpn-filtros-toggle-btn" id="tv-filtros-toggle-btn" aria-expanded="false">
+          <span class="cpn-filtros-toggle-icone"></span>
+          <span>Filtros</span>
+          <svg class="cpn-filtros-toggle-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="pc-toolbar-btns">
+          <button class="btn-secundario" id="tv-btn-limpar-filtros" type="button">Limpar filtros</button>
+          <button class="btn-principal" id="tv-btn-nova" style="width:auto;margin:0" type="button">+ Adicionar TV</button>
+        </div>
+      </div>
+
+      <div class="cpn-filtros-row" id="tv-filtros-row">
+        <div class="cpn-filtro-campo">
+          <label>Setor</label>
           <select id="tv-filtro-setor">
             <option value="">Todos os setores</option>
             <option value="UCO">UCO</option>
@@ -4535,21 +4616,24 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
             <option value="COMANDO">COMANDO</option>
           </select>
         </div>
-        <div class="pc-filtro">
+        <div class="cpn-filtro-campo">
+          <label>Wi-Fi</label>
           <select id="tv-filtro-wifi">
             <option value="">Wi-Fi: todos</option>
             <option value="sim">Wi-Fi: Sim</option>
             <option value="nao">Wi-Fi: Não</option>
           </select>
         </div>
-        <div class="pc-filtro">
+        <div class="cpn-filtro-campo">
+          <label>Antena/Cabo</label>
           <select id="tv-filtro-antena">
             <option value="">Antena/Cabo: todos</option>
             <option value="ANTENA">Antena</option>
             <option value="NÃO TEM">Não tem</option>
           </select>
         </div>
-        <div class="pc-filtro">
+        <div class="cpn-filtro-campo">
+          <label>Controle</label>
           <select id="tv-filtro-controle">
             <option value="">Controle: todos</option>
             <option value="FUNCIONANDO">Funcionando</option>
@@ -4557,16 +4641,13 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
             <option value="NÃO TEM">Não tem</option>
           </select>
         </div>
-        <div class="pc-filtro">
+        <div class="cpn-filtro-campo">
+          <label>Smart</label>
           <select id="tv-filtro-smart">
             <option value="">Smart: todas</option>
             <option value="sim">Smart: Sim</option>
             <option value="nao">Smart: Não</option>
           </select>
-        </div>
-        <div class="pc-toolbar-btns">
-          <button class="btn-secundario" id="tv-btn-limpar-filtros" type="button">Limpar filtros</button>
-          <button class="btn-principal" id="tv-btn-nova" style="width:auto;margin:0" type="button">+ Adicionar TV</button>
         </div>
       </div>
 
@@ -7607,6 +7688,12 @@ var CARDS_PERMISSIVEIS = [
   { key:'wifi', label:'Wi-Fi' },
   { key:'computadores', label:'Computadores' },
   { key:'chat', label:'Chat Interno' },
+  // ADIÇÃO: sub-permissão do Chat Interno — dá nível "admin" DENTRO do chat
+  // (ver as conversas de todos os setores, não só o próprio, e poder apagar
+  // conversas) SEM virar admin de verdade do sistema (Painel de Chamados e
+  // Gerenciar Usuários continuam bloqueados). Só tem efeito se "Chat Interno"
+  // acima também estiver marcado — do contrário a pessoa nem abre o chat.
+  { key:'chat_admin', label:'Chat Interno — nível admin (ver todos os setores e apagar conversas)' },
   { key:'tv', label:'TVs' },
   { key:'agenda', label:'Agenda' },
   { key:'sugestoes', label:'Sugestões recebidas' }
@@ -7617,7 +7704,7 @@ var DEFAULT_PERMISSOES_CARDS = {
   // pra "wifi" em "Gerenciar usuários" continua com o que foi configurado
   // lá — esse padrão só vale pra quem nunca foi configurado.
   chamado: true, solicitacao: true, historico: true, wifi: false,
-  estoque: false, computadores: false, chat: false, tv: false, agenda: false,
+  estoque: false, computadores: false, chat: false, chat_admin: false, tv: false, agenda: false,
   sugestoes: false // ADIÇÃO: tela de sugestões recebidas — só admins, salvo liberação
 };
 
@@ -13506,11 +13593,14 @@ formSolicitacao.addEventListener('submit', async function(e){
     var out = document.getElementById('pc-rel-resultado');
     if(!pcRelatorioAtivo){ out.innerHTML = '<div class="pc-rel-vazio">Selecione um relatório acima para ver o resultado.</div>'; return; }
 
+    // ALTERADO: a pedido, as colunas "SO" e "Fabricante" viraram "IP" e
+    // "Processador" (tanto aqui na prévia da tela quanto no PDF/Excel
+    // exportados, pra não ficar uma coisa na tela e outra no arquivo).
     function tabelaComputadores(lista){
       if(lista.length === 0) return '<div class="pc-rel-vazio">Nenhum computador encontrado.</div>';
-      return '<div class="pc-tabela-wrap"><table class="pc-tabela"><thead><tr><th>Patrimônio</th><th>Nome</th><th>Setor</th><th>SO</th><th>Fabricante</th><th>Status</th></tr></thead><tbody>' +
+      return '<div class="pc-tabela-wrap"><table class="pc-tabela"><thead><tr><th>Patrimônio</th><th>Nome</th><th>Setor</th><th>IP</th><th>Processador</th><th>Status</th></tr></thead><tbody>' +
         lista.map(function(c){
-          return '<tr><td class="pc-mono">' + pcEsc(c.patrimonio) + '</td><td>' + pcEsc(c.nome) + '</td><td>' + pcEsc(c.setor||'—') + '</td><td>' + pcEsc(c.so||'—') + '</td><td>' + pcEsc(c.fabricante||'—') + '</td><td>' + pcBadgeStatus(c.status) + '</td></tr>';
+          return '<tr><td class="pc-mono">' + pcEsc(c.patrimonio) + '</td><td>' + pcEsc(c.nome) + '</td><td>' + pcEsc(c.setor||'—') + '</td><td>' + pcEsc(c.ip||'—') + '</td><td>' + pcEsc(c.processador||'—') + '</td><td>' + pcBadgeStatus(c.status) + '</td></tr>';
         }).join('') + '</tbody></table></div>';
     }
 
@@ -13562,14 +13652,259 @@ formSolicitacao.addEventListener('submit', async function(e){
     out.innerHTML = html;
   }
 
-  // Interface preparada para exportação futura — funções separadas, sem simular dados que não existem.
-  function exportarRelatorioPDF(){
-    // TODO: integrar geração real de PDF (ex.: lib jsPDF) quando o projeto tiver backend/API.
-    pcToast('Exportação em PDF será implementada futuramente.');
+  // ==================================================================
+  // ADIÇÃO: exportação de verdade dos relatórios, em PDF e Excel — modelos
+  // conferidos e aprovados com o usuário antes de implementar. Colunas
+  // "SO"/"Fabricante" viraram "IP"/"Processador" a pedido.
+  // ==================================================================
+
+  var PC_ICONE_CALENDARIO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+
+  // Mesma lógica de filtros/agrupamento do gerarRelatorio() acima, só que
+  // devolvendo os dados "crus" (sem HTML da tela escura) — alimenta tanto
+  // o documento do PDF quanto a planilha do Excel, sem duplicar as regras
+  // de filtro em três lugares diferentes.
+  function pcColetarDadosRelatorio(){
+    var meta = PC_RELATORIOS.filter(function(r){ return r.id === pcRelatorioAtivo; })[0];
+    var COLUNAS_COMP = ['Patrimônio', 'Nome', 'Setor', 'IP', 'Processador', 'Status'];
+    function linhaComp(c){
+      return [c.patrimonio || '', c.nome || '', c.setor || '—', c.ip || '—', c.processador || '—', c.status || ''];
+    }
+
+    var r = { titulo: meta ? meta.t : '', subtitulo: meta ? meta.s : '', tipo: null, colunas: null, linhas: null, grupos: null };
+
+    switch(pcRelatorioAtivo){
+      case 'inventario':
+        r.tipo = 'computadores'; r.colunas = COLUNAS_COMP;
+        r.linhas = pcAplicarFiltrosRelatorio(listarComputadores()).map(linhaComp);
+        break;
+      case 'ativos':
+        r.tipo = 'computadores'; r.colunas = COLUNAS_COMP;
+        r.linhas = pcAplicarFiltrosRelatorio(listarComputadores().filter(function(c){ return c.status === 'Ativo'; })).map(linhaComp);
+        break;
+      case 'manutencao':
+        r.tipo = 'computadores'; r.colunas = COLUNAS_COMP;
+        r.linhas = pcAplicarFiltrosRelatorio(listarComputadores().filter(function(c){ return c.status === 'Em manutenção'; })).map(linhaComp);
+        break;
+      case 'inativos':
+        r.tipo = 'computadores'; r.colunas = COLUNAS_COMP;
+        r.linhas = pcAplicarFiltrosRelatorio(listarComputadores().filter(function(c){ return c.status === 'Inativo' || c.status === 'Baixado'; })).map(linhaComp);
+        break;
+      case 'por-setor':
+      case 'por-so':
+      case 'por-fabricante':
+        var chave = pcRelatorioAtivo === 'por-setor' ? 'setor' : (pcRelatorioAtivo === 'por-so' ? 'so' : 'fabricante');
+        var mapa = {};
+        pcAplicarFiltrosRelatorio(listarComputadores()).forEach(function(c){
+          var k = c[chave] || 'Não informado';
+          mapa[k] = mapa[k] || [];
+          mapa[k].push(c);
+        });
+        r.tipo = 'computadores-grupo'; r.colunas = COLUNAS_COMP;
+        r.grupos = Object.keys(mapa).sort().map(function(k){ return { titulo: k, linhas: mapa[k].map(linhaComp) }; });
+        break;
+      case 'manutencoes-realizadas':
+        r.tipo = 'tabela-simples'; r.colunas = ['Data', 'Computador', 'Tipo', 'Técnico', 'Status'];
+        r.linhas = pcManutencoes.slice().sort(function(a, b){ return new Date(b.data) - new Date(a.data); }).map(function(m){
+          var comp = buscarComputador(m.computadorId);
+          return [pcFormatarDataSimples(m.data), comp ? comp.patrimonio + ' — ' + comp.nome : '—', m.tipo || '—', m.tecnico || '—', m.status || '—'];
+        });
+        break;
+      case 'historico':
+        r.tipo = 'tabela-simples'; r.colunas = ['Data', 'Computador', 'Evento', 'Descrição'];
+        r.linhas = pcHistorico.slice().sort(function(a, b){ return new Date(b.dataISO) - new Date(a.dataISO); }).slice(0, 200).map(function(h){
+          var comp = buscarComputador(h.computadorId);
+          return [pcFormatarData(h.dataISO), comp ? comp.patrimonio : '—', h.titulo || '—', h.descricao || '—'];
+        });
+        break;
+    }
+    return r;
   }
-  function exportarRelatorioExcel(){
-    // TODO: integrar geração real de Excel (ex.: lib SheetJS) quando o projeto tiver backend/API.
-    pcToast('Exportação em Excel será implementada futuramente.');
+
+  // Texto "Período: X · Setor: Y · Status: Z" a partir dos filtros atuais —
+  // usa o TEXTO da opção escolhida (não o value), pra ficar legível.
+  function pcTextoFiltrosAtuais(){
+    function rotulo(id){
+      var el = document.getElementById(id);
+      if(!el || !el.selectedOptions || !el.selectedOptions[0]) return '—';
+      return el.selectedOptions[0].textContent;
+    }
+    return {
+      periodo: rotulo('pc-rel-filtro-periodo'),
+      setor: rotulo('pc-rel-filtro-setor'),
+      status: rotulo('pc-rel-filtro-status'),
+    };
+  }
+
+  function pcMontarCabecalhoDoc(dados){
+    var agora = pcFormatarData(new Date().toISOString());
+    var f = pcTextoFiltrosAtuais();
+    return '<div class="rel-header">' +
+        '<div class="rel-header-esq"><div class="rel-logo">T</div>' +
+          '<div><div class="marca-nome">TI - CSSL</div><div class="marca-sub">Tecnologia da Informação</div></div>' +
+        '</div>' +
+        '<div class="rel-header-centro"><h1>' + pcEsc(dados.titulo.toUpperCase()) + '</h1>' +
+          '<div class="periodo">' + pcEsc(dados.subtitulo.toUpperCase()) + '</div>' +
+        '</div>' +
+        '<div class="rel-header-dir">' + PC_ICONE_CALENDARIO +
+          '<div><div>Data do Relatório:</div><div class="rel-data-valor">' + agora + '</div></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pc-rel-filtros-linha">Filtros aplicados: <b>Período:</b> ' + pcEsc(f.periodo) + ' &nbsp;·&nbsp; <b>Setor:</b> ' + pcEsc(f.setor) + ' &nbsp;·&nbsp; <b>Status:</b> ' + pcEsc(f.status) + '</div>';
+  }
+
+  function pcLinhaParaTr(colunas, linha){
+    return '<tr>' + linha.map(function(v, i){
+      var ultimaColunaStatus = colunas[colunas.length - 1] === 'Status' && i === linha.length - 1;
+      if(ultimaColunaStatus){
+        return '<td><span class="pc-status-pill st-' + pcStatusInfo(v).cls + '"><span class="dot"></span>' + pcEsc(v) + '</span></td>';
+      }
+      var mono = i === 0 && (colunas[0] === 'Patrimônio');
+      return '<td' + (mono ? ' class="mono"' : '') + '>' + pcEsc(v) + '</td>';
+    }).join('') + '</tr>';
+  }
+
+  function pcMontarTabelaCard(titulo, colunas, linhas){
+    if(!linhas.length) return '<div class="pc-rel-tabela-card"><h4>' + pcEsc(titulo) + '</h4><div class="pc-rel-vazio" style="padding:14px 0">Nenhum registro encontrado.</div></div>';
+    return '<div class="pc-rel-tabela-card"><h4>' + pcEsc(titulo) + '</h4>' +
+      '<table class="rel-tabela"><thead><tr>' + colunas.map(function(c){ return '<th>' + pcEsc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      linhas.map(function(linha){ return pcLinhaParaTr(colunas, linha); }).join('') +
+      '</tbody></table></div>';
+  }
+
+  // Monta o documento "de papel" (mesmo papel timbrado do relatório do
+  // Painel de Chamados) dentro de "#pc-rel-pagina", pronto pra imprimir.
+  function pcMontarDocRelatorio(dados){
+    var corpo = pcMontarCabecalhoDoc(dados);
+    if(dados.tipo === 'computadores-grupo'){
+      corpo += dados.grupos.map(function(g){
+        return '<div class="pc-rel-tabela-card">' +
+          '<div class="pc-rel-grupo-titulo"><h4>' + pcEsc(g.titulo) + '</h4><span>' + g.linhas.length + (g.linhas.length === 1 ? ' computador' : ' computadores') + '</span></div>' +
+          '<table class="rel-tabela"><thead><tr>' + dados.colunas.map(function(c){ return '<th>' + pcEsc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          g.linhas.map(function(linha){ return pcLinhaParaTr(dados.colunas, linha); }).join('') +
+          '</tbody></table></div>';
+      }).join('') || '<div class="pc-rel-vazio">Nenhum computador encontrado.</div>';
+    } else {
+      corpo += pcMontarTabelaCard(dados.titulo + ' (' + dados.linhas.length + ')', dados.colunas, dados.linhas);
+    }
+    corpo += '<div class="rel-rodape">' +
+      '<div>TI - CSSL | Relatório gerado automaticamente pelo sistema</div>' +
+      '<div class="meio">Tecnologia a serviço da vida.</div>' +
+      '<div>Página 1 de 1</div></div>';
+    document.getElementById('pc-rel-pagina').innerHTML = corpo;
+  }
+
+  function exportarRelatorioPDF(){
+    if(!pcRelatorioAtivo){ pcToast('Selecione um relatório antes de exportar.', 'erro'); return; }
+    var dados = pcColetarDadosRelatorio();
+    pcMontarDocRelatorio(dados);
+
+    // ADIÇÃO: isola só "#pc-rel-doc" na impressão (ver CSS ".pcrel-imprimindo"),
+    // mesmo padrão já usado no relatório do Painel de Chamados.
+    var estiloPagina = document.createElement('style');
+    estiloPagina.id = 'pc-rel-estilo-pagina-temp';
+    estiloPagina.textContent = '@media print{ @page{ size:A4 portrait; margin:0; } }';
+    document.head.appendChild(estiloPagina);
+    document.body.classList.add('pcrel-imprimindo');
+    function limpar(){
+      document.body.classList.remove('pcrel-imprimindo');
+      var el = document.getElementById('pc-rel-estilo-pagina-temp');
+      if(el) el.remove();
+      window.removeEventListener('afterprint', limpar);
+    }
+    window.addEventListener('afterprint', limpar);
+    setTimeout(function(){ window.print(); }, 30);
+    setTimeout(limpar, 4000); // rede de segurança caso "afterprint" não dispare
+  }
+
+  async function exportarRelatorioExcel(){
+    if(!pcRelatorioAtivo){ pcToast('Selecione um relatório antes de exportar.', 'erro'); return; }
+    if(typeof ExcelJS === 'undefined'){
+      pcToast('Biblioteca de exportação não carregou (verifique sua conexão) e tente novamente.', 'erro');
+      return;
+    }
+    var dados = pcColetarDadosRelatorio();
+    pcToast('Gerando planilha Excel...');
+
+    var AZUL = 'FF1D4ED8', AZUL_CLARO = 'FFE8EEFC', ZEBRA = 'FFF6F8FC', BRANCO = 'FFFFFFFF', BORDA = 'FFE6E9F2', GRUPO_FAIXA = 'FF2444B0';
+
+    var wb = new ExcelJS.Workbook();
+    wb.creator = 'TI - CSSL';
+    wb.created = new Date();
+    var ws = wb.addWorksheet(dados.titulo.slice(0, 31) || 'Relatório');
+
+    var f = pcTextoFiltrosAtuais();
+    var ultimaColuna = (dados.colunas || (dados.grupos ? dados.colunas : [])).length || 5;
+
+    function celulaTitulo(){
+      ws.mergeCells(1, 1, 1, ultimaColuna);
+      ws.getCell(1, 1).value = 'TI - CSSL — ' + dados.titulo;
+      ws.getCell(1, 1).font = { bold: true, size: 16, color: { argb: AZUL } };
+      ws.mergeCells(2, 1, 2, ultimaColuna);
+      ws.getCell(2, 1).value = 'Filtros: Período ' + f.periodo + ' · Setor ' + f.setor + ' · Status ' + f.status + '   ·   Exportado em: ' + pcFormatarData(new Date().toISOString());
+      ws.getCell(2, 1).font = { size: 10.5, italic: true, color: { argb: 'FF667085' } };
+      ws.addRow([]);
+    }
+
+    function cabecalho(colunas){
+      var row = ws.addRow(colunas);
+      row.eachCell(function(cell){
+        cell.font = { bold: true, color: { argb: BRANCO }, size: 11 };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: AZUL } };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      });
+      row.height = 20;
+    }
+
+    function linhasDeDados(linhas){
+      linhas.forEach(function(linha, idx){
+        var row = ws.addRow(linha);
+        var corFundo = idx % 2 === 0 ? ZEBRA : BRANCO;
+        row.eachCell(function(cell, col){
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: corFundo } };
+          cell.alignment = { vertical: 'middle', horizontal: col === 2 ? 'left' : 'center' };
+          cell.border = { bottom: { style: 'hair', color: { argb: BORDA } } };
+        });
+      });
+    }
+
+    celulaTitulo();
+
+    if(dados.tipo === 'computadores-grupo'){
+      dados.grupos.forEach(function(g){
+        var linhaGrupo = ws.addRow([g.titulo.toUpperCase() + ' (' + g.linhas.length + ')']);
+        ws.mergeCells(linhaGrupo.number, 1, linhaGrupo.number, ultimaColuna);
+        linhaGrupo.getCell(1).font = { bold: true, size: 11.5, color: { argb: BRANCO } };
+        linhaGrupo.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: GRUPO_FAIXA } };
+        linhaGrupo.height = 19;
+        cabecalho(dados.colunas);
+        linhasDeDados(g.linhas);
+        ws.addRow([]);
+      });
+    } else {
+      cabecalho(dados.colunas);
+      linhasDeDados(dados.linhas);
+      ws.addRow([]);
+      var totalRow = ws.addRow(['TOTAL', ...new Array(ultimaColuna - 2).fill(''), dados.linhas.length]);
+      totalRow.eachCell(function(cell){ cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: AZUL_CLARO } }; });
+      totalRow.getCell(1).font = { bold: true, color: { argb: AZUL } };
+      totalRow.getCell(ultimaColuna).font = { bold: true, color: { argb: AZUL } };
+      totalRow.getCell(ultimaColuna).alignment = { horizontal: 'center' };
+    }
+
+    ws.getColumn(1).width = 16;
+    for(var c = 2; c <= ultimaColuna; c++){ ws.getColumn(c).width = 22; }
+    ws.autoFilter = undefined;
+
+    var buffer = await wb.xlsx.writeBuffer();
+    var blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'relatorio-' + pcRelatorioAtivo + '-' + new Date().toISOString().slice(0, 10) + '.xlsx';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    pcToast('Planilha Excel exportada com sucesso.');
   }
 
   /* ============================================================
@@ -14124,6 +14459,22 @@ formSolicitacao.addEventListener('submit', async function(e){
   document.getElementById('pc-filtro-status').addEventListener('change', renderListaComputadores);
   document.getElementById('pc-filtro-so').addEventListener('change', renderListaComputadores);
 
+  // ADIÇÃO: botão "Filtros" (ícone de funil) que esconde/mostra a linha de
+  // filtros de Setor/Status/Sistema — mesmo padrão do Painel de Chamados
+  // (começa fechada, tanto no PC quanto no celular, e alterna ao clicar).
+  var PC_ICONE_FILTRO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>';
+  var pcFiltrosToggleBtn = document.getElementById('pc-filtros-toggle-btn');
+  var pcFiltrosRowEl = document.getElementById('pc-filtros-row');
+  if(pcFiltrosToggleBtn){
+    var pcFiltrosToggleIconeEl = pcFiltrosToggleBtn.querySelector('.cpn-filtros-toggle-icone');
+    if(pcFiltrosToggleIconeEl) pcFiltrosToggleIconeEl.innerHTML = PC_ICONE_FILTRO;
+    pcFiltrosToggleBtn.addEventListener('click', function(){
+      var aberta = pcFiltrosRowEl ? pcFiltrosRowEl.classList.toggle('aberta') : false;
+      pcFiltrosToggleBtn.classList.toggle('aberto', aberta);
+      pcFiltrosToggleBtn.setAttribute('aria-expanded', aberta ? 'true' : 'false');
+    });
+  }
+
   document.querySelectorAll('.pc-etq-modelo-btn').forEach(function(btn){
     btn.addEventListener('click', function(){
       pcModeloEtiqueta = btn.getAttribute('data-modelo');
@@ -14310,12 +14661,16 @@ formSolicitacao.addEventListener('submit', async function(e){
   var elSelectMeuSetor = document.getElementById('chatSelectMeuSetor');
   var elBtnSalvarSetor = document.getElementById('chatBtnSalvarSetor');
 
-  // ADIÇÃO: apagar conversa é restrito a administradores — reaproveita o
-  // mesmo helper que os outros módulos usam (window.csslEhAdmin), checado
-  // na hora (e não guardado numa variável), pra sempre refletir o status
-  // mais atual do usuário logado.
+  // ADIÇÃO: apagar conversa (e ver todos os setores) é restrito a quem tem
+  // nível "admin" dentro do chat — reaproveita o mesmo helper que os outros
+  // módulos usam (window.csslEhAdmin) OU a sub-permissão "chat_admin"
+  // (liberável por usuário/perfil em "Gerenciar usuários", ver
+  // CARDS_PERMISSIVEIS), checado na hora (e não guardado numa variável),
+  // pra sempre refletir o status mais atual do usuário logado. Isso permite
+  // dar esse nível "admin" SÓ dentro do chat pra alguém que não é admin de
+  // verdade do sistema (ex.: perfil "GESTOR HOSPITALAR").
   function chatSouAdmin(){
-    return !!(window.csslEhAdmin && window.csslEhAdmin());
+    return !!(window.csslEhAdmin && window.csslEhAdmin()) || !!(window.csslPodeVer && window.csslPodeVer('chat_admin'));
   }
 
   // ADIÇÃO: quais setores (grupos) o usuário logado deve ver — admin vê
@@ -17277,6 +17632,8 @@ formSolicitacao.addEventListener('submit', async function(e){
   var filtroControle = document.getElementById('tv-filtro-controle');
   var filtroSmart = document.getElementById('tv-filtro-smart');
   var btnLimparFiltros = document.getElementById('tv-btn-limpar-filtros');
+  var filtrosToggleBtn = document.getElementById('tv-filtros-toggle-btn');
+  var filtrosRowEl = document.getElementById('tv-filtros-row');
 
   if(!cardTv || !telaTvEl) return;
 
@@ -17579,6 +17936,20 @@ formSolicitacao.addEventListener('submit', async function(e){
       if(filtroControle) filtroControle.value = '';
       if(filtroSmart) filtroSmart.value = '';
       renderListaTv();
+    });
+  }
+
+  // ADIÇÃO: botão "Filtros" (ícone de funil) que esconde/mostra a linha de
+  // filtros de Setor/Wi-Fi/Antena/Controle/Smart — mesmo padrão do Painel
+  // de Chamados (começa fechada, tanto no PC quanto no celular).
+  var TV_ICONE_FILTRO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>';
+  if(filtrosToggleBtn){
+    var filtrosToggleIconeEl = filtrosToggleBtn.querySelector('.cpn-filtros-toggle-icone');
+    if(filtrosToggleIconeEl) filtrosToggleIconeEl.innerHTML = TV_ICONE_FILTRO;
+    filtrosToggleBtn.addEventListener('click', function(){
+      var aberta = filtrosRowEl ? filtrosRowEl.classList.toggle('aberta') : false;
+      filtrosToggleBtn.classList.toggle('aberto', aberta);
+      filtrosToggleBtn.setAttribute('aria-expanded', aberta ? 'true' : 'false');
     });
   }
 
