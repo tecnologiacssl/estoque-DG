@@ -997,9 +997,9 @@ select option{background:#101014;color:#fff}
 .admin-card-titulo-grupo p{margin:0}
 .admin-btn-adicionar{width:auto;margin:0;display:inline-flex;align-items:center;gap:8px;padding:12px 18px;font-size:13.5px;white-space:nowrap}
 .admin-btn-adicionar svg{width:16px;height:16px}
-.admin-tabela-cabecalho{display:grid;grid-template-columns:1fr 130px 170px 210px;gap:12px;padding:0 16px 10px;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--cinza-claro);text-transform:uppercase}
+.admin-tabela-cabecalho{display:grid;grid-template-columns:1fr 190px 170px 260px;gap:12px;padding:0 16px 10px;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--cinza-claro);text-transform:uppercase}
 .admin-tabela-cabecalho span:last-child{text-align:right}
-.linha-usuario-nova{display:grid;grid-template-columns:1fr 120px 170px 260px;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid rgba(161,161,170,.14);margin-bottom:10px;transition:border-color .15s ease,background .15s ease}
+.linha-usuario-nova{display:grid;grid-template-columns:1fr 190px 170px 260px;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid rgba(161,161,170,.14);margin-bottom:10px;transition:border-color .15s ease,background .15s ease}
 .linha-usuario-nova:hover{background:rgba(255,255,255,.045);border-color:rgba(129,140,248,.28)}
 .linha-usuario-nova:last-child{margin-bottom:0}
 .info-usuario-nova{display:flex;align-items:center;gap:12px;min-width:0}
@@ -1010,6 +1010,12 @@ select option{background:#101014;color:#fff}
 .badge-admin-perm{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(99,102,241,.14);border:1px solid rgba(129,140,248,.32);color:#93c5fd;font-size:12.5px;font-weight:700;white-space:nowrap}
 .badge-admin-perm svg{width:13px;height:13px}
 .badge-sem-perm{color:var(--cinza-claro);font-size:12.5px}
+/* ADIÇÃO: perfil de acesso do usuário na coluna "Permissão" */
+.permissao-usuario-nova{min-width:0}
+.badge-perfil-perm{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(161,161,170,.28);color:#e4e4e7;font-size:12px;font-weight:600;box-sizing:border-box}
+.badge-perfil-perm svg{width:12px;height:12px;flex-shrink:0;color:var(--azul-claro)}
+.badge-perfil-perm span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.badge-perfil-perm.personalizado{color:var(--cinza-claro);font-weight:500;border-style:dashed}
 .setor-usuario-nova{min-width:0}
 .select-setor-usuario{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(161,161,170,.22);color:#e2e8f0;font-family:inherit;font-size:12.5px;font-weight:600;padding:8px 10px;border-radius:12px;cursor:pointer;transition:border-color .15s ease,background .15s ease}
 .select-setor-usuario:hover{background:rgba(129,140,248,.1);border-color:rgba(129,140,248,.4)}
@@ -1928,7 +1934,7 @@ table.rel-tabela tr.rel-total td{font-weight:800;color:#0f1b3d;border-top:1.5px 
 .chat-badge-nao-lida{background:var(--azul);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 5px;flex-shrink:0}
 
 /* ---- coluna direita: conversa ---- */
-.chat-thread-col{flex:1;min-width:0;display:flex;flex-direction:column;background:transparent}
+.chat-thread-col{flex:1;min-width:0;display:flex;flex-direction:column;background:transparent;position:relative}
 .chat-thread-vazio{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--cinza-claro);text-align:center;padding:30px}
 .chat-thread-vazio .ico{width:60px;height:60px;border-radius:50%;background:rgba(99,102,241,.08);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px;opacity:.9}
 .chat-thread-vazio h4{color:#fff;font-size:15px;font-weight:700;margin:0}
@@ -1956,6 +1962,81 @@ table.rel-tabela tr.rel-total td{font-weight:800;color:#0f1b3d;border-top:1.5px 
 .chat-btn-ligar:hover{background:rgba(34,197,94,.12);color:#4ade80}
 .chat-btn-ligar:focus-visible{outline:2px solid #4ade80;outline-offset:1px}
 .chat-btn-ligar svg{width:16px;height:16px}
+
+/* ADIÇÃO: painel "Dados do grupo" (estilo WhatsApp) — abre ao clicar no
+   cabeçalho de um grupo. Fica por cima da coluna da conversa, à direita. */
+.chat-thread-clicavel{cursor:pointer}
+.chat-thread-info.chat-thread-clicavel:hover b{color:var(--azul-claro)}
+.chat-info-grupo{display:none;position:absolute;top:0;right:0;bottom:0;width:min(400px,100%);z-index:6;flex-direction:column;background:#101014;border-left:1px solid rgba(255,255,255,.08);box-shadow:-18px 0 40px rgba(0,0,0,.35)}
+.chat-info-grupo.aberto{display:flex;animation:chatInfoEntrar .22s ease}
+@keyframes chatInfoEntrar{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.chat-info-topo{display:flex;align-items:center;gap:14px;padding:14px 18px;flex-shrink:0}
+.chat-info-btn-topo{width:34px;height:34px;border-radius:50%;border:none;background:transparent;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s ease}
+.chat-info-btn-topo:hover{background:rgba(255,255,255,.08)}
+.chat-info-btn-topo:focus-visible{outline:2px solid var(--azul-claro);outline-offset:1px}
+.chat-info-btn-topo svg{width:20px;height:20px}
+.chat-info-titulo{color:#fff;font-size:15px;font-weight:600}
+.chat-info-corpo{flex:1;min-height:0;overflow-y:auto;padding-bottom:18px;scrollbar-width:thin}
+.chat-info-hero{display:flex;flex-direction:column;align-items:center;padding:6px 20px 20px;text-align:center}
+.chat-info-avatar{width:112px;height:112px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:14px;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.chat-info-avatar svg{width:52px;height:52px}
+.chat-info-avatar{overflow:hidden;font-size:38px;font-weight:700}
+.chat-info-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.chat-info-hero h3{margin:0;color:#fff;font-size:22px;font-weight:500;line-height:1.25;word-break:break-word}
+.chat-info-sub{margin:6px 0 0;color:var(--cinza-claro);font-size:14px}
+.chat-info-sub b{color:#4ade80;font-weight:600}
+.chat-info-acoes{display:flex;gap:10px;margin-top:18px}
+.chat-info-acao{display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:none;color:#fff;font-size:12px;cursor:pointer;font-family:inherit}
+.chat-info-acao .ic{width:64px;height:44px;border-radius:22px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;transition:background .15s ease}
+.chat-info-acao:hover .ic{background:rgba(255,255,255,.14)}
+.chat-info-acao:focus-visible .ic{outline:2px solid var(--azul-claro);outline-offset:2px}
+.chat-info-acao svg{width:20px;height:20px}
+.chat-info-sep{height:8px;background:rgba(255,255,255,.035)}
+.chat-info-linha{display:flex;align-items:center;gap:16px;width:100%;padding:15px 20px;background:none;border:none;color:#fff;font-size:14.5px;cursor:pointer;font-family:inherit;text-align:left;transition:background .15s ease}
+.chat-info-linha:hover{background:rgba(255,255,255,.04)}
+.chat-info-linha:focus-visible{outline:2px solid var(--azul-claro);outline-offset:-2px}
+.chat-info-linha svg{width:20px;height:20px;color:var(--cinza-claro);flex-shrink:0}
+.chat-info-linha .qtd{margin-left:auto;color:var(--cinza-claro);font-size:14px;display:flex;align-items:center;gap:4px}
+.chat-info-linha .qtd svg{width:16px;height:16px}
+.chat-info-thumbs{display:flex;gap:6px;padding:0 20px 16px;overflow:hidden}
+.chat-info-thumbs a{width:84px;height:84px;flex:0 0 auto;border-radius:8px;overflow:hidden;background:rgba(255,255,255,.05)}
+.chat-info-thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.chat-info-membros-topo{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 4px 20px;color:var(--cinza-claro);font-size:13px;font-weight:600}
+.chat-info-membros-topo button{width:34px;height:34px;border-radius:50%;border:none;background:transparent;color:var(--cinza-claro);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.chat-info-membros-topo button:hover{background:rgba(255,255,255,.08);color:#fff}
+.chat-info-membros-topo svg{width:18px;height:18px}
+.chat-info-busca{padding:4px 18px 12px}
+.chat-info-busca input{width:100%;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box}
+.chat-info-busca input::placeholder{color:var(--cinza-medio)}
+.chat-info-busca input:focus{outline:none;border-color:var(--azul);background:rgba(255,255,255,.06);box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+.chat-info-membro{display:flex;align-items:center;gap:14px;padding:9px 20px}
+.chat-info-membro-av{width:44px;height:44px;font-size:14px}
+.chat-info-membro-nome{flex:1;min-width:0;color:#fff;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-info-tag-admin{flex-shrink:0;font-size:11px;font-weight:600;color:#86efac;background:rgba(34,197,94,.14);border-radius:6px;padding:3px 8px}
+.chat-info-vazio{margin:0;padding:22px 20px;color:var(--cinza-claro);font-size:13px;text-align:center}
+.chat-info-abas{display:flex;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:12px}
+.chat-info-aba{flex:1;padding:12px 6px;background:none;border:none;border-bottom:2px solid transparent;color:var(--cinza-claro);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.chat-info-aba:hover{color:#fff}
+.chat-info-aba.ativa{color:#fff;border-bottom-color:var(--azul-claro)}
+.chat-info-grade{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:0 12px}
+.chat-info-grade a{aspect-ratio:1/1;border-radius:6px;overflow:hidden;background:rgba(255,255,255,.05);display:block}
+.chat-info-grade img{width:100%;height:100%;object-fit:cover;display:block}
+.chat-info-item{display:flex;align-items:center;gap:12px;padding:10px 20px;color:#fff;text-decoration:none;transition:background .15s ease}
+.chat-info-item:hover{background:rgba(255,255,255,.04)}
+.chat-info-item .ico{font-size:22px;flex-shrink:0}
+.chat-info-item .txt{min-width:0;flex:1}
+.chat-info-item b{display:block;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-info-item small{display:block;color:var(--cinza-claro);font-size:11.5px;margin-top:2px}
+.chat-info-item.link b{color:var(--azul-claro)}
+.chat-info-resultado{display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.05);padding:11px 20px;color:#fff;cursor:pointer;font-family:inherit;transition:background .15s ease}
+.chat-info-resultado:hover{background:rgba(255,255,255,.04)}
+.chat-info-resultado .r-topo{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--cinza-claro)}
+.chat-info-resultado .r-txt{margin-top:3px;font-size:13.5px;line-height:1.45;word-break:break-word}
+.chat-info-resultado mark{background:rgba(129,140,248,.35);color:#fff;border-radius:3px;padding:0 1px}
+.chat-msg-linha.chat-msg-destaque{background:rgba(129,140,248,.14);border-radius:12px;transition:background .3s ease}
+@media (max-width:760px){
+  .chat-info-grupo{width:100%;border-left:none}
+}
 
 /* ============================================================
    Telas de chamada em tela cheia (estilo chamada nativa de celular):
@@ -11086,7 +11167,14 @@ formSolicitacao.addEventListener('submit', async function(e){
   async function carregarUsuarios(){
     listaUsuariosEl.innerHTML = '<p class="small">Carregando usuários...</p>';
     try{
-      var { data, error } = await db.from('usuarios').select('*').order('nome', { ascending:true });
+      // ALTERADO: busca também os perfis de acesso (na mesma hora), para mostrar
+      // na coluna "Permissão" qual perfil cada usuário tem — sempre com o nome atual.
+      var [respUsuarios, respPerfis] = await Promise.all([
+        db.from('usuarios').select('*').order('nome', { ascending:true }),
+        db.from('perfis_acesso').select('*').order('nome', { ascending:true })
+      ]);
+      var data = respUsuarios.data, error = respUsuarios.error;
+      if(respPerfis && !respPerfis.error && respPerfis.data) perfisAcessoCarregados = respPerfis.data;
       if(error){
         listaUsuariosEl.innerHTML = '<p class="small">Erro ao carregar usuários: ' + error.message + '</p>';
         return;
@@ -11111,11 +11199,24 @@ formSolicitacao.addEventListener('submit', async function(e){
             '<div class="textos-usuario-nova"><b>' + nome + '</b><span>' + u.email + '</span></div>' +
           '</div>';
 
-        var permissaoHtml = '<div class="permissao-usuario-nova">' +
-          (ehAdmin
-            ? '<span class="badge-admin-perm">' + ICONE_COROA + 'Admin</span>'
-            : '<span class="badge-sem-perm">Sem permissão</span>') +
-          '</div>';
+        // ADIÇÃO: coluna "Permissão" — Admin; senão o nome do perfil de acesso
+        // aplicado (usuarios.perfil_id); se não tem perfil mas tem permissões
+        // ajustadas à mão, "Personalizado"; senão continua "Sem permissão".
+        var perfilDoUsuario = u.perfil_id
+          ? perfisAcessoCarregados.filter(function(pf){ return String(pf.id) === String(u.perfil_id); })[0]
+          : null;
+        var temPermissoesProprias = !!(u.permissoes && typeof u.permissoes === 'object' && Object.keys(u.permissoes).length);
+        var seloPermissao;
+        if(ehAdmin){
+          seloPermissao = '<span class="badge-admin-perm">' + ICONE_COROA + 'Admin</span>';
+        }else if(perfilDoUsuario){
+          seloPermissao = '<span class="badge-perfil-perm" title="Perfil de acesso: ' + adminEsc(perfilDoUsuario.nome) + '">' + ICONE_ESCUDO_PERMISSAO + '<span>' + adminEsc(perfilDoUsuario.nome) + '</span></span>';
+        }else if(temPermissoesProprias){
+          seloPermissao = '<span class="badge-perfil-perm personalizado" title="Sem perfil de acesso — permissões ajustadas individualmente">' + ICONE_ESCUDO_PERMISSAO + '<span>Personalizado</span></span>';
+        }else{
+          seloPermissao = '<span class="badge-sem-perm">Sem permissão</span>';
+        }
+        var permissaoHtml = '<div class="permissao-usuario-nova">' + seloPermissao + '</div>';
 
         div.innerHTML = infoHtml + permissaoHtml;
 
@@ -11280,6 +11381,22 @@ formSolicitacao.addEventListener('submit', async function(e){
       cards[input.getAttribute('data-card-key')] = !!input.checked;
     });
     return cards;
+  }
+
+  // ADIÇÃO: diz se o que está marcado no checklist é exatamente o conjunto de
+  // telas de um perfil. Serve pra "Salvar permissões" NÃO desvincular a pessoa
+  // do perfil quando nada foi mudado à mão (ex.: aplicou o perfil e clicou em
+  // Salvar em seguida). Um card ausente no perfil vale tanto "desmarcado"
+  // (como o checklist mostra logo após Aplicar perfil) quanto o padrão do
+  // sistema (como o checklist mostra ao reabrir o modal).
+  function checklistIgualAoPerfil(cards, perfilCards){
+    return CARDS_PERMISSIVEIS.every(function(c){
+      var marcado = !!(cards && cards[c.key]);
+      var bruto = !!(perfilCards && perfilCards[c.key]);
+      var temChave = !!(perfilCards && Object.prototype.hasOwnProperty.call(perfilCards, c.key));
+      var efetivo = temChave ? bruto : !!DEFAULT_PERMISSOES_CARDS[c.key];
+      return marcado === bruto || marcado === efetivo;
+    });
   }
 
   /* ---------------- Perfis de acesso ---------------- */
@@ -11451,7 +11568,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     var sel = document.getElementById('permissoes-usuario-perfil-select');
     if(sel) sel.value = u.perfil_id || '';
     var erro = document.getElementById('erro-permissoes-usuario');
-    if(erro){ erro.textContent = ''; erro.style.display = 'none'; }
+    if(erro){ erro.className = 'msg-caixa erro'; erro.textContent = ''; erro.style.display = 'none'; }
     var modal = document.getElementById('modal-permissoes-usuario');
     if(modal) modal.classList.add('aberto');
   }
@@ -11475,11 +11592,14 @@ formSolicitacao.addEventListener('submit', async function(e){
       var perfilId = sel ? sel.value : '';
       var erro = document.getElementById('erro-permissoes-usuario');
       if(!perfilId){
-        if(erro){ erro.textContent = 'Selecione um perfil para aplicar.'; erro.style.display = 'block'; }
+        if(erro){ erro.className = 'msg-caixa erro'; erro.textContent = 'Selecione um perfil para aplicar.'; erro.style.display = 'block'; }
         return;
       }
-      var perfil = perfisAcessoCarregados.find(function(p){ return p.id === perfilId; });
-      if(!perfil) return;
+      var perfil = perfisAcessoCarregados.find(function(p){ return String(p.id) === String(perfilId); });
+      if(!perfil){
+        if(erro){ erro.className = 'msg-caixa erro'; erro.textContent = 'Perfil não encontrado. Feche esta janela, recarregue a página e tente de novo.'; erro.style.display = 'block'; }
+        return;
+      }
       btnAplicarPerfilPermissoes.disabled = true;
       try{
         // ADIÇÃO: "aplicar perfil" copia (snapshot) o conjunto de cards do
@@ -11490,9 +11610,12 @@ formSolicitacao.addEventListener('submit', async function(e){
         usuarioPermissoesEditando.permissoes = perfil.cards;
         usuarioPermissoesEditando.perfil_id = perfil.id;
         montarChecklistCards(document.getElementById('permissoes-usuario-checklist'), perfil.cards);
+        // ADIÇÃO: avisa que o perfil já foi aplicado e salvo (não precisa clicar em Salvar)
+        if(erro){ erro.className = 'msg-caixa sucesso'; erro.textContent = 'Perfil "' + perfil.nome + '" aplicado.'; erro.style.display = 'block'; }
         carregarUsuarios();
       }catch(err){
-        if(erro){ erro.textContent = 'Não foi possível aplicar o perfil.'; erro.style.display = 'block'; }
+        console.error('Falha ao aplicar perfil de acesso:', err);
+        if(erro){ erro.className = 'msg-caixa erro'; erro.textContent = 'Não foi possível aplicar o perfil' + (err && err.message ? ' (' + err.message + ')' : '') + '.'; erro.style.display = 'block'; }
       }finally{
         btnAplicarPerfilPermissoes.disabled = false;
       }
@@ -11513,11 +11636,20 @@ formSolicitacao.addEventListener('submit', async function(e){
         // ajuste sem avisar. É assim que a pessoa passa a ficar "diferente do
         // perfil": tirando-a dele. Continua possível linká-la de novo depois
         // clicando em "Aplicar perfil".
-        var { error } = await db.from('usuarios').update({ permissoes: cards, perfil_id: null }).eq('id', usuarioPermissoesEditando.id);
+        // CORREÇÃO: só desvincula se o checklist foi mesmo alterado em relação
+        // ao perfil atual da pessoa. Antes, aplicar o perfil e clicar em
+        // "Salvar permissões" em seguida (sem mudar nada) tirava a pessoa do
+        // perfil e ela aparecia como "Personalizado".
+        var perfilAtual = usuarioPermissoesEditando.perfil_id
+          ? perfisAcessoCarregados.filter(function(pf){ return String(pf.id) === String(usuarioPermissoesEditando.perfil_id); })[0]
+          : null;
+        var manterPerfilId = (perfilAtual && checklistIgualAoPerfil(cards, perfilAtual.cards)) ? perfilAtual.id : null;
+        var { error } = await db.from('usuarios').update({ permissoes: cards, perfil_id: manterPerfilId }).eq('id', usuarioPermissoesEditando.id);
         if(error) throw error;
         usuarioPermissoesEditando.permissoes = cards;
-        usuarioPermissoesEditando.perfil_id = null;
+        usuarioPermissoesEditando.perfil_id = manterPerfilId;
         fecharModalPermissoesUsuario();
+        carregarUsuarios(); // ADIÇÃO: atualiza a coluna "Permissão" (ajuste manual desvincula do perfil)
       }catch(err){
         var erro = document.getElementById('erro-permissoes-usuario');
         if(erro){ erro.textContent = 'Não foi possível salvar as permissões.'; erro.style.display = 'block'; }
@@ -14734,6 +14866,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   var elThreadAvatar = document.getElementById('chatThreadAvatar');
   var elThreadNome = document.getElementById('chatThreadNome');
   var elThreadEmail = document.getElementById('chatThreadEmail');
+  var elThreadCol = document.getElementById('chatThreadCol'); // ADIÇÃO: "Dados do grupo"
   var elThreadMensagens = document.getElementById('chatThreadMensagens');
   var elFormEnviar = document.getElementById('chatFormEnviar');
   var elInputMensagem = document.getElementById('chatInputMensagem');
@@ -15199,7 +15332,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     try{
       // ALTERADO: agora também busca "setor" — precisa pra montar a lista de
       // quem pode ser @mencionado num grupo (ver chatMembrosDoGrupo).
-      var { data, error } = await db.from('usuarios').select('id,nome,email,icone_perfil,setor').order('nome', { ascending:true });
+      var { data, error } = await db.from('usuarios').select('id,nome,email,icone_perfil,setor,admin').order('nome', { ascending:true });
       if(error){ console.warn('Chat: erro ao carregar usuários.', error); return; }
       chatUsuariosCache = data || [];
     }catch(err){ console.warn('Chat: falha ao carregar usuários.', err); }
@@ -15528,6 +15661,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     var minha = String(m.remetente_id) === String(chatMeuId);
     var div = document.createElement('div');
     div.className = 'chat-msg-linha ' + (minha ? 'minha' : 'dele');
+    if(m.id != null) div.setAttribute('data-msg-id', m.id); // ADIÇÃO: usado pela pesquisa em "Dados do grupo"
     var hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
     var nomeHtml = '';
     if(ehGrupo && !minha){
@@ -15582,6 +15716,7 @@ formSolicitacao.addEventListener('submit', async function(e){
 
   async function chatAbrirConversa(conversaId, outro){
     chatFecharMencaoDropdown(); // ADIÇÃO: não deixa o menu de @menção de outro grupo "vazar" aqui
+    chatFecharInfoGrupo(); // ADIÇÃO: fecha o painel "Dados do grupo" ao trocar de conversa
     chatTipoAtivo = 'direta';
     chatGrupoAtivoSetor = null;
     chatConversaAtivaId = conversaId;
@@ -15592,7 +15727,9 @@ formSolicitacao.addEventListener('submit', async function(e){
     elThreadAvatar.setAttribute('style', chatAvatarEstilo(outro.nome, outro.icone_perfil));
     elThreadAvatar.innerHTML = chatAvatarHtml(outro.nome, outro.icone_perfil);
     elThreadNome.textContent = outro.nome;
-    elThreadEmail.textContent = outro.email || '';
+    elThreadEmail.textContent = ''; // e-mail removido do cabeçalho do chat
+    elThreadEmail.style.display = 'none';
+    chatMarcarCabecalhoClicavel(true); // clicar no cabeçalho abre "Dados do contato"
     elInputMensagem.value = '';
     chatLimparAnexosSelecionados(); // ADIÇÃO: não deixa anexo escolhido "vazar" pra outra conversa
     // ADIÇÃO: botão de apagar conversa só aparece para administradores
@@ -15632,6 +15769,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // ADIÇÃO: abre (ou troca para) a tela de mensagens de um grupo por setor
   async function chatAbrirGrupo(setor){
     chatFecharMencaoDropdown(); // ADIÇÃO: fecha o menu de @menção ao trocar de grupo/conversa
+    chatFecharInfoGrupo(); // ADIÇÃO: fecha o painel "Dados do grupo" ao trocar de grupo
     chatTipoAtivo = 'grupo';
     chatGrupoAtivoSetor = setor;
     chatConversaAtivaId = null;
@@ -15647,6 +15785,8 @@ formSolicitacao.addEventListener('submit', async function(e){
     elThreadAvatar.innerHTML = chatIconeGrupo(setor);
     elThreadNome.textContent = setor;
     elThreadEmail.textContent = 'Grupo do setor';
+    elThreadEmail.style.display = '';
+    chatMarcarCabecalhoClicavel(true); // clicar no cabeçalho abre "Dados do grupo"
     elInputMensagem.value = '';
     chatLimparAnexosSelecionados(); // ADIÇÃO: não deixa anexo escolhido "vazar" pra outro grupo
     // apagar grupo inteiro não é oferecido — só conversas 1-a-1
@@ -15681,6 +15821,354 @@ formSolicitacao.addEventListener('submit', async function(e){
       console.warn('Chat: falha ao abrir grupo.', err);
     }
   }
+
+
+  /* ============ ADIÇÃO: DADOS DO GRUPO (estilo WhatsApp) ============
+     Clicar no cabeçalho de um grupo (ou de uma conversa 1-a-1, que mostra
+     "Dados do contato") abre um painel com: nome, quantidade de
+     membros, pesquisa de mensagens, "Mídia, links e docs" (tirados das
+     mensagens do próprio grupo) e a lista de membros do setor, com a tag
+     "Admin do grupo" para quem é administrador do sistema. Nada disso grava
+     no banco — só lê usuarios (já em cache) e chat_grupo_mensagens.
+     Nenhum e-mail é exibido aqui (mesmo critério do resto do chat). */
+  var CHAT_EMAIL_ADMIN_PRINCIPAL = 'tecnologiacssl2025@gmail.com'; // mesmo e-mail do verificarAdmin()
+  var elInfoGrupo = null, elInfoCorpo = null, elInfoTitulo = null, elInfoBtnTopo = null;
+  var chatInfoTipo = 'grupo', chatInfoConversaId = null, chatInfoOutro = null;
+  var chatInfoSetor = null, chatInfoMsgs = null, chatInfoVista = 'principal', chatInfoAba = 'midia', chatInfoToken = 0;
+
+  var CHAT_INFO_SVG = {
+    fechar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+    voltar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>',
+    buscar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+    seta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+    voz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    midia: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>'
+  };
+  var CHAT_INFO_TITULOS = { principal:'Dados do grupo', midia:'Mídia, links e docs', busca:'Pesquisar mensagens' };
+
+  function chatMarcarCabecalhoClicavel(sim){
+    var info = document.querySelector('#chatThreadAtivo .chat-thread-info');
+    [elThreadAvatar, info].forEach(function(el){
+      if(!el) return;
+      el.classList.toggle('chat-thread-clicavel', !!sim);
+      if(sim){ el.setAttribute('title', chatTipoAtivo === 'grupo' ? 'Dados do grupo' : 'Dados do contato'); } else { el.removeAttribute('title'); }
+    });
+  }
+
+  function chatInfoEhAdmin(u){
+    if(!u) return false;
+    if(u.admin === true) return true;
+    if(String(u.email || '').toLowerCase() === CHAT_EMAIL_ADMIN_PRINCIPAL) return true;
+    if(String(u.id) === String(chatMeuId) && window.csslEhAdmin && window.csslEhAdmin()) return true;
+    return false;
+  }
+  function chatInfoMembros(setor){
+    var lista = chatUsuariosCache.filter(function(u){ return u.setor === setor; });
+    lista.sort(function(a, b){
+      var ea = String(a.id) === String(chatMeuId), eb = String(b.id) === String(chatMeuId);
+      if(ea !== eb) return ea ? -1 : 1;
+      var aa = chatInfoEhAdmin(a), ab = chatInfoEhAdmin(b);
+      if(aa !== ab) return aa ? -1 : 1;
+      return String(a.nome || a.email || '').localeCompare(String(b.nome || b.email || ''));
+    });
+    return lista;
+  }
+  function chatInfoOnde(){ return chatInfoTipo === 'grupo' ? 'neste grupo' : 'nesta conversa'; }
+  function chatInfoRotuloMembros(n){ return n + (n === 1 ? ' membro' : ' membros'); }
+  function chatInfoData(iso){ return iso ? new Date(iso).toLocaleDateString('pt-BR') : ''; }
+  function chatInfoNomeAutor(id){
+    if(String(id) === String(chatMeuId)) return 'Você';
+    var u = chatUsuarioPorId(id);
+    return u ? (u.nome || u.email) : 'Usuário removido';
+  }
+
+  // separa os anexos das mensagens em Mídia (imagens) / Docs (demais arquivos,
+  // sem mensagens de voz) e acha os links (http/https) escritos no texto
+  function chatInfoColetar(msgs){
+    var midia = [], docs = [], links = [];
+    (msgs || []).forEach(function(m){
+      (Array.isArray(m.anexos) ? m.anexos : []).forEach(function(a){
+        if(!a || !a.url || chatEhAudio(a.tipo, a.nome)) return;
+        if(chatEhImagem(a.tipo, a.nome)) midia.push({ a:a, m:m }); else docs.push({ a:a, m:m });
+      });
+      var achados = String(m.texto || '').match(/https?:\/\/[^\s<>"']+/gi);
+      if(achados) achados.forEach(function(u){ links.push({ url:u.replace(/[.,;:!?)\]]+$/, ''), m:m }); });
+    });
+    return { midia:midia, docs:docs, links:links };
+  }
+
+  function chatInfoRenderMembros(filtro){
+    var el = document.getElementById('chatInfoListaMembros');
+    if(!el) return;
+    filtro = (filtro || '').trim().toLowerCase();
+    var lista = chatInfoMembros(chatInfoSetor).filter(function(u){
+      return !filtro || String(u.nome || u.email || '').toLowerCase().indexOf(filtro) !== -1;
+    });
+    if(!lista.length){
+      el.innerHTML = '<p class="chat-info-vazio">' + (filtro ? 'Nenhum membro encontrado.' : 'Este grupo ainda não tem membros.') + '</p>';
+      return;
+    }
+    el.innerHTML = lista.map(function(u){
+      var eu = String(u.id) === String(chatMeuId);
+      var nome = u.nome || u.email || '?';
+      return '<div class="chat-info-membro">' +
+        '<span class="chat-item-avatar chat-info-membro-av" style="' + chatAvatarEstilo(nome, u.icone_perfil) + '">' + chatAvatarHtml(nome, u.icone_perfil) + '</span>' +
+        '<span class="chat-info-membro-nome">' + chatEscapar(eu ? 'Você' : nome) + '</span>' +
+        (chatInfoEhAdmin(u) ? '<span class="chat-info-tag-admin">Admin do grupo</span>' : '') +
+      '</div>';
+    }).join('');
+  }
+
+  function chatInfoRenderPrincipal(){
+    var ehGrupo = chatInfoTipo === 'grupo';
+    var carregando = chatInfoMsgs === null;
+    var col = chatInfoColetar(chatInfoMsgs);
+    var total = col.midia.length + col.docs.length + col.links.length;
+    var thumbs = col.midia.slice(0, 4).map(function(x){
+      return '<a href="' + chatEscapar(x.a.url) + '" target="_blank" rel="noopener"><img loading="lazy" src="' + chatEscapar(x.a.url) + '" alt="' + chatEscapar(x.a.nome) + '"></a>';
+    }).join('');
+    var btnBuscar = '<button type="button" class="chat-info-acao" data-acao="buscar"><span class="ic">' + CHAT_INFO_SVG.buscar + '</span>Pesquisar</button>';
+    var blocoMidia =
+      '<div class="chat-info-sep"></div>' +
+      '<button type="button" class="chat-info-linha" data-acao="midia">' + CHAT_INFO_SVG.midia + '<span>Mídia, links e docs</span>' +
+        '<span class="qtd">' + (carregando ? '…' : total) + CHAT_INFO_SVG.seta + '</span></button>' +
+      (thumbs ? '<div class="chat-info-thumbs">' + thumbs + '</div>' : '');
+
+    if(!ehGrupo){
+      // ADIÇÃO: "Dados do contato" (conversa 1-a-1) — foto/iniciais, nome, setor,
+      // Voz (a mesma chamada de áudio do cabeçalho), Pesquisar e Mídia/links/docs.
+      var u = chatInfoOutro || {};
+      var cheio = chatUsuarioPorId(u.id) || u;
+      var nome = u.nome || u.email || '?';
+      var btnVoz = elBtnLigar
+        ? '<button type="button" class="chat-info-acao" data-acao="ligar"><span class="ic">' + CHAT_INFO_SVG.voz + '</span>Voz</button>'
+        : '';
+      elInfoCorpo.innerHTML =
+        '<div class="chat-info-hero">' +
+          '<div class="chat-info-avatar" style="' + chatAvatarEstilo(nome, u.icone_perfil) + '">' + chatAvatarHtml(nome, u.icone_perfil) + '</div>' +
+          '<h3>' + chatEscapar(nome) + '</h3>' +
+          (cheio.setor ? '<p class="chat-info-sub">' + chatEscapar(cheio.setor) + '</p>' : '') +
+          '<div class="chat-info-acoes">' + btnVoz + btnBuscar + '</div>' +
+        '</div>' + blocoMidia;
+      return;
+    }
+
+    var setor = chatInfoSetor;
+    var nMembros = chatInfoMembros(setor).length;
+    elInfoCorpo.innerHTML =
+      '<div class="chat-info-hero">' +
+        '<div class="chat-info-avatar" style="background:' + chatCorAvatar(setor) + '">' + chatIconeGrupo(setor) + '</div>' +
+        '<h3>' + chatEscapar(setor) + '</h3>' +
+        '<p class="chat-info-sub">Grupo · <b>' + chatInfoRotuloMembros(nMembros) + '</b></p>' +
+        '<div class="chat-info-acoes">' + btnBuscar + '</div>' +
+      '</div>' + blocoMidia +
+      '<div class="chat-info-sep"></div>' +
+      '<div class="chat-info-membros-topo"><span>' + chatInfoRotuloMembros(nMembros) + '</span>' +
+        '<button type="button" data-acao="buscar-membro" title="Pesquisar membro" aria-label="Pesquisar membro">' + CHAT_INFO_SVG.buscar + '</button></div>' +
+      '<div class="chat-info-busca" id="chatInfoBuscaMembroWrap" style="display:none"><input type="text" id="chatInfoBuscaMembro" placeholder="Pesquisar membro" autocomplete="off"></div>' +
+      '<div id="chatInfoListaMembros"></div>';
+    chatInfoRenderMembros('');
+  }
+
+  function chatInfoRenderMidia(){
+    if(chatInfoMsgs === null){ elInfoCorpo.innerHTML = '<p class="chat-info-vazio">Carregando…</p>'; return; }
+    var col = chatInfoColetar(chatInfoMsgs);
+    var abas = [ ['midia', 'Mídia', col.midia.length], ['docs', 'Docs', col.docs.length], ['links', 'Links', col.links.length] ];
+    var html = '<div class="chat-info-abas">' + abas.map(function(a){
+      return '<button type="button" class="chat-info-aba' + (chatInfoAba === a[0] ? ' ativa' : '') + '" data-acao="aba" data-aba="' + a[0] + '">' + a[1] + ' (' + a[2] + ')</button>';
+    }).join('') + '</div>';
+    if(chatInfoAba === 'midia'){
+      html += col.midia.length
+        ? '<div class="chat-info-grade">' + col.midia.map(function(x){
+            return '<a href="' + chatEscapar(x.a.url) + '" target="_blank" rel="noopener" title="' + chatEscapar(x.a.nome) + ' · ' + chatInfoData(x.m.criado_em) + '"><img loading="lazy" src="' + chatEscapar(x.a.url) + '" alt="' + chatEscapar(x.a.nome) + '"></a>';
+          }).join('') + '</div>'
+        : '<p class="chat-info-vazio">Nenhuma imagem enviada ' + chatInfoOnde() + '.</p>';
+    }else if(chatInfoAba === 'docs'){
+      html += col.docs.length
+        ? col.docs.map(function(x){
+            return '<a class="chat-info-item" href="' + chatEscapar(x.a.url) + '" target="_blank" rel="noopener">' +
+              '<span class="ico">' + chatIconeArquivo(x.a.nome) + '</span>' +
+              '<span class="txt"><b>' + chatEscapar(x.a.nome) + '</b><small>' + (x.a.tamanho ? chatFormatarTamanho(x.a.tamanho) + ' · ' : '') + chatInfoData(x.m.criado_em) + '</small></span></a>';
+          }).join('')
+        : '<p class="chat-info-vazio">Nenhum documento enviado ' + chatInfoOnde() + '.</p>';
+    }else{
+      html += col.links.length
+        ? col.links.map(function(x){
+            return '<a class="chat-info-item link" href="' + chatEscapar(x.url) + '" target="_blank" rel="noopener noreferrer">' +
+              '<span class="ico">🔗</span>' +
+              '<span class="txt"><b>' + chatEscapar(x.url) + '</b><small>' + chatEscapar(chatInfoNomeAutor(x.m.remetente_id)) + ' · ' + chatInfoData(x.m.criado_em) + '</small></span></a>';
+          }).join('')
+        : '<p class="chat-info-vazio">Nenhum link enviado ' + chatInfoOnde() + '.</p>';
+    }
+    elInfoCorpo.innerHTML = html;
+  }
+
+  function chatInfoDestacar(texto, termo){
+    var t = String(texto || ''), tl = t.toLowerCase(), q = termo.toLowerCase();
+    var i = tl.indexOf(q);
+    if(i === -1) return chatEscapar(t.length > 140 ? t.slice(0, 140) + '…' : t);
+    var ini = Math.max(0, i - 40), fim = Math.min(t.length, i + q.length + 100);
+    var trecho = t.slice(ini, fim), tlTrecho = trecho.toLowerCase(), out = '', pos = 0, j;
+    while((j = tlTrecho.indexOf(q, pos)) !== -1){
+      out += chatEscapar(trecho.slice(pos, j)) + '<mark>' + chatEscapar(trecho.slice(j, j + q.length)) + '</mark>';
+      pos = j + q.length;
+    }
+    out += chatEscapar(trecho.slice(pos));
+    return (ini > 0 ? '…' : '') + out + (fim < t.length ? '…' : '');
+  }
+  function chatInfoRenderResultadosBusca(termo){
+    var el = document.getElementById('chatInfoResultadosBusca');
+    if(!el) return;
+    termo = (termo || '').trim();
+    if(termo.length < 2){ el.innerHTML = '<p class="chat-info-vazio">Digite ao menos 2 letras para pesquisar nas mensagens ' + (chatInfoTipo === 'grupo' ? 'deste grupo' : 'desta conversa') + '.</p>'; return; }
+    if(chatInfoMsgs === null){ el.innerHTML = '<p class="chat-info-vazio">Carregando…</p>'; return; }
+    var q = termo.toLowerCase(), achados = [];
+    chatInfoMsgs.forEach(function(m){
+      if(achados.length >= 60) return;
+      var texto = String(m.texto || '');
+      if(texto.toLowerCase().indexOf(q) !== -1){ achados.push({ m:m, texto:texto }); return; }
+      var anexo = (Array.isArray(m.anexos) ? m.anexos : []).filter(function(a){ return a && String(a.nome || '').toLowerCase().indexOf(q) !== -1; })[0];
+      if(anexo) achados.push({ m:m, texto:'📎 ' + anexo.nome });
+    });
+    if(!achados.length){ el.innerHTML = '<p class="chat-info-vazio">Nenhuma mensagem encontrada.</p>'; return; }
+    el.innerHTML = achados.map(function(x){
+      return '<button type="button" class="chat-info-resultado" data-acao="ir-msg" data-msg-id="' + chatEscapar(x.m.id) + '">' +
+        '<div class="r-topo"><span>' + chatEscapar(chatInfoNomeAutor(x.m.remetente_id)) + '</span><span>' + chatInfoData(x.m.criado_em) + '</span></div>' +
+        '<div class="r-txt">' + chatInfoDestacar(x.texto, termo) + '</div></button>';
+    }).join('');
+  }
+  function chatInfoRenderBusca(){
+    elInfoCorpo.innerHTML =
+      '<div class="chat-info-busca"><input type="text" id="chatInfoBuscaMsg" placeholder="Pesquisar mensagens" autocomplete="off"></div>' +
+      '<div id="chatInfoResultadosBusca"></div>';
+    chatInfoRenderResultadosBusca('');
+    var inp = document.getElementById('chatInfoBuscaMsg');
+    if(inp) inp.focus();
+  }
+
+  function chatInfoRender(){
+    if(!elInfoGrupo) return;
+    var tituloPrincipal = chatInfoTipo === 'grupo' ? 'Dados do grupo' : 'Dados do contato';
+    elInfoTitulo.textContent = chatInfoVista === 'principal' ? tituloPrincipal : (CHAT_INFO_TITULOS[chatInfoVista] || tituloPrincipal);
+    elInfoGrupo.setAttribute('aria-label', tituloPrincipal);
+    elInfoBtnTopo.innerHTML = chatInfoVista === 'principal' ? CHAT_INFO_SVG.fechar : CHAT_INFO_SVG.voltar;
+    elInfoBtnTopo.setAttribute('aria-label', chatInfoVista === 'principal' ? 'Fechar' : 'Voltar');
+    if(chatInfoVista === 'midia') chatInfoRenderMidia();
+    else if(chatInfoVista === 'busca') chatInfoRenderBusca();
+    else chatInfoRenderPrincipal();
+    elInfoCorpo.scrollTop = 0;
+  }
+  function chatInfoIrPara(vista){ chatInfoVista = vista; chatInfoRender(); }
+
+  function chatInfoIrParaMensagem(id){
+    chatFecharInfoGrupo();
+    var alvo = elThreadMensagens.querySelector('[data-msg-id="' + String(id).replace(/"/g, '') + '"]');
+    if(!alvo){ chatToast('Mensagem não encontrada na conversa.'); return; }
+    alvo.scrollIntoView({ behavior:'smooth', block:'center' });
+    alvo.classList.add('chat-msg-destaque');
+    setTimeout(function(){ alvo.classList.remove('chat-msg-destaque'); }, 1800);
+  }
+
+  function chatCriarInfoGrupo(){
+    elInfoGrupo = document.createElement('div');
+    elInfoGrupo.className = 'chat-info-grupo';
+    elInfoGrupo.id = 'chatInfoGrupo';
+    elInfoGrupo.setAttribute('role', 'dialog');
+    elInfoGrupo.setAttribute('aria-label', 'Dados do grupo');
+    elInfoGrupo.innerHTML =
+      '<div class="chat-info-topo"><button type="button" class="chat-info-btn-topo" id="chatInfoBtnTopo"></button>' +
+      '<span class="chat-info-titulo" id="chatInfoTitulo"></span></div>' +
+      '<div class="chat-info-corpo" id="chatInfoCorpo"></div>';
+    elThreadCol.appendChild(elInfoGrupo);
+    elInfoCorpo = document.getElementById('chatInfoCorpo');
+    elInfoTitulo = document.getElementById('chatInfoTitulo');
+    elInfoBtnTopo = document.getElementById('chatInfoBtnTopo');
+
+    function voltarOuFechar(){
+      if(chatInfoVista !== 'principal') chatInfoIrPara('principal'); else chatFecharInfoGrupo();
+    }
+    elInfoBtnTopo.addEventListener('click', voltarOuFechar);
+    document.addEventListener('keydown', function(ev){
+      if(ev.key === 'Escape' && elInfoGrupo && elInfoGrupo.classList.contains('aberto')) voltarOuFechar();
+    });
+    elInfoCorpo.addEventListener('click', function(ev){
+      var alvo = ev.target.closest('[data-acao]');
+      if(!alvo) return;
+      var acao = alvo.getAttribute('data-acao');
+      if(acao === 'buscar') chatInfoIrPara('busca');
+      else if(acao === 'midia') chatInfoIrPara('midia');
+      else if(acao === 'ligar'){ chatFecharInfoGrupo(); chatIniciarChamada(); }
+      else if(acao === 'aba'){ chatInfoAba = alvo.getAttribute('data-aba'); chatInfoRender(); }
+      else if(acao === 'buscar-membro'){
+        var wrap = document.getElementById('chatInfoBuscaMembroWrap'), inp = document.getElementById('chatInfoBuscaMembro');
+        if(!wrap || !inp) return;
+        var vaiAbrir = wrap.style.display === 'none';
+        wrap.style.display = vaiAbrir ? 'block' : 'none';
+        if(vaiAbrir){ inp.focus(); } else { inp.value = ''; chatInfoRenderMembros(''); }
+      }
+      else if(acao === 'ir-msg') chatInfoIrParaMensagem(alvo.getAttribute('data-msg-id'));
+    });
+    elInfoCorpo.addEventListener('input', function(ev){
+      if(ev.target.id === 'chatInfoBuscaMembro') chatInfoRenderMembros(ev.target.value);
+      else if(ev.target.id === 'chatInfoBuscaMsg') chatInfoRenderResultadosBusca(ev.target.value);
+    });
+  }
+
+  async function chatAbrirInfoPainel(){
+    if(!db) return;
+    var ehGrupo = chatTipoAtivo === 'grupo';
+    if(ehGrupo ? !chatGrupoAtivoSetor : (!chatConversaAtivaId || !chatOutroAtivo)) return;
+    if(!elInfoGrupo) chatCriarInfoGrupo();
+    chatInfoTipo = ehGrupo ? 'grupo' : 'direta';
+    chatInfoSetor = ehGrupo ? chatGrupoAtivoSetor : null;
+    chatInfoConversaId = ehGrupo ? null : chatConversaAtivaId;
+    chatInfoOutro = ehGrupo ? null : chatOutroAtivo;
+    chatInfoMsgs = null; chatInfoVista = 'principal'; chatInfoAba = 'midia';
+    var token = ++chatInfoToken;
+    elInfoGrupo.classList.add('aberto');
+    chatInfoRender();
+    elInfoBtnTopo.focus();
+    try{
+      var consulta = db.from(ehGrupo ? 'chat_grupo_mensagens' : 'chat_mensagens').select('*');
+      consulta = ehGrupo ? consulta.eq('setor', chatInfoSetor) : consulta.eq('conversa_id', chatInfoConversaId);
+      var { data, error } = await consulta.order('criado_em', { ascending:false }).limit(1500);
+      if(token !== chatInfoToken) return; // painel foi fechado/trocado enquanto carregava
+      if(error){ console.warn('Chat: falha ao carregar mídia do painel.', error); chatInfoMsgs = []; }
+      else chatInfoMsgs = data || [];
+    }catch(err){
+      if(token !== chatInfoToken) return;
+      console.warn('Chat: falha ao carregar mídia do painel.', err);
+      chatInfoMsgs = [];
+    }
+    // atualiza só a parte que depende das mensagens, sem tirar o foco de quem já está digitando
+    if(chatInfoVista === 'principal'){
+      var busca = document.getElementById('chatInfoBuscaMembro');
+      var valorBusca = busca ? busca.value : '';
+      var buscaAberta = busca && document.getElementById('chatInfoBuscaMembroWrap').style.display !== 'none';
+      var rolagem = elInfoCorpo.scrollTop;
+      chatInfoRenderPrincipal();
+      elInfoCorpo.scrollTop = rolagem;
+      if(buscaAberta){
+        document.getElementById('chatInfoBuscaMembroWrap').style.display = 'block';
+        var nb = document.getElementById('chatInfoBuscaMembro'); nb.value = valorBusca; chatInfoRenderMembros(valorBusca);
+      }
+    }else if(chatInfoVista === 'midia'){
+      chatInfoRenderMidia();
+    }else if(chatInfoVista === 'busca'){
+      var ib = document.getElementById('chatInfoBuscaMsg');
+      chatInfoRenderResultadosBusca(ib ? ib.value : '');
+    }
+  }
+  function chatFecharInfoGrupo(){
+    chatInfoToken++;
+    if(elInfoGrupo) elInfoGrupo.classList.remove('aberto');
+  }
+
+  (function(){
+    var info = document.querySelector('#chatThreadAtivo .chat-thread-info');
+    function abrir(){ if(chatTipoAtivo === 'grupo' || chatTipoAtivo === 'direta') chatAbrirInfoPainel(); }
+    [elThreadAvatar, info].forEach(function(el){ if(el) el.addEventListener('click', abrir); });
+  })();
 
   var elBtnVoltarLista = document.getElementById('chatBtnVoltarLista');
   if(elBtnVoltarLista){
@@ -15991,7 +16479,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       var nomeExibicao = u.nome || u.email;
       return '<div class="chat-modal-usuario-item" data-id="' + u.id + '">' +
           '<span class="chat-item-avatar" style="' + chatAvatarEstilo(nomeExibicao, u.icone_perfil) + '">' + chatAvatarHtml(nomeExibicao, u.icone_perfil) + '</span>' +
-          '<div><div class="chat-modal-usuario-nome">' + chatEscapar(nomeExibicao) + '</div><div class="chat-modal-usuario-email">' + chatEscapar(u.email) + '</div></div>' +
+          '<div><div class="chat-modal-usuario-nome">' + chatEscapar(nomeExibicao) + '</div></div>' +
         '</div>';
     }).join('');
 
@@ -16122,7 +16610,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     chatConversasCache = [];
     chatUsuariosCache = [];
     chatGruposCache = []; // ADIÇÃO
-    chatTipoAtivo = null; chatGrupoAtivoSetor = null; // ADIÇÃO
+    chatTipoAtivo = null; chatGrupoAtivoSetor = null; chatFecharInfoGrupo(); // ADIÇÃO
     chatCategoriaAberta = null; chatFiltroNaoLidas = false; chatModalAbaAtiva = 'usuario'; // ADIÇÃO
     chatArquivosSelecionados = []; // ADIÇÃO: anexos
     if(elAnexosSelecionados){ elAnexosSelecionados.style.display = 'none'; elAnexosSelecionados.innerHTML = ''; }
