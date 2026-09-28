@@ -1790,6 +1790,15 @@ table.rel-tabela tr.rel-total td{font-weight:800;color:#0f1b3d;border-top:1.5px 
    chat_conversas / chat_mensagens) e atualização em tempo real.
    ============================================================= */
 #tela-chat{display:none;padding-top:36px;animation:fadeSlideIn .35s cubic-bezier(.2,.8,.2,1)}
+/* CORREÇÃO: tela nova "Auditoria de Conversas" estava aparecendo direto na
+   tela inicial (e em cima de todas as outras) porque, ao contrário de TODAS
+   as outras telas principais deste arquivo (#tela-chat acima, #tela-estoque,
+   #tela-sugestoes etc.), ela não tinha essa regra de "display:none" por
+   padrão — sem isso, a div fica com o "display:block" normal dela e some
+   junto (empilhada) com o portal, em vez de só aparecer quando o JS do
+   módulo troca o "display" dela pra "block" ao clicar no card. Mesmo padrão
+   das demais: começa escondida, só o próprio módulo mostra/esconde. */
+#tela-auditoria-chat{display:none;padding-top:36px;animation:fadeSlideIn .35s cubic-bezier(.2,.8,.2,1)}
 /* REDESIGN: cabeçalho do Chat Interno mais compacto — deixa mais altura
    disponível pro cartão do chat em si, sem mudar a estrutura (mesmo
    .topo-chamado usado nas outras telas). */
@@ -3099,6 +3108,24 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
             <span class="stat-chip" id="chip-sugestoes" hidden></span>
           </div>
           <p>Veja, responda e acompanhe as ideias enviadas pelos usuários para melhorar o sistema.</p>
+          <span class="tag-livre">Acessar →</span>
+        </div>
+      </div>
+
+      <!-- ADIÇÃO: card "Auditoria de Conversas" — tela separada, só leitura,
+           que mostra as conversas DIRETAS (1-a-1) entre QUAISQUER dois
+           usuários do sistema, mesmo sem o admin fazer parte delas. Começa
+           escondido e bloqueado; aoEntrarExtra() libera via
+           window.csslPodeVer('chat_auditoria') (admins sempre; demais
+           usuários/perfis só se liberado em Gerenciar usuários). Pensado
+           originalmente para o perfil GESTOR HOSPITALAR. -->
+      <div class="card-app auditoria-chat bloqueado" id="card-auditoria-chat" style="display:none">
+        <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><circle cx="11.5" cy="14.5" r="2.5"/><path d="M13.3 16.3 15 18"/></svg></div>
+        <div class="card-corpo">
+          <div class="card-topo">
+            <h3>Auditoria de Conversas</h3>
+          </div>
+          <p>Veja, em modo somente leitura, as conversas diretas entre quaisquer usuários do portal.</p>
           <span class="tag-livre">Acessar →</span>
         </div>
       </div>
@@ -4973,6 +5000,62 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
       </div>
       <div class="chat-modal-lista-usuarios" id="chatModalListaUsuarios">
         <p class="chat-vazio-lista">Carregando usuários...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ADIÇÃO: AUDITORIA DE CONVERSAS ============
+       Tela separada do Chat Interno (a pedido — card próprio no portal, não
+       uma aba dentro do chat). Mostra, em modo SOMENTE LEITURA, as conversas
+       DIRETAS (1-a-1) entre QUAISQUER dois usuários do sistema — não só as
+       do próprio auditor. Reaproveita as mesmas classes de CSS do Chat
+       Interno (.chat-cartao, .chat-lista-col, .chat-thread-col etc., todas
+       globais) para manter a mesma cara visual, mas com HTML/JS próprios:
+       sem campo de mensagem, sem anexar, sem apagar — só ver. Os grupos por
+       setor não aparecem aqui (quem tem a sub-permissão "chat_admin" já vê
+       todos eles dentro do Chat Interno normal). -->
+  <div id="tela-auditoria-chat">
+    <div class="topo-chamado">
+      <div>
+        <h2>Auditoria de Conversas</h2>
+        <p>Veja, em modo somente leitura, as conversas diretas (1-a-1) entre quaisquer usuários do portal.</p>
+      </div>
+      <button class="btn-secundario btn-voltar-portal" id="btn-voltar-portal-auditoria-chat">Voltar</button>
+    </div>
+
+    <div class="chat-cartao cartao-escuro">
+      <div class="chat-lista-col" id="audListaCol">
+        <div class="chat-lista-topo">
+          <div class="chat-busca">
+            <input type="text" id="audBuscaInput" placeholder="Buscar por nome de qualquer participante...">
+          </div>
+        </div>
+        <div class="chat-lista-conversas" id="audListaConversas">
+          <p class="chat-vazio-lista">Carregando conversas...</p>
+        </div>
+      </div>
+
+      <div class="chat-thread-col" id="audThreadCol">
+        <div class="chat-thread-vazio" id="audThreadVazio">
+          <div class="ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><circle cx="11.5" cy="14.5" r="2.5"/><path d="M13.3 16.3 15 18"/></svg></div>
+          <h4>Selecione uma conversa</h4>
+          <p>Escolha uma dupla de usuários na lista ao lado para ler a conversa entre eles.</p>
+        </div>
+
+        <div class="chat-thread-ativo" id="audThreadAtivo" style="display:none">
+          <div class="chat-thread-header">
+            <button type="button" class="chat-btn-voltar-lista" id="audBtnVoltarLista" title="Voltar para a lista">←</button>
+            <span class="chat-thread-avatar" id="audThreadAvatar"></span>
+            <div class="chat-thread-info">
+              <b id="audThreadNome">—</b>
+              <span id="audThreadSub">—</span>
+            </div>
+            <!-- ADIÇÃO: selo deixando claro que essa tela é só leitura —
+                 nunca há campo de mensagem, anexo ou botão de apagar aqui. -->
+            <span class="tag-restrito" style="margin-top:0;flex-shrink:0" title="Você está vendo esta conversa em modo somente leitura">👁️ Somente leitura</span>
+          </div>
+          <div class="chat-thread-mensagens" id="audThreadMensagens"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -7694,6 +7777,13 @@ var CARDS_PERMISSIVEIS = [
   // Gerenciar Usuários continuam bloqueados). Só tem efeito se "Chat Interno"
   // acima também estiver marcado — do contrário a pessoa nem abre o chat.
   { key:'chat_admin', label:'Chat Interno — nível admin (ver todos os setores e apagar conversas)' },
+  // ADIÇÃO: tela separada (não é dentro do Chat Interno) de AUDITORIA —
+  // permite ver, em modo somente leitura, as conversas DIRETAS (1-a-1) de
+  // QUALQUER pessoa com QUALQUER pessoa no sistema, mesmo sem participar
+  // delas. Não dá pra responder, apagar ou anexar nada por aqui — só ler.
+  // Os grupos por setor não entram aqui, pois quem tem "chat_admin" (acima)
+  // já vê todos eles normalmente dentro do próprio Chat Interno.
+  { key:'chat_auditoria', label:'Auditoria de Conversas — ver (somente leitura) as conversas diretas de qualquer pessoa' },
   { key:'tv', label:'TVs' },
   { key:'agenda', label:'Agenda' },
   { key:'sugestoes', label:'Sugestões recebidas' }
@@ -7705,7 +7795,8 @@ var DEFAULT_PERMISSOES_CARDS = {
   // lá — esse padrão só vale pra quem nunca foi configurado.
   chamado: true, solicitacao: true, historico: true, wifi: false,
   estoque: false, computadores: false, chat: false, chat_admin: false, tv: false, agenda: false,
-  sugestoes: false // ADIÇÃO: tela de sugestões recebidas — só admins, salvo liberação
+  sugestoes: false, // ADIÇÃO: tela de sugestões recebidas — só admins, salvo liberação
+  chat_auditoria: false // ADIÇÃO: auditoria de conversas — só admins, salvo liberação
 };
 
 var emailLogado = "";
@@ -11756,6 +11847,8 @@ formSolicitacao.addEventListener('submit', async function(e){
     _aplicarVisibilidadeSimples(_cardTv, null, window.csslPodeVer('tv'));
     _aplicarVisibilidadeSimples(_cardAgenda, null, window.csslPodeVer('agenda'));
     _aplicarVisibilidadeSimples(document.getElementById('card-sugestoes'), null, window.csslPodeVer('sugestoes'));
+    // ADIÇÃO: card "Auditoria de Conversas" — mesmo padrão simples acima.
+    _aplicarVisibilidadeSimples(document.getElementById('card-auditoria-chat'), null, window.csslPodeVer('chat_auditoria'));
     // ADIÇÃO: os cards "Abrir Chamado", "Fazer Solicitação", "Meu Histórico"
     // e "Wi-Fi" eram sempre abertos pra todo mundo, sem nenhum controle — a
     // nova tela de permissões passa a valer pra eles também. Por padrão
@@ -19944,6 +20037,349 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
     if(_entrarNoPortalAntesMarco) _entrarNoPortalAntesMarco();
     setTimeout(verificarMarco, 900);
   };
+})();
+</script>
+
+<!-- ============================================================
+     ADIÇÃO: "Auditoria de Conversas" — tela separada e SOMENTE LEITURA
+     (a pedido: card novo no portal, não uma aba dentro do Chat Interno)
+     que mostra as conversas DIRETAS (1-a-1) entre QUAISQUER dois usuários
+     cadastrados, mesmo sem quem está olhando fazer parte delas. Liberada
+     pela nova permissão "chat_auditoria" (ver CARDS_PERMISSIVEIS), pensada
+     originalmente para o perfil GESTOR HOSPITALAR. Não é uma extensão do
+     Chat Interno nem da sub-permissão "chat_admin" (essa dá nível admin
+     DENTRO do próprio chat da pessoa, mas continua só mostrando as
+     conversas dela); aqui é uma capacidade nova de ver conversas de
+     TERCEIROS. Os grupos por setor não entram nesta tela — quem tem
+     "chat_admin" já vê todos eles normalmente dentro do Chat Interno.
+     Módulo independente (mesmo padrão dos demais deste arquivo): duplica
+     seus próprios helpers pequenos em vez de compartilhar escopo com o
+     módulo do Chat Interno. Reaproveita só as classes de CSS globais do
+     chat (.chat-cartao, .chat-lista-col, .chat-item-conversa, .chat-thread-*,
+     .chat-msg-* etc.) — sem CSS novo. ============================================================ -->
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var card = $('card-auditoria-chat'), tela = $('tela-auditoria-chat'), telaPortal = $('tela-portal');
+  if(!card || !tela || !telaPortal) return;
+
+  var elBusca = $('audBuscaInput');
+  var elLista = $('audListaConversas');
+  var elListaCol = $('audListaCol');
+  var elThreadVazio = $('audThreadVazio');
+  var elThreadAtivo = $('audThreadAtivo');
+  var elThreadAvatar = $('audThreadAvatar');
+  var elThreadNome = $('audThreadNome');
+  var elThreadSub = $('audThreadSub');
+  var elThreadMensagens = $('audThreadMensagens');
+  var elBtnVoltarLista = $('audBtnVoltarLista');
+  var elBtnVoltarPortal = $('btn-voltar-portal-auditoria-chat');
+
+  function cliente(){ return (typeof db !== 'undefined' && db) ? db : null; }
+  // ADIÇÃO: segunda trava (defesa em profundidade), mesmo padrão usado nos
+  // outros módulos simples (Sugestões, TV, Agenda) — o card já some pra quem
+  // não tem a permissão em aoEntrarExtra(), isso aqui é só uma garantia a
+  // mais caso alguém tente abrir a tela de outro jeito.
+  function podeVer(){ return !!(window.csslPodeVer && window.csslPodeVer('chat_auditoria')); }
+
+  /* ============ utilitários (cópias pequenas e independentes, no mesmo
+     espírito dos outros módulos deste arquivo — ver chat/sugestões) ============ */
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function iniciais(nome){
+    var partes = String(nome || '?').trim().split(/\s+/).filter(Boolean);
+    if(!partes.length) return '?';
+    if(partes.length === 1) return partes[0].slice(0, 2).toUpperCase();
+    return (partes[0][0] + partes[1][0]).toUpperCase();
+  }
+  var CORES_AVATAR = ['#6366f1', '#22c55e', '#f59e0b', '#a78bfa', '#ef4444', '#14b8a6', '#eab308', '#ec4899'];
+  function corAvatar(chave){
+    var s = String(chave || '?'), soma = 0;
+    for(var i = 0; i < s.length; i++) soma += s.charCodeAt(i);
+    return CORES_AVATAR[soma % CORES_AVATAR.length];
+  }
+  function formatarDia(iso){
+    var d = new Date(iso), hoje = new Date(), ontem = new Date();
+    ontem.setDate(hoje.getDate() - 1);
+    if(d.toLocaleDateString('pt-BR') === hoje.toLocaleDateString('pt-BR')) return 'Hoje';
+    if(d.toLocaleDateString('pt-BR') === ontem.toLocaleDateString('pt-BR')) return 'Ontem';
+    return d.toLocaleDateString('pt-BR');
+  }
+  function horaRelativa(iso){
+    if(!iso) return '';
+    var diffMin = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+    if(diffMin < 1) return 'agora';
+    if(diffMin < 60) return diffMin + ' min';
+    var h = Math.floor(diffMin / 60);
+    if(h < 24) return h + 'h';
+    var d = Math.floor(h / 24);
+    if(d < 7) return d + 'd';
+    return new Date(iso).toLocaleDateString('pt-BR');
+  }
+  function ehImagem(tipo, nome){
+    if(tipo && tipo.indexOf('image/') === 0) return true;
+    return /\.(png|jpe?g|gif|webp)$/i.test(nome || '');
+  }
+  function ehAudio(tipo, nome){
+    if(tipo && tipo.indexOf('audio/') === 0) return true;
+    return /\.(webm|ogg|m4a|mp3|wav|aac)$/i.test(nome || '');
+  }
+  function iconeArquivo(nome){
+    var ext = String(nome || '').split('.').pop().toLowerCase();
+    if(ext === 'pdf') return '📕';
+    if(['doc', 'docx'].indexOf(ext) !== -1) return '📘';
+    if(['xls', 'xlsx', 'csv'].indexOf(ext) !== -1) return '📗';
+    if(['zip', 'rar', '7z'].indexOf(ext) !== -1) return '🗜️';
+    return '📄';
+  }
+  function formatarTamanho(bytes){
+    if(!bytes && bytes !== 0) return '';
+    if(bytes < 1024) return bytes + ' B';
+    if(bytes < 1048576) return Math.round(bytes / 1024) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+  // ADIÇÃO: mesmo cartão de anexo (imagem/áudio/arquivo) do Chat Interno —
+  // funciona porque as URLs guardadas em "anexos" já são públicas do Storage.
+  function montarAnexosHtml(anexos){
+    if(!anexos || !anexos.length) return '';
+    return '<div class="chat-msg-anexos">' + anexos.map(function(a){
+      if(ehAudio(a.tipo, a.nome)){
+        return '<div class="chat-msg-audio"><audio controls preload="none" src="' + esc(a.url) + '"></audio></div>';
+      }
+      if(ehImagem(a.tipo, a.nome)){
+        return '<a href="' + esc(a.url) + '" target="_blank" rel="noopener"><img class="chat-msg-anexo-imagem" src="' + esc(a.url) + '" alt="' + esc(a.nome) + '"></a>';
+      }
+      return '<a class="chat-msg-anexo-arquivo" href="' + esc(a.url) + '" target="_blank" rel="noopener">' +
+        '<span class="chat-msg-anexo-icone">' + iconeArquivo(a.nome) + '</span>' +
+        '<span class="chat-msg-anexo-info"><span class="chat-msg-anexo-nome">' + esc(a.nome) + '</span>' +
+        (a.tamanho ? '<span class="chat-msg-anexo-tamanho">' + formatarTamanho(a.tamanho) + '</span>' : '') + '</span>' +
+      '</a>';
+    }).join('') + '</div>';
+  }
+  function previewDaMensagem(m){
+    if(!m) return '';
+    if(m.texto && m.texto.trim()) return m.texto;
+    if(m.anexos && m.anexos.length){
+      if(m.anexos.length === 1 && ehAudio(m.anexos[0].tipo, m.anexos[0].nome)) return '🎤 Mensagem de voz';
+      return m.anexos.length === 1 ? ('📎 ' + m.anexos[0].nome) : ('📎 ' + m.anexos.length + ' arquivos');
+    }
+    return '';
+  }
+  function vazio(titulo, texto){
+    return '<p class="chat-vazio-lista"><b>' + esc(titulo) + '</b>' + (texto ? ('<br>' + esc(texto)) : '') + '</p>';
+  }
+
+  /* ============ dados ============ */
+  var usuariosCache = [];   // todos os usuários do sistema (id -> nome/email/ícone)
+  var conversasCache = [];  // TODAS as conversas diretas (1-a-1) do sistema, não só as de quem está olhando
+  var conversaAtivaId = null;
+  var carregandoAgora = false;
+
+  function usuarioPorId(id){
+    return usuariosCache.filter(function(u){ return String(u.id) === String(id); })[0];
+  }
+
+  async function carregarUsuarios(){
+    var c = cliente();
+    if(!c) return;
+    try{
+      var r = await c.from('usuarios').select('id,nome,email,icone_perfil,setor').order('nome', { ascending:true });
+      if(r.error){ console.warn('Auditoria de conversas: erro ao carregar usuários.', r.error); return; }
+      usuariosCache = r.data || [];
+    }catch(err){ console.warn('Auditoria de conversas: falha ao carregar usuários.', err); }
+  }
+
+  // ADIÇÃO: diferente de chatCarregarConversas() (Chat Interno normal), que
+  // só busca as conversas do PRÓPRIO usuário logado via
+  // .or('usuario_a_id.eq....,usuario_b_id.eq....'), esta busca não tem esse
+  // filtro — traz de propósito TODAS as conversas diretas do sistema, de
+  // qualquer pessoa com qualquer pessoa. É isso que implementa o pedido de
+  // ver "o que o usuário 2 enviou pro 4, 6, 9 etc".
+  async function carregarConversas(){
+    var c = cliente();
+    if(!c){ elLista.innerHTML = vazio('Sem conexão com o servidor', 'Não foi possível carregar as conversas agora.'); return; }
+    if(carregandoAgora) return;
+    carregandoAgora = true;
+    if(!conversasCache.length) elLista.innerHTML = '<p class="chat-vazio-lista">Carregando conversas...</p>';
+    try{
+      var r = await c.from('chat_conversas').select('*').order('ultima_mensagem_em', { ascending:false });
+      if(r.error){ elLista.innerHTML = vazio('Não foi possível carregar', 'Verifique a conexão e tente novamente.'); return; }
+      var conversas = r.data || [];
+
+      var ids = conversas.map(function(cv){ return cv.id; });
+      var ultimaPorConversa = {};
+      if(ids.length){
+        var rm = await c.from('chat_mensagens')
+          .select('conversa_id,texto,criado_em,remetente_id,anexos')
+          .in('conversa_id', ids)
+          .order('criado_em', { ascending:false });
+        (rm.data || []).forEach(function(m){
+          if(!ultimaPorConversa[m.conversa_id]) ultimaPorConversa[m.conversa_id] = m; // já vem do mais novo pro mais velho
+        });
+      }
+
+      conversasCache = conversas.map(function(cv){
+        var a = usuarioPorId(cv.usuario_a_id), b = usuarioPorId(cv.usuario_b_id);
+        var ultima = ultimaPorConversa[cv.id];
+        var autorUltima = ultima ? usuarioPorId(ultima.remetente_id) : null;
+        return {
+          id: cv.id,
+          aId: cv.usuario_a_id, bId: cv.usuario_b_id,
+          aNome: a ? (a.nome || a.email) : 'Usuário removido',
+          bNome: b ? (b.nome || b.email) : 'Usuário removido',
+          aEmail: a ? a.email : '', bEmail: b ? b.email : '',
+          ultimaMensagemEm: cv.ultima_mensagem_em,
+          previewTexto: ultima ? (previewDaMensagem(ultima) || 'Sem mensagens ainda') : 'Sem mensagens ainda',
+          previewAutorNome: autorUltima ? (autorUltima.nome || autorUltima.email) : ''
+        };
+      });
+
+      renderLista(elBusca.value);
+    }catch(err){
+      console.warn('Auditoria de conversas: falha ao carregar conversas.', err);
+      elLista.innerHTML = vazio('Não foi possível carregar', 'Verifique a conexão e tente novamente.');
+    }finally{
+      carregandoAgora = false;
+    }
+  }
+
+  function montarItem(conv){
+    var ativo = String(conv.id) === String(conversaAtivaId);
+    var iniciaisPar = (iniciais(conv.aNome).charAt(0) || '?') + (iniciais(conv.bNome).charAt(0) || '?');
+    return '<div class="chat-item-conversa' + (ativo ? ' ativa' : '') + '" data-conversa-id="' + conv.id + '">' +
+        '<span class="chat-item-avatar" style="background:' + corAvatar(conv.aNome + conv.bNome) + '">' + esc(iniciaisPar) + '</span>' +
+        '<div class="chat-item-corpo">' +
+          '<div class="chat-item-linha1"><span class="chat-item-nome">' + esc(conv.aNome) + ' ↔ ' + esc(conv.bNome) + '</span><span class="chat-item-hora">' + horaRelativa(conv.ultimaMensagemEm) + '</span></div>' +
+          '<div class="chat-item-linha2"><span class="chat-item-prevista">' + (conv.previewAutorNome ? esc(conv.previewAutorNome) + ': ' : '') + esc(conv.previewTexto) + '</span></div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderLista(filtro){
+    filtro = (filtro || '').trim().toLowerCase();
+    var itens = conversasCache.filter(function(conv){
+      if(!filtro) return true;
+      return conv.aNome.toLowerCase().indexOf(filtro) !== -1 || conv.bNome.toLowerCase().indexOf(filtro) !== -1;
+    });
+    if(!itens.length){
+      elLista.innerHTML = filtro
+        ? vazio('Nada encontrado', '')
+        : vazio('Nenhuma conversa ainda', 'Ainda não existe nenhuma conversa direta no sistema.');
+      return;
+    }
+    elLista.innerHTML = itens.map(montarItem).join('');
+    elLista.querySelectorAll('[data-conversa-id]').forEach(function(el){
+      el.addEventListener('click', function(){
+        var conv = conversasCache.filter(function(c){ return String(c.id) === el.getAttribute('data-conversa-id'); })[0];
+        if(conv) abrirConversa(conv);
+      });
+    });
+  }
+
+  // ADIÇÃO: diferente de chatMontarBolha() (Chat Interno normal, que alinha
+  // pela ótica de "quem está logado" — String(remetente_id) === chatMeuId),
+  // aqui ninguém é "eu": quem está auditando não é participante da conversa.
+  // O lado esquerdo/direito serve só pra diferenciar visualmente os dois
+  // participantes (sempre A à esquerda, B à direita), e o nome de quem
+  // mandou aparece em TODAS as mensagens (no chat normal isso só acontece
+  // em grupo, e nunca na própria mensagem).
+  function montarBolha(m, conv){
+    var deA = String(m.remetente_id) === String(conv.aId);
+    var div = document.createElement('div');
+    div.className = 'chat-msg-linha ' + (deA ? 'dele' : 'minha');
+    var hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    var autor = usuarioPorId(m.remetente_id);
+    var nomeAutor = autor ? (autor.nome || autor.email) : (deA ? conv.aNome : conv.bNome);
+    var nomeHtml = '<span class="chat-msg-autor">' + esc(nomeAutor) + '</span>';
+    var anexosHtml = montarAnexosHtml(m.anexos);
+    var textoBolha = m.texto && m.texto.trim() ? ('<div class="chat-msg-bolha">' + esc(m.texto) + '</div>') : '';
+    div.innerHTML = '<div>' + nomeHtml + anexosHtml + textoBolha + '<span class="chat-msg-hora">' + hora + '</span></div>';
+    return div;
+  }
+
+  function renderMensagens(lista, conv){
+    elThreadMensagens.innerHTML = '';
+    if(!lista.length){
+      elThreadMensagens.innerHTML = '<p class="chat-vazio-lista">Nenhuma mensagem nessa conversa ainda.</p>';
+      return;
+    }
+    var ultimoDia = null;
+    lista.forEach(function(m){
+      var dia = new Date(m.criado_em).toLocaleDateString('pt-BR');
+      if(dia !== ultimoDia){
+        var sep = document.createElement('div');
+        sep.className = 'chat-msg-dia';
+        sep.textContent = formatarDia(m.criado_em);
+        elThreadMensagens.appendChild(sep);
+        ultimoDia = dia;
+      }
+      elThreadMensagens.appendChild(montarBolha(m, conv));
+    });
+    elThreadMensagens.scrollTop = elThreadMensagens.scrollHeight;
+  }
+
+  // ADIÇÃO: abre a conversa em modo SOMENTE LEITURA. Ao contrário de
+  // chatAbrirConversa() (Chat Interno normal), NUNCA chama
+  // .update({lida:true}) sobre chat_mensagens — quem está auditando não é
+  // destinatário da conversa, então marcar como lida aqui estaria alterando
+  // (de forma incorreta) o status de leitura real dos participantes, ex.:
+  // fazendo sumir uma notificação de "não lida" que eles ainda nem viram.
+  // Por isso, também não há nenhum campo de resposta, anexo ou botão de
+  // apagar nesta tela — é estritamente ver, nunca interagir.
+  async function abrirConversa(conv){
+    var c = cliente();
+    conversaAtivaId = conv.id;
+    elThreadVazio.style.display = 'none';
+    elThreadAtivo.style.display = 'flex';
+
+    var iniciaisPar = (iniciais(conv.aNome).charAt(0) || '?') + (iniciais(conv.bNome).charAt(0) || '?');
+    elThreadAvatar.setAttribute('style', 'background:' + corAvatar(conv.aNome + conv.bNome));
+    elThreadAvatar.innerHTML = esc(iniciaisPar);
+    elThreadNome.textContent = conv.aNome + ' ↔ ' + conv.bNome;
+    elThreadSub.textContent = [conv.aEmail, conv.bEmail].filter(Boolean).join('  ·  ');
+
+    elListaCol.classList.add('chat-lista-oculta'); // no celular, esconde a lista e mostra a conversa
+    renderLista(elBusca.value);
+
+    elThreadMensagens.innerHTML = '<p class="chat-vazio-lista">Carregando mensagens...</p>';
+    if(!c) return;
+    try{
+      var r = await c.from('chat_mensagens')
+        .select('*')
+        .eq('conversa_id', conv.id)
+        .order('criado_em', { ascending:true });
+      if(r.error){ elThreadMensagens.innerHTML = '<p class="chat-vazio-lista">Não foi possível carregar as mensagens.</p>'; return; }
+      renderMensagens(r.data || [], conv);
+    }catch(err){
+      elThreadMensagens.innerHTML = '<p class="chat-vazio-lista">Não foi possível carregar as mensagens.</p>';
+      console.warn('Auditoria de conversas: falha ao abrir conversa.', err);
+    }
+  }
+
+  /* ============ navegação ============ */
+  function abrirTela(){
+    if(!podeVer()) return;
+    telaPortal.style.display = 'none';
+    tela.style.display = 'block';
+    window.scrollTo(0, 0);
+    conversaAtivaId = null;
+    elThreadVazio.style.display = 'flex';
+    elThreadAtivo.style.display = 'none';
+    elListaCol.classList.remove('chat-lista-oculta');
+    carregarUsuarios().then(carregarConversas);
+  }
+  function voltar(){
+    tela.style.display = 'none';
+    telaPortal.style.display = 'block';
+  }
+  card.addEventListener('click', abrirTela);
+  if(elBtnVoltarPortal) elBtnVoltarPortal.addEventListener('click', voltar);
+  if(elBtnVoltarLista) elBtnVoltarLista.addEventListener('click', function(){ elListaCol.classList.remove('chat-lista-oculta'); });
+  if(elBusca) elBusca.addEventListener('input', function(){ renderLista(elBusca.value); });
 })();
 </script>
 
