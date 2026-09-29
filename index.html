@@ -265,6 +265,12 @@ html.cssl-restaurando-sessao #cssl-loading-sessao{display:flex}
 .form-panel{display:grid;gap:16px;}
 .form-oculto{display:none}
 form label{display:block;text-align:left;font-weight:650;font-size:13px;margin:14px 0 6px;color:var(--cinza-claro);}
+/* ADIÇÃO: pergunta "Você é médico?" no cadastro — par de botões Sim/Não */
+.pergunta-sim-nao{display:flex;gap:8px;margin-top:2px}
+.opcao-sim-nao{flex:1;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:var(--cinza-claro);font-size:13.5px;font-weight:700;cursor:pointer;transition:.15s ease;font-family:inherit}
+.opcao-sim-nao:hover{background:rgba(255,255,255,.07);color:#fff}
+.opcao-sim-nao.selecionada{background:rgba(129,140,248,.16);border-color:rgba(129,140,248,.5);color:#fff}
+.opcao-sim-nao.selecionada[data-valor="sim"]{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.45);color:#86efac}
 form label:first-of-type{margin-top:0}
 form input,form select,form textarea{width:100%;padding:14px 15px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(161,161,170,.16);color:#fff;font-size:14px;font-family:inherit;transition:border-color .15s ease,box-shadow .15s ease,background .15s ease;}
 form textarea{min-height:120px;resize:vertical}
@@ -1028,6 +1034,11 @@ select option{background:#101014;color:#fff}
 .btn-remover-admin:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.5)}
 .btn-tornar-admin-nova{background:rgba(255,255,255,.03);border:1px solid rgba(161,161,170,.22);color:var(--cinza-claro)}
 .btn-tornar-admin-nova:hover{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.4);color:#fff}
+/* ADIÇÃO: alternar "Médico" — usuários marcados entram automaticamente
+   no grupo "Médicos" do Chat Interno, além do grupo do próprio setor. */
+.btn-medico-ativo{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:12px;font-size:12.5px;font-weight:700;cursor:pointer;transition:.15s ease;white-space:nowrap;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.38);color:#86efac}
+.btn-medico-ativo:hover{background:rgba(34,197,94,.22);border-color:rgba(34,197,94,.6)}
+.btn-medico-ativo svg{width:14px;height:14px;flex-shrink:0}
 .btn-excluir-icone{width:34px;height:34px;flex-shrink:0;border-radius:12px;border:1px solid rgba(239,68,68,.32);background:rgba(239,68,68,.1);color:#fca5a5;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s ease}
 .btn-excluir-icone:hover{background:rgba(239,68,68,.22);border-color:rgba(239,68,68,.55)}
 .btn-excluir-icone svg{width:15px;height:15px}
@@ -2933,8 +2944,8 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
 
         <div class="form-panel">
           <form id="form-login" class="form-oculto">
-            <label for="email-login">E-mail cadastrado</label>
-            <input id="email-login" type="email" placeholder="nome@exemplo.com" required autocomplete="email">
+            <label for="email-login">E-mail ou CRM cadastrado</label>
+            <input id="email-login" type="text" placeholder="nome@exemplo.com ou CRM (médicos)" required autocomplete="username">
             <div class="msg-caixa erro" id="erro-login"></div>
             <button type="submit" class="btn-principal" id="btn-login">Confirmar</button>
           </form>
@@ -2965,8 +2976,24 @@ table.pc-tabela tbody tr:hover{background:rgba(255,255,255,.025)}
               <option>UCO</option><option>UTI</option><option>UTI Neo</option>
               <option>Outro</option>
             </select>
-            <label for="email-criar">E-mail</label>
-            <input id="email-criar" type="email" placeholder="nome@exemplo.com" required autocomplete="email">
+            <!-- ADIÇÃO: pergunta "Você é médico?" — quem responder "Sim" já entra
+                 automaticamente no grupo "Médicos" do Chat Interno, além do
+                 grupo do próprio setor (ver usuarios.medico e Gerenciar usuários) -->
+            <label>Você é médico?</label>
+            <div class="pergunta-sim-nao" id="medico-criar-grupo" role="radiogroup" aria-label="Você é médico?">
+              <button type="button" class="opcao-sim-nao selecionada" data-valor="nao" aria-pressed="true">Não</button>
+              <button type="button" class="opcao-sim-nao" data-valor="sim" aria-pressed="false">Sim</button>
+            </div>
+            <div id="campo-email-criar">
+              <label for="email-criar">E-mail</label>
+              <input id="email-criar" type="email" placeholder="nome@exemplo.com" required autocomplete="email">
+            </div>
+            <!-- ADIÇÃO: médico que responde "Sim" cadastra o CRM em vez do
+                 e-mail (ver JS: alterna com #campo-email-criar acima) -->
+            <div id="campo-crm-criar" style="display:none">
+              <label for="crm-criar">CRM</label>
+              <input id="crm-criar" type="text" placeholder="Ex: 12345-MG" autocomplete="off">
+            </div>
             <div class="msg-caixa erro" id="erro-criar"></div>
             <div class="msg-caixa sucesso" id="sucesso-criar"></div>
             <button type="submit" class="btn-principal" id="btn-criar">Cadastrar</button>
@@ -7830,6 +7857,61 @@ if(!supabaseConfigurado){
   document.getElementById('aviso-supabase-solicitacao').style.display = 'block';
 }
 
+// ADIÇÃO: setores dinâmicos — todo <select> de "Setor" do sistema (Criar
+// conta, Abrir chamado, Fazer solicitação, Gerenciar usuários e os grupos
+// do Chat Interno) passa a buscar a lista de setores ativos direto da
+// tabela pc_setores — a mesma tabela que a aba "Setores" (dentro de
+// Gerenciar usuários) já cria/edita/desativa. Antes, cada uma dessas telas
+// tinha sua própria lista de setores copiada e colada no código, então um
+// setor novo (ex.: "Autorização") ficava faltando em todo lugar que não
+// fosse atualizado manualmente. Se a busca falhar (sem internet, Supabase
+// fora do ar etc.) cada lugar mantém sua lista fixa de reserva, pra nunca
+// deixar um campo obrigatório sem nenhuma opção.
+async function buscarSetoresAtivos(){
+  if(!db) return null;
+  try{
+    var { data, error } = await db.from('pc_setores').select('nome').eq('ativo', true).order('nome', { ascending:true });
+    if(error || !data || !data.length) return null;
+    return data.map(function(s){ return s.nome; }).filter(Boolean);
+  }catch(err){
+    console.warn('Não foi possível carregar a lista de setores dinâmica; mantendo a lista padrão.', err);
+    return null;
+  }
+}
+
+// ADIÇÃO: substitui as opções de um <select> de setor pela lista vinda do
+// banco, preservando "Selecione"/"Outro" e o valor já escolhido (se ainda
+// existir na lista nova).
+function preencherSelectSetor(select, nomes){
+  if(!select || !nomes || !nomes.length) return;
+  var valorAtual = select.value;
+  var temOutro = Array.prototype.some.call(select.options, function(op){ return op.value === 'Outro'; });
+  // "Outro" já existe como linha própria em pc_setores — filtra aqui pra não
+  // duplicar, já que ele é sempre adicionado por último, fixo, abaixo.
+  var nomesSemOutro = nomes.filter(function(n){ return String(n).trim().toLowerCase() !== 'outro'; });
+  select.innerHTML = '<option value="">Selecione</option>' +
+    nomesSemOutro.map(function(nome){
+      var seguro = String(nome).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return '<option>' + seguro + '</option>';
+    }).join('') +
+    (temOutro ? '<option>Outro</option>' : '');
+  if(valorAtual && Array.prototype.some.call(select.options, function(op){ return op.value === valorAtual; })){
+    select.value = valorAtual;
+  }
+}
+
+// ADIÇÃO: aplica a lista dinâmica de setores assim que a página carrega, nos
+// três formulários que ficam sempre visíveis no HTML (Criar conta, Abrir
+// chamado, Fazer solicitação). Gerenciar usuários e o Chat Interno buscam a
+// lista por conta própria, cada um na sua própria inicialização.
+(async function atualizarSelectsDeSetorDinamicos(){
+  var nomesSetoresAtivos = await buscarSetoresAtivos();
+  if(!nomesSetoresAtivos) return; // mantém as listas fixas do HTML como reserva
+  preencherSelectSetor(document.getElementById('setor-criar'), nomesSetoresAtivos);
+  preencherSelectSetor(document.querySelector('#form-chamado select[name="setor"]'), nomesSetoresAtivos);
+  preencherSelectSetor(document.querySelector('#form-solicitacao select[name="setor"]'), nomesSetoresAtivos);
+})();
+
 // ---- Configuração geral ----
 var EMAIL_AUTORIZADO_ESTOQUE = "tecnologiacssl2025@gmail.com";
 var URL_ESTOQUE = "https://tecnologiacssl.github.io/estoque-DG/";
@@ -7912,6 +7994,42 @@ var setorCriarInput = document.getElementById('setor-criar'); // ADIÇÃO: setor
 var emailCriarInput = document.getElementById('email-criar');
 var erroCriar = document.getElementById('erro-criar');
 var sucessoCriar = document.getElementById('sucesso-criar');
+// ADIÇÃO: médico cadastra CRM em vez de e-mail — ver alternância abaixo.
+var campoEmailCriar = document.getElementById('campo-email-criar');
+var campoCrmCriar = document.getElementById('campo-crm-criar');
+var crmCriarInput = document.getElementById('crm-criar');
+// ADIÇÃO: pergunta "Você é médico?" no cadastro — Não fica selecionado por
+// padrão, então marcar alguém como médico é sempre uma escolha explícita.
+var elMedicoCriarGrupo = document.getElementById('medico-criar-grupo');
+var medicoCriarSelecionado = false;
+// ADIÇÃO: mostra o campo de CRM (e torna obrigatório) e esconde o de e-mail
+// (deixando de ser obrigatório) quando a resposta é "Sim" — e vice-versa.
+function alternarCampoEmailOuCrm(){
+  if(medicoCriarSelecionado){
+    if(campoEmailCriar) campoEmailCriar.style.display = 'none';
+    if(emailCriarInput){ emailCriarInput.required = false; }
+    if(campoCrmCriar) campoCrmCriar.style.display = '';
+    if(crmCriarInput){ crmCriarInput.required = true; }
+  }else{
+    if(campoCrmCriar) campoCrmCriar.style.display = 'none';
+    if(crmCriarInput){ crmCriarInput.required = false; }
+    if(campoEmailCriar) campoEmailCriar.style.display = '';
+    if(emailCriarInput){ emailCriarInput.required = true; }
+  }
+}
+if(elMedicoCriarGrupo){
+  elMedicoCriarGrupo.querySelectorAll('.opcao-sim-nao').forEach(function(botao){
+    botao.addEventListener('click', function(){
+      medicoCriarSelecionado = botao.getAttribute('data-valor') === 'sim';
+      elMedicoCriarGrupo.querySelectorAll('.opcao-sim-nao').forEach(function(b){
+        var ativo = b === botao;
+        b.classList.toggle('selecionada', ativo);
+        b.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+      });
+      alternarCampoEmailOuCrm();
+    });
+  });
+}
 var btnCriar = document.getElementById('btn-criar');
 var carregandoCriar = document.getElementById('carregando-criar');
 
@@ -8120,6 +8238,15 @@ if(filesSolicitacao && nomeArquivosSolicitacao){
 function emailValido(v){
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
+// ADIÇÃO: no login, além do e-mail de sempre, também aceita um CRM (usado
+// por médicos que se cadastraram com "Você é médico? Sim" — ver cadastro
+// mais abaixo). Não valida o formato do CRM em si (varia muito de pessoa
+// pra pessoa) — só exige que não pareça um e-mail incompleto e tenha um
+// tamanho mínimo; quem decide se existe de verdade é a busca no banco.
+function identificadorLoginValido(v){
+  if(emailValido(v)) return true;
+  return v.length >= 3 && v.indexOf('@') === -1;
+}
 function esconderMsgsLogin(){
   erroLogin.style.display = 'none';
   erroCriar.style.display = 'none';
@@ -8153,12 +8280,37 @@ formCriar.addEventListener('submit', async function(e){
 
   var nome = nomeCriarInput.value.trim();
   var setor = setorCriarInput ? setorCriarInput.value : '';
-  var email = emailCriarInput.value.trim();
 
-  if(!emailValido(email)){
-    erroCriar.textContent = 'Informe um e-mail válido.';
-    erroCriar.style.display = 'block';
-    return;
+  // ALTERADO: médico (resposta "Sim") cadastra o CRM em vez do e-mail — os
+  // dois são guardados na mesma coluna "email" do banco (é o único campo do
+  // sistema todo que identifica cada usuário de forma única, usado também
+  // pra entrar no portal, então reaproveitá-lo evita criar uma coluna nova
+  // e manter duas lógicas de login separadas). Pra quem não é médico nada
+  // muda: continua sendo o e-mail de sempre.
+  var identificador, rotuloIdentificador;
+  if(medicoCriarSelecionado){
+    var crm = crmCriarInput ? crmCriarInput.value.trim() : '';
+    rotuloIdentificador = 'CRM';
+    if(!crm){
+      erroCriar.textContent = 'Informe seu CRM.';
+      erroCriar.style.display = 'block';
+      return;
+    }
+    if(crm.indexOf('@') !== -1){
+      erroCriar.textContent = 'Informe apenas o número do CRM, sem "@".';
+      erroCriar.style.display = 'block';
+      return;
+    }
+    identificador = crm.toLowerCase();
+  }else{
+    var email = emailCriarInput.value.trim();
+    rotuloIdentificador = 'e-mail';
+    if(!emailValido(email)){
+      erroCriar.textContent = 'Informe um e-mail válido.';
+      erroCriar.style.display = 'block';
+      return;
+    }
+    identificador = email.toLowerCase();
   }
   // ADIÇÃO: setor é obrigatório — é ele que decide o grupo do Chat Interno
   if(setorCriarInput && !setor){
@@ -8176,16 +8328,42 @@ formCriar.addEventListener('submit', async function(e){
   carregandoCriar.style.display = 'block';
 
   try{
-    var emailNormalizado = email.toLowerCase();
+    var emailNormalizado = identificador;
 
     var { data: existente } = await db.from('usuarios').select('id').eq('email', emailNormalizado).maybeSingle();
     if(existente){
-      erroCriar.textContent = 'Este e-mail já está cadastrado. Use o botão "Entrar".';
+      erroCriar.textContent = 'Este ' + rotuloIdentificador + ' já está cadastrado. Use o botão "Entrar".';
       erroCriar.style.display = 'block';
       return;
     }
 
-    var { error } = await db.from('usuarios').insert({ nome: nome, email: emailNormalizado, icone_perfil: iconePerfilSelecionado, setor: setor || null });
+    // ADIÇÃO: a resposta de "Você é médico?" já entra com um perfil de acesso
+    // pronto: "Sim" recebe o perfil "MEDICO", "Não" recebe "NÃO ADMINS" (os
+    // dois criados em Gerenciar usuários > Perfis de acesso) — mesma cópia
+    // (snapshot) de telas liberadas que "Aplicar perfil" faz manualmente.
+    // Procura o perfil pelo nome, ignorando acento/maiúsculas, pra continuar
+    // funcionando mesmo se alguém digitar "Médico" com acento. Se o perfil
+    // não existir (foi apagado ou renomeado), o cadastro segue normal, só
+    // sem nenhuma tela liberada a mais; um admin pode aplicar um perfil a
+    // qualquer momento em Gerenciar usuários.
+    var dadosCadastro = { nome: nome, email: emailNormalizado, icone_perfil: iconePerfilSelecionado, setor: setor || null, medico: medicoCriarSelecionado };
+    // ALTERADO: agora aplica um perfil de acesso pros dois lados da pergunta —
+    // "MEDICO" pra quem responde Sim, "NAO ADMINS" pra quem responde Não —
+    // e não só pra quem é médico. Se o perfil não existir, segue sem quebrar.
+    try{
+      var nomeAlvoPerfil = medicoCriarSelecionado ? 'MEDICO' : 'NAO ADMINS';
+      var { data: perfis } = await db.from('perfis_acesso').select('id,nome,cards');
+      var normalizar = function(v){ return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toUpperCase(); };
+      var perfilAplicar = (perfis || []).find(function(p){ return normalizar(p.nome) === nomeAlvoPerfil; });
+      if(perfilAplicar){
+        dadosCadastro.perfil_id = perfilAplicar.id;
+        dadosCadastro.permissoes = perfilAplicar.cards;
+      }
+    }catch(err){
+      console.warn('Cadastro: não foi possível aplicar o perfil de acesso automaticamente.', err);
+    }
+
+    var { error } = await db.from('usuarios').insert(dadosCadastro);
     if(error){
       erroCriar.textContent = 'Não foi possível salvar o cadastro (' + error.message + ').';
       erroCriar.style.display = 'block';
@@ -8195,6 +8373,16 @@ formCriar.addEventListener('submit', async function(e){
     sucessoCriar.textContent = 'Conta criada com sucesso! Agora entre pelo botão "Entrar".';
     sucessoCriar.style.display = 'block';
     formCriar.reset();
+    // ADIÇÃO: form.reset() não mexe nos botões Sim/Não (não são <input>) — volta manualmente pro padrão "Não"
+    if(elMedicoCriarGrupo){
+      medicoCriarSelecionado = false;
+      elMedicoCriarGrupo.querySelectorAll('.opcao-sim-nao').forEach(function(b){
+        var ehNao = b.getAttribute('data-valor') === 'nao';
+        b.classList.toggle('selecionada', ehNao);
+        b.setAttribute('aria-pressed', ehNao ? 'true' : 'false');
+      });
+      alternarCampoEmailOuCrm(); // ADIÇÃO: volta a mostrar o campo de e-mail (padrão "Não")
+    }
     if(iconePerfilGrid){
       iconePerfilGrid.querySelectorAll('.icone-perfil-opcao').forEach(function(b, idx){ b.classList.toggle('selecionada', idx === 0); });
       iconePerfilSelecionado = ICONES_PERFIL[0].id;
@@ -8214,8 +8402,8 @@ formLogin.addEventListener('submit', async function(e){
   esconderMsgsLogin();
 
   var v = emailLoginInput.value.trim();
-  if(!emailValido(v)){
-    erroLogin.textContent = 'Informe um e-mail válido.';
+  if(!identificadorLoginValido(v)){
+    erroLogin.textContent = 'Informe um e-mail ou CRM válido.';
     erroLogin.style.display = 'block';
     return;
   }
@@ -8232,7 +8420,7 @@ formLogin.addEventListener('submit', async function(e){
     var { data: registro } = await db.from('usuarios').select('id, email, nome').eq('email', v.toLowerCase()).maybeSingle();
 
     if(!registro){
-      erroLogin.textContent = 'E-mail não cadastrado. Clique em "Criar conta".';
+      erroLogin.textContent = 'E-mail ou CRM não cadastrado. Clique em "Criar conta".';
       erroLogin.style.display = 'block';
       return;
     }
@@ -8582,8 +8770,10 @@ formSolicitacao.addEventListener('submit', async function(e){
 (function(){
   var EMAIL_ADMIN_PRINCIPAL = "tecnologiacssl2025@gmail.com";
 
-  // ADIÇÃO: mesma lista de setores usada em "Abrir chamado" / Computadores / Chat
-  // Interno, para o admin poder editar o setor de cada usuário nesta tela.
+  // ALTERADO: essa lista agora é só uma reserva (usada se a busca em
+  // pc_setores falhar) — carregarUsuarios() a substitui pela lista de
+  // setores ativos vinda do banco toda vez que a tela é aberta, assim um
+  // setor novo criado na aba "Setores" aparece aqui sem precisar mexer no código.
   var SETORES_ADMIN_USUARIOS = ['Administração','Almoxarifado','Arquivo','Auditoria','Bloco Cirúrgico','Call Center','Cardiologia','CCIH','Central de Guias',
     'Centro Cirúrgico','Centro de Especialidades','CME','Comando 1','Comando 3','Compras','Contas a Receber',
     'Enfermagem RT','Farmácia','Farmácia CC','Faturamento','Financeiro','Hemodinâmica','Internação','Laboratório',
@@ -11169,12 +11359,17 @@ formSolicitacao.addEventListener('submit', async function(e){
     try{
       // ALTERADO: busca também os perfis de acesso (na mesma hora), para mostrar
       // na coluna "Permissão" qual perfil cada usuário tem — sempre com o nome atual.
-      var [respUsuarios, respPerfis] = await Promise.all([
+      // ALTERADO: busca também a lista de setores ativos (pc_setores), pra manter
+      // o <select> de Setor de cada usuário sempre igual à aba "Setores" —
+      // um setor novo criado lá (ex.: "Autorização") já aparece aqui na hora.
+      var [respUsuarios, respPerfis, nomesSetoresAtivos] = await Promise.all([
         db.from('usuarios').select('*').order('nome', { ascending:true }),
-        db.from('perfis_acesso').select('*').order('nome', { ascending:true })
+        db.from('perfis_acesso').select('*').order('nome', { ascending:true }),
+        buscarSetoresAtivos()
       ]);
       var data = respUsuarios.data, error = respUsuarios.error;
       if(respPerfis && !respPerfis.error && respPerfis.data) perfisAcessoCarregados = respPerfis.data;
+      if(nomesSetoresAtivos && nomesSetoresAtivos.length) SETORES_ADMIN_USUARIOS = nomesSetoresAtivos.filter(function(n){ return n !== 'Outro'; }).concat(['Outro']);
       if(error){
         listaUsuariosEl.innerHTML = '<p class="small">Erro ao carregar usuários: ' + error.message + '</p>';
         return;
@@ -11193,10 +11388,15 @@ formSolicitacao.addEventListener('submit', async function(e){
         // ADIÇÃO: mostra o ícone de perfil escolhido pelo usuário (se houver) em vez das iniciais
         var iconeSrc = iconeSrcPorId(u.icone_perfil);
         var avatarConteudo = iconeSrc ? ('<img src="' + iconeSrc + '" alt="">') : iniciais;
+        // ADIÇÃO: médico que se cadastrou respondendo "Sim" tem o CRM guardado
+        // nesse mesmo campo (em vez de um e-mail de verdade) — aqui só troca o
+        // rótulo na tela pra não confundir o admin achando que é um e-mail.
+        var identificadorEhCrm = !!(u.medico && u.email && u.email.indexOf('@') === -1);
+        var textoIdentificador = identificadorEhCrm ? ('CRM: ' + u.email.toUpperCase()) : u.email;
         var infoHtml =
           '<div class="info-usuario-nova">' +
             '<span class="avatar-usuario-nova" style="background:' + cor + '">' + avatarConteudo + '</span>' +
-            '<div class="textos-usuario-nova"><b>' + nome + '</b><span>' + u.email + '</span></div>' +
+            '<div class="textos-usuario-nova"><b>' + nome + '</b><span>' + textoIdentificador + '</span></div>' +
           '</div>';
 
         // ADIÇÃO: coluna "Permissão" — Admin; senão o nome do perfil de acesso
@@ -11279,6 +11479,29 @@ formSolicitacao.addEventListener('submit', async function(e){
         btnPermissoesUsuario.innerHTML = ICONE_ESCUDO_PERMISSAO;
         btnPermissoesUsuario.addEventListener('click', function(){ abrirModalPermissoesUsuario(u, ehAdmin); });
         acaoDiv.appendChild(btnPermissoesUsuario);
+
+        // ADIÇÃO: "Médico" — a única diferença desse tipo de acesso é o Chat
+        // Interno: quem é marcado aqui entra automaticamente no grupo
+        // "Médicos" (visível só pra outros médicos e admins), além do grupo
+        // do próprio setor. Não mexe em telas/permissões.
+        var btnToggleMedico = document.createElement('button');
+        btnToggleMedico.type = 'button';
+        btnToggleMedico.className = u.medico ? 'btn-medico-ativo' : 'btn-tornar-admin-nova';
+        btnToggleMedico.title = u.medico ? 'Remover do grupo "Médicos" do chat' : 'Adicionar ao grupo "Médicos" do chat';
+        btnToggleMedico.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/></svg>' + '<span>' + (u.medico ? 'Médico' : 'Marcar como médico') + '</span>';
+        btnToggleMedico.addEventListener('click', async function(){
+          btnToggleMedico.disabled = true;
+          try{
+            var { error } = await db.from('usuarios').update({ medico: !u.medico }).eq('id', u.id);
+            if(error) throw error;
+            carregarUsuarios();
+          }catch(err){
+            alert('Não foi possível atualizar (a coluna "medico" existe na tabela usuarios?).');
+          }finally{
+            btnToggleMedico.disabled = false;
+          }
+        });
+        acaoDiv.appendChild(btnToggleMedico);
 
         if(ehPrincipal){
           acaoDiv.insertAdjacentHTML('beforeend', '<span class="admin-principal-label">Administrador principal</span>');
@@ -14816,21 +15039,29 @@ formSolicitacao.addEventListener('submit', async function(e){
   /* ============ ESTADO ============ */
   var chatMeuId = null, chatMeuNome = '', chatMeuIcone = null;
   var chatMeuSetor = null; // ADIÇÃO: setor do usuário logado (define o grupo dele)
+  var chatMeuMedico = false; // ADIÇÃO: se true, também participa do grupo "Médicos"
   var chatConversaAtivaId = null;
   var chatConversasCache = [];
   var chatUsuariosCache = [];
   var chatRealtimeChannel = null;
 
-  // ADIÇÃO: GRUPOS POR SETOR
-  // Mesma lista de setores já usada no formulário "Abrir chamado" e no
-  // módulo de Computadores (SETORES_PADRAO_CSSL), para os grupos do chat
-  // baterem exatamente com os setores que já existem no resto do sistema.
+  // ALTERADO: essa lista agora é só uma reserva usada caso a busca em
+  // pc_setores falhe — chatInicializar() a substitui pela lista de setores
+  // ativos vinda do banco (a mesma da aba "Setores" em Gerenciar usuários)
+  // toda vez que o chat abre, assim um setor novo (ex.: "Autorização") já
+  // ganha grupo aqui sem precisar mexer no código.
   var CHAT_SETORES = ['Administração','Almoxarifado','Arquivo','Auditoria','Bloco Cirúrgico','Call Center','Cardiologia','CCIH','Central de Guias',
     'Centro Cirúrgico','Centro de Especialidades','CME','Comando 1','Comando 3','Compras','Contas a Receber',
     'Enfermagem RT','Farmácia','Farmácia CC','Faturamento','Financeiro','Hemodinâmica','Internação','Laboratório',
     'Manutenção','Nutrição','OPME','Ortopedia','Pediatria','Pronto Atendimento','Quimioterapia','Radiologia',
     'Recepção','Recepção Externa','Recepção Interna','RH','SAME','Segurança do Trabalho','TI','UCO','UTI','UTI Neo','Outro'];
   var chatGruposCache = [];
+  // ADIÇÃO: "Médicos" não é um setor de verdade (não existe em CHAT_SETORES
+  // nem é salvo em usuarios.setor) — é um grupo à parte, reunindo todo
+  // mundo marcado com usuarios.medico=true, não importa o setor de cada um.
+  // Ele usa as mesmas tabelas chat_grupo_mensagens/chat_grupo_leituras dos
+  // grupos por setor, só que com esse valor fixo na coluna "setor".
+  var CHAT_GRUPO_MEDICOS = 'Médicos';
   var chatTipoAtivo = null; // 'direta' | 'grupo'
   var chatGrupoAtivoSetor = null;
   var chatOutroAtivo = null; // ADIÇÃO: {id,nome,email,icone_perfil} da conversa 1-a-1 aberta (p/ chamada de áudio)
@@ -14845,6 +15076,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     { chave:'assistencial', label:'Assistencial', icone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v4" /><path d="M14 21v-3a2 2 0 0 0-4 0v3" /><path d="M14 9h-4" /><path d="M18 11h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2" /><path d="M18 21V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16" /></svg>', setores:['Enfermagem RT','UTI','UCO','UTI Neo','Centro Cirúrgico','Bloco Cirúrgico','CME','CCIH','Central de Guias','Recepção','Recepção Externa','Recepção Interna','Internação','Pronto Atendimento'] },
     { chave:'clinico', label:'Clínico', icone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h4a1 1 0 0 1 1 1v4a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-4a1 1 0 0 1 1-1h4a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-4a1 1 0 0 1-1-1V4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4a1 1 0 0 1-1 1z" /></svg>', setores:['Cardiologia','Centro de Especialidades','Laboratório','Pediatria','Ortopedia','Hemodinâmica','Quimioterapia','Radiologia','OPME'] },
     { chave:'apoio', label:'Apoio e Serviços', icone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" /><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" /><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" /></svg>', setores:['Almoxarifado','Arquivo','Farmácia','Farmácia CC','Manutenção','Nutrição','Segurança do Trabalho','TI'] },
+    { chave:'medicos', label:'Médicos', icone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/></svg>', setores:[CHAT_GRUPO_MEDICOS] },
     { chave:'outros', label:'Outros', icone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z" /><rect x="3" y="14" width="7" height="7" rx="1" /><circle cx="17.5" cy="17.5" r="3.5" /></svg>', setores:['Outro'] }
   ];
   var CHAT_CATEGORIA_PADRAO = CHAT_CATEGORIAS[CHAT_CATEGORIAS.length - 1]; // "Outros" — fallback
@@ -14902,8 +15134,12 @@ formSolicitacao.addEventListener('submit', async function(e){
   // ADIÇÃO: quais setores (grupos) o usuário logado deve ver — admin vê
   // todos os grupos, os demais só o próprio.
   function chatSetoresVisiveis(){
-    if(chatSouAdmin()) return CHAT_SETORES.slice();
-    return chatMeuSetor ? [chatMeuSetor] : [];
+    var lista = chatSouAdmin() ? CHAT_SETORES.slice() : (chatMeuSetor ? [chatMeuSetor] : []);
+    // ADIÇÃO: grupo "Médicos" — some pra quem não é médico nem admin, e não
+    // depende do setor da pessoa (um médico da UTI e um da Pediatria caem
+    // no mesmo grupo).
+    if((chatMeuMedico || chatSouAdmin()) && lista.indexOf(CHAT_GRUPO_MEDICOS) === -1) lista.push(CHAT_GRUPO_MEDICOS);
+    return lista;
   }
 
   /* ============ UTILITÁRIOS (cópias pequenas e independentes,
@@ -14988,8 +15224,12 @@ formSolicitacao.addEventListener('submit', async function(e){
       .normalize('NFD').replace(/[̀-ͯ]/g, '')
       .replace(/[^A-Za-z0-9]/g, '');
   }
-  // Quem pode ser @mencionado num grupo: todo mundo do mesmo setor, menos eu.
+  // Quem pode ser @mencionado num grupo: todo mundo do mesmo setor, menos eu
+  // — ou, no grupo "Médicos", todo mundo marcado como médico, menos eu.
   function chatMembrosDoGrupo(setor){
+    if(setor === CHAT_GRUPO_MEDICOS){
+      return chatUsuariosCache.filter(function(u){ return u.medico && String(u.id) !== String(chatMeuId); });
+    }
     return chatUsuariosCache.filter(function(u){ return u.setor === setor && String(u.id) !== String(chatMeuId); });
   }
   // apelido (minúsculo) -> { id, nome, slug }
@@ -15321,8 +15561,8 @@ formSolicitacao.addEventListener('submit', async function(e){
   async function chatDescobrirMeuUsuario(){
     if(chatMeuId || !db || !emailLogado) return chatMeuId;
     try{
-      var { data } = await db.from('usuarios').select('id,nome,icone_perfil,setor').eq('email', emailLogado.toLowerCase()).maybeSingle();
-      if(data){ chatMeuId = data.id; chatMeuNome = data.nome; chatMeuIcone = data.icone_perfil; chatMeuSetor = data.setor || null; }
+      var { data } = await db.from('usuarios').select('id,nome,icone_perfil,setor,medico').eq('email', emailLogado.toLowerCase()).maybeSingle();
+      if(data){ chatMeuId = data.id; chatMeuNome = data.nome; chatMeuIcone = data.icone_perfil; chatMeuSetor = data.setor || null; chatMeuMedico = !!data.medico; }
     }catch(err){ console.warn('Chat: falha ao identificar o usuário logado.', err); }
     return chatMeuId;
   }
@@ -15332,7 +15572,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     try{
       // ALTERADO: agora também busca "setor" — precisa pra montar a lista de
       // quem pode ser @mencionado num grupo (ver chatMembrosDoGrupo).
-      var { data, error } = await db.from('usuarios').select('id,nome,email,icone_perfil,setor,admin').order('nome', { ascending:true });
+      var { data, error } = await db.from('usuarios').select('id,nome,email,icone_perfil,setor,admin,medico').order('nome', { ascending:true });
       if(error){ console.warn('Chat: erro ao carregar usuários.', error); return; }
       chatUsuariosCache = data || [];
     }catch(err){ console.warn('Chat: falha ao carregar usuários.', err); }
@@ -15434,6 +15674,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // ícones do sistema) para cada setor — cada um só é usado aqui uma
   // única vez, nenhum setor repete ícone com outro.
   var CHAT_ICONES_SETOR = {
+    'Médicos': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/></svg>', // ADIÇÃO: grupo especial (ver CHAT_GRUPO_MEDICOS)
     'Administração': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12h4" /><path d="M10 8h4" /><path d="M14 21v-3a2 2 0 0 0-4 0v3" /><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" /><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" /></svg>',
     'Almoxarifado': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11" /><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z" /><path d="M6 13h12" /><path d="M6 17h12" /></svg>',
     'Arquivo': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1" /><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" /><path d="M10 12h4" /></svg>',
@@ -15863,7 +16104,9 @@ formSolicitacao.addEventListener('submit', async function(e){
     return false;
   }
   function chatInfoMembros(setor){
-    var lista = chatUsuariosCache.filter(function(u){ return u.setor === setor; });
+    var lista = setor === CHAT_GRUPO_MEDICOS
+      ? chatUsuariosCache.filter(function(u){ return !!u.medico; })
+      : chatUsuariosCache.filter(function(u){ return u.setor === setor; });
     lista.sort(function(a, b){
       var ea = String(a.id) === String(chatMeuId), eb = String(b.id) === String(chatMeuId);
       if(ea !== eb) return ea ? -1 : 1;
@@ -16605,7 +16848,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     chatEncerrarChamada(true); // ADIÇÃO: se tinha uma chamada de áudio em andamento, encerra ao sair/trocar de login
     if(chatGravador) chatPararGravacaoAudio(true); // ADIÇÃO: cancela gravação de voz pendente, se tinha
     if(chatRealtimeChannel){ try{ db.removeChannel(chatRealtimeChannel); }catch(e){} chatRealtimeChannel = null; }
-    chatMeuId = null; chatMeuNome = ''; chatMeuIcone = null; chatMeuSetor = null;
+    chatMeuId = null; chatMeuNome = ''; chatMeuIcone = null; chatMeuSetor = null; chatMeuMedico = false;
     chatConversaAtivaId = null;
     chatConversasCache = [];
     chatUsuariosCache = [];
@@ -16635,6 +16878,15 @@ formSolicitacao.addEventListener('submit', async function(e){
 
   async function chatInicializar(){
     if(!db) return;
+    // ADIÇÃO: atualiza CHAT_SETORES com a lista de setores ativos (pc_setores)
+    // antes de montar qualquer grupo — se a busca falhar, mantém a lista fixa
+    // já declarada acima como reserva.
+    try{
+      var nomesSetoresAtivosChat = await buscarSetoresAtivos();
+      if(nomesSetoresAtivosChat && nomesSetoresAtivosChat.length) CHAT_SETORES = nomesSetoresAtivosChat.filter(function(n){ return n !== 'Outro'; }).concat(['Outro']);
+    }catch(err){
+      console.warn('Chat: não foi possível atualizar a lista de setores; mantendo a lista padrão.', err);
+    }
     await chatDescobrirMeuUsuario();
     if(!chatMeuId){ chatToast('Não foi possível identificar seu usuário para o chat.'); return; }
     await chatCarregarUsuarios();
