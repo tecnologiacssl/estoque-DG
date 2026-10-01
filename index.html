@@ -4476,6 +4476,24 @@ table.pc-tabela tbody tr.pc2-marcado td{background:rgba(6,1,254,.07)}
   #form-criar .icone-perfil-grid{gap:6px}
   #form-criar .cad-linha2{grid-template-columns:1fr;gap:0}
 }
+
+/* ===== MODO APP DO CHAT (app de computador / ?app=chat) ===== */
+html.modo-app-chat #tela-portal{display:none !important}
+html.modo-app-chat #navTrilha,
+html.modo-app-chat #navBtnChat,
+html.modo-app-chat #navBtnNotif,
+html.modo-app-chat #navMenuHistorico,
+html.modo-app-chat #btn-instalar-app,
+html.modo-app-chat #btn-voltar-portal-chat,
+html.modo-app-chat #tela-chat > .topo-chamado,
+html.modo-app-chat .login-creditos{display:none !important}
+html.modo-app-chat #tela-chat{padding-top:12px}
+html.modo-app-chat .marca .texto b{font-size:0}
+html.modo-app-chat .marca .texto b::after{content:"Chat Interno";font-size:15px}
+html.modo-app-chat #tela-login .hero-login h2{font-size:0}
+html.modo-app-chat #tela-login .hero-login h2::after{content:"Chat Interno";font-size:clamp(2rem,4vw,3.2rem)}
+html.modo-app-chat #tela-login .feature-list{display:none}
+html.app-chat-sem-acesso #mainArea::before{content:"Seu usuário não tem acesso ao Chat Interno. Fale com a TI.";display:block;margin:40px auto;max-width:520px;padding:18px 20px;border-radius:14px;border:1px solid rgba(245,158,11,.35);background:rgba(245,158,11,.08);color:#fcd34d;font-weight:600;text-align:center}
 </style>
 </head>
 <body>
@@ -4493,6 +4511,18 @@ table.pc-tabela tbody tr.pc2-marcado td{background:rgba(6,1,254,.07)}
     if(localStorage.getItem('cssl_login_email')){
       document.documentElement.classList.add('cssl-restaurando-sessao');
     }
+  }catch(e){}
+})();
+</script>
+<!-- ADIÇÃO: "modo app do Chat Interno" — quando o portal é aberto pelo app
+     de computador (Electron) ou com ?app=chat no endereço, mostra só o Chat
+     Interno (sem Início e sem os outros módulos). Ver bloco "MODO APP DO
+     CHAT" no fim da página e o projeto do app (pasta chat-interno-app). -->
+<script>
+(function(){
+  try{
+    var ehApp = /[?&]app=chat(?:&|$)/.test(location.search) || !!window.csslDesktop;
+    if(ehApp){ document.documentElement.classList.add('modo-app-chat'); window.CSSL_APP_CHAT = true; }
   }catch(e){}
 })();
 </script>
@@ -20138,6 +20168,26 @@ formSolicitacao.addEventListener('submit', async function(e){
     return chatUsuariosCache.filter(function(u){ return String(u.id) === String(id); })[0];
   }
 
+  // ADIÇÃO (app de computador): no app não existe a notificação push do
+  // navegador (a que chega com o site fechado), então o próprio app avisa
+  // de mensagem nova quando a janela não está na frente ou a conversa não
+  // está aberta. No navegador comum nada muda (o push do servidor já avisa).
+  function chatNotificarApp(titulo, corpo, tag, aoClicar){
+    if(!window.CSSL_APP_CHAT) return;
+    try{
+      if(window.csslDesktop && typeof window.csslDesktop.novaMensagem === 'function') window.csslDesktop.novaMensagem();
+      if(typeof Notification === 'undefined' || Notification.permission === 'denied') return;
+      var n = new Notification(titulo, { body: String(corpo || '').slice(0, 140), tag: tag, silent: false });
+      n.onclick = function(){
+        try{ if(window.csslDesktop && window.csslDesktop.mostrar) window.csslDesktop.mostrar(); }catch(e){}
+        try{ window.focus(); }catch(e){}
+        try{ if(aoClicar) aoClicar(); }catch(e){}
+        n.close();
+      };
+    }catch(e){ console.warn('Chat: falha ao notificar no app.', e); }
+  }
+  function chatJanelaEmFoco(){ return !document.hidden && document.hasFocus(); }
+
   /* ============ ADIÇÃO: @MENÇÃO EM GRUPOS ============
      Formato "@NomeSemAcento" (ex.: "@DanielAndrade") escrito direto no texto
      da mensagem — sem precisar de nenhuma coluna nova no banco, o servidor
@@ -20955,6 +21005,9 @@ formSolicitacao.addEventListener('submit', async function(e){
     var total = chatConversasCache.reduce(function(soma, c){ return soma + (c.naoLidas || 0); }, 0)
       + chatGruposCache.reduce(function(soma, g){ return soma + (g.naoLidas || 0); }, 0);
     // ADIÇÃO (cabeçalho novo): mesmo número no atalho do chat do topo.
+    if(window.csslDesktop && typeof window.csslDesktop.naoLidas === 'function'){
+      try{ window.csslDesktop.naoLidas(total); }catch(e){}
+    }
     var elBadgeTopo = document.getElementById('navBadgeChat');
     if(elBadgeTopo){
       elBadgeTopo.textContent = total > 99 ? '99+' : String(total);
@@ -21922,6 +21975,12 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(String(m.remetente_id) === String(chatMeuId)) return; // eu mesmo enviei, já tratado localmente
     delete chatDigitando['d:' + m.conversa_id];
 
+    if(!(chatTipoAtivo === 'direta' && String(m.conversa_id) === String(chatConversaAtivaId) && chatJanelaEmFoco())){
+      chatNotificarApp(conversa.outroNome || 'Nova mensagem', chatPreviewAnexo(m), 'conv-' + m.conversa_id, function(){
+        chatAbrirConversa(conversa.id, { id:conversa.outroId, nome:conversa.outroNome, email:conversa.outroEmail, icone_perfil:conversa.outroIcone });
+      });
+    }
+
     chatAtualizarPreviewConversa(m.conversa_id, chatPreviewAnexo(m), false, m.criado_em);
 
     if(chatTipoAtivo === 'direta' && String(m.conversa_id) === String(chatConversaAtivaId)){
@@ -21948,6 +22007,10 @@ formSolicitacao.addEventListener('submit', async function(e){
 
     var autor = chatUsuarioPorId(m.remetente_id);
     var nomeAutor = autor ? (autor.nome || autor.email) : 'Alguém';
+
+    if(!(chatTipoAtivo === 'grupo' && chatGrupoAtivoSetor === m.setor && chatJanelaEmFoco())){
+      chatNotificarApp('Grupo ' + m.setor, nomeAutor + ': ' + chatPreviewAnexo(m), 'grupo-' + m.setor, function(){ chatAbrirGrupo(m.setor); });
+    }
 
     if(chatTipoAtivo === 'grupo' && chatGrupoAtivoSetor === m.setor){
       chatAdicionarMensagemNaTela(m, true);
@@ -22408,6 +22471,12 @@ formSolicitacao.addEventListener('submit', async function(e){
     elChamadaRecebendoAvatar.setAttribute('style', chatAvatarEstilo(chatChamadaAtual.outroNome, chatChamadaAtual.outroIcone));
     elChamadaRecebendoNome.textContent = chatChamadaAtual.outroNome || 'Alguém';
     elChamadaRecebendoOverlay.classList.add('aberto');
+    if(window.csslDesktop && typeof window.csslDesktop.chamadaRecebida === 'function'){
+      try{ window.csslDesktop.chamadaRecebida(chatChamadaAtual.outroNome || 'Alguém'); }catch(e){}
+    }
+    if(window.CSSL_APP_CHAT && !chatJanelaEmFoco()){
+      chatNotificarApp('📞 ' + (chatChamadaAtual.outroNome || 'Alguém') + ' está te ligando', 'Toque para atender', 'ligacao', null);
+    }
   }
   function chatEsconderTelaRecebendo(){
     if(elChamadaRecebendoOverlay) elChamadaRecebendoOverlay.classList.remove('aberto');
@@ -27079,5 +27148,48 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
 })();
 </script>
 
+
+<!-- ============================================================
+     MODO APP DO CHAT: depois do login, abre direto o Chat Interno
+     e esconde o resto do portal (ver CSS "modo-app-chat").
+     ============================================================ -->
+<script>
+(function(){
+  if(!window.CSSL_APP_CHAT) return;
+  try{ document.title = 'Chat Interno'; }catch(e){}
+  var tentativas = 0, timer = null;
+  function abrirChat(){
+    clearTimeout(timer);
+    var telaChat = document.getElementById('tela-chat');
+    var telaLogin = document.getElementById('tela-login');
+    if(!telaChat) return;
+    if(telaLogin && getComputedStyle(telaLogin).display !== 'none') return; // ainda no login
+    if(getComputedStyle(telaChat).display !== 'none'){ document.documentElement.classList.remove('app-chat-sem-acesso'); return; }
+    var podeVer = window.csslPodeVer ? window.csslPodeVer('chat') : null;
+    if(podeVer === true){
+      var card = document.getElementById('card-chat');
+      if(card) card.click();
+    }
+    tentativas++;
+    if(tentativas < 40){ timer = setTimeout(abrirChat, 300); }
+    else if(getComputedStyle(telaChat).display === 'none'){ document.documentElement.classList.add('app-chat-sem-acesso'); }
+  }
+  var antes = window.entrarNoPortal;
+  window.entrarNoPortal = function(){
+    var r = antes ? antes.apply(this, arguments) : undefined;
+    tentativas = 0;
+    document.documentElement.classList.remove('app-chat-sem-acesso');
+    setTimeout(abrirChat, 50);
+    return r;
+  };
+  // se a sessão já estava salva e o login aconteceu antes deste script
+  window.addEventListener('load', function(){ setTimeout(abrirChat, 300); });
+  // qualquer coisa que tente voltar pro Início reabre o chat
+  new MutationObserver(function(){
+    var portal = document.getElementById('tela-portal');
+    if(portal && portal.style.display === 'block'){ tentativas = 0; setTimeout(abrirChat, 50); }
+  }).observe(document.getElementById('tela-portal') || document.body, { attributes:true, attributeFilter:['style'] });
+})();
+</script>
 </body>
 </html>
