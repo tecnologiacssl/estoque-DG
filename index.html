@@ -4499,6 +4499,9 @@ html.modo-app-chat #tela-login .hero-login h2{font-size:0}
 html.modo-app-chat #tela-login .hero-login h2::after{content:"Chat Interno";font-size:clamp(2rem,4vw,3.2rem)}
 html.modo-app-chat #tela-login .feature-list{display:none}
 html.app-chat-sem-acesso #mainArea::before{content:"Seu usuário não tem acesso ao Chat Interno. Fale com a TI.";display:block;margin:40px auto;max-width:520px;padding:18px 20px;border-radius:14px;border:1px solid rgba(245,158,11,.35);background:rgba(245,158,11,.08);color:#fcd34d;font-weight:600;text-align:center}
+
+/* app de computador (portal inteiro ou só chat): não tem "instalar app" */
+html.app-desktop #btn-instalar-app{display:none !important}
 </style>
 </head>
 <body>
@@ -4526,7 +4529,10 @@ html.app-chat-sem-acesso #mainArea::before{content:"Seu usuário não tem acesso
 <script>
 (function(){
   try{
-    var ehApp = /[?&]app=chat(?:&|$)/.test(location.search) || !!window.csslDesktop;
+    var desk = window.csslDesktop;
+    // app de computador (Electron): "chat-interno" = só o chat; "central-ti" = portal inteiro
+    if(desk){ window.CSSL_APP_DESKTOP = desk.app || true; document.documentElement.classList.add('app-desktop'); }
+    var ehApp = /[?&]app=chat(?:&|$)/.test(location.search) || (desk && desk.app === 'chat-interno');
     if(ehApp){ document.documentElement.classList.add('modo-app-chat'); window.CSSL_APP_CHAT = true; }
   }catch(e){}
 })();
@@ -11414,6 +11420,21 @@ formSolicitacao.addEventListener('submit', async function(e){
   // caso o Service Worker não esteja disponível.
   function exibirNotificacaoLocal(titulo, opcoes){
     if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    // app de computador: notificação direta do Windows (o service worker do
+    // navegador não mostra notificação dentro do app); clicar traz a janela
+    // e abre o Painel de Chamados, igual ao clique na notificação do celular.
+    if(window.csslDesktop){
+      try{
+        var nd = new Notification(titulo, { body: (opcoes && opcoes.body) || '', tag: opcoes && opcoes.tag });
+        nd.onclick = function(){
+          try{ if(window.csslDesktop.mostrar) window.csslDesktop.mostrar(); }catch(e){}
+          try{ if(cardPainel && (!window.csslPodeVer || window.csslPodeVer('painel') !== false)) cardPainel.click(); }catch(e){}
+          nd.close();
+        };
+        if(window.csslDesktop.novaMensagem) window.csslDesktop.novaMensagem();
+      }catch(e){ console.warn('Falha ao exibir notificação no app:', e); }
+      return;
+    }
     if('serviceWorker' in navigator){
       navigator.serviceWorker.ready.then(function(reg){
         reg.showNotification(titulo, opcoes);
@@ -15704,8 +15725,12 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
 
     var numero = chamado.numero ? ('#' + String(chamado.numero).padStart(5,'0')) : 'novo';
+    var descNotif = String(chamado.descricao || '')
+      .replace(/^Agendado para:[^\n]*\n\n/, '').replace(/^Tipo: ([^\n]*)\n\n/, '$1 — ').replace(/^Sistema: [^\n]*\n\n/, '')
+      .replace(/Nome: ([^\n]*)\nNúmero de Matrícula:[^\n]*\nProfissão:[^\n]*\nNúmero de Registro[^\n]*\n*/, 'Acesso / senha — $1 ')
+      .replace(/\s+/g, ' ').trim();
     var corpo = (chamado.setor ? chamado.setor + ' — ' : '') +
-                (chamado.descricao ? chamado.descricao.slice(0,90) : 'Novo chamado recebido.');
+                (descNotif ? descNotif.slice(0,90) : 'Novo chamado recebido.');
     exibirNotificacaoLocal('🆕 Chamado ' + numero, {
       body: corpo,
       icon: ICONE_NOTIF,
@@ -20178,7 +20203,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // de mensagem nova quando a janela não está na frente ou a conversa não
   // está aberta. No navegador comum nada muda (o push do servidor já avisa).
   function chatNotificarApp(titulo, corpo, tag, aoClicar){
-    if(!window.CSSL_APP_CHAT) return;
+    if(!window.CSSL_APP_CHAT && !window.CSSL_APP_DESKTOP) return;
     try{
       if(window.csslDesktop && typeof window.csslDesktop.novaMensagem === 'function') window.csslDesktop.novaMensagem();
       if(typeof Notification === 'undefined' || Notification.permission === 'denied') return;
@@ -20186,12 +20211,19 @@ formSolicitacao.addEventListener('submit', async function(e){
       n.onclick = function(){
         try{ if(window.csslDesktop && window.csslDesktop.mostrar) window.csslDesktop.mostrar(); }catch(e){}
         try{ window.focus(); }catch(e){}
-        try{ if(aoClicar) aoClicar(); }catch(e){}
+        try{
+          var tc = document.getElementById('tela-chat');
+          if(tc && getComputedStyle(tc).display === 'none'){ var cc = document.getElementById('card-chat'); if(cc) cc.click(); }
+        }catch(e){}
+        try{ if(aoClicar) setTimeout(aoClicar, 300); }catch(e){}
         n.close();
       };
     }catch(e){ console.warn('Chat: falha ao notificar no app.', e); }
   }
-  function chatJanelaEmFoco(){ return !document.hidden && document.hasFocus(); }
+  function chatJanelaEmFoco(){
+    var tc = document.getElementById('tela-chat');
+    return !document.hidden && document.hasFocus() && !!tc && getComputedStyle(tc).display !== 'none';
+  }
 
   /* ============ ADIÇÃO: @MENÇÃO EM GRUPOS ============
      Formato "@NomeSemAcento" (ex.: "@DanielAndrade") escrito direto no texto
@@ -22479,7 +22511,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(window.csslDesktop && typeof window.csslDesktop.chamadaRecebida === 'function'){
       try{ window.csslDesktop.chamadaRecebida(chatChamadaAtual.outroNome || 'Alguém'); }catch(e){}
     }
-    if(window.CSSL_APP_CHAT && !chatJanelaEmFoco()){
+    if((window.CSSL_APP_CHAT || window.CSSL_APP_DESKTOP) && !chatJanelaEmFoco()){
       chatNotificarApp('📞 ' + (chatChamadaAtual.outroNome || 'Alguém') + ' está te ligando', 'Toque para atender', 'ligacao', null);
     }
   }
