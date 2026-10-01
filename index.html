@@ -2627,7 +2627,7 @@ header.nav{
 }
 
 /* ---------- Abrir chamado: formulário novo (aprovado) ---------- */
-#tela-chamado .topo-chamado,#tela-chamado .card-chamado-form{max-width:820px;margin-left:auto;margin-right:auto}
+#tela-chamado .topo-chamado,#tela-chamado .card-chamado-form{max-width:none;margin-left:0;margin-right:0} /* ALTERADO: largura toda, igual às outras telas (a pedido) */
 #tela-chamado .topo-chamado h2{font-size:24px;font-weight:800;letter-spacing:-.01em}
 #tela-chamado .card-chamado-form{padding:0;overflow:hidden;border-radius:18px}
 #tela-chamado #msg-chamado:not(:empty){padding:18px 26px 0}
@@ -2716,7 +2716,7 @@ header.nav{
 
 }
 /* ---------- Solicitar material: formulário novo (aprovado, mesmo visual do Abrir chamado) ---------- */
-#tela-solicitacao .topo-chamado,#tela-solicitacao .card-chamado-form{max-width:820px;margin-left:auto;margin-right:auto}
+#tela-solicitacao .topo-chamado,#tela-solicitacao .card-chamado-form{max-width:none;margin-left:0;margin-right:0} /* ALTERADO: largura toda, igual às outras telas (a pedido) */
 #tela-solicitacao .topo-chamado h2{font-size:24px;font-weight:800;letter-spacing:-.01em}
 #tela-solicitacao .card-chamado-form{padding:0;overflow:hidden;border-radius:18px}
 #tela-solicitacao #msg-solicitacao:not(:empty){padding:18px 26px 0}
@@ -4425,6 +4425,57 @@ table.pc-tabela tbody tr.pc2-marcado td{background:rgba(6,1,254,.07)}
   .tv2-alerta-txt{flex:1 1 0}
   .tv2-grp-cab{padding:10px 12px}
 }
+
+/* ===== Abrir chamado: tipo do problema (Sysart / Computador) ===== */
+#form-chamado #grupo-tipo-chamado{margin:0 0 16px;padding:14px;border-radius:14px;border:1px solid var(--borda);background:rgba(255,255,255,.02)}
+#grupo-tipo-chamado[hidden]{display:none !important}
+#grupo-tipo-chamado:not([hidden]){animation:sistemaAcessoEntrar .22s ease}
+.ch-tipo-label{margin:0 0 10px;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#d4d4d8}
+#form-chamado #grupo-tipo-chamado label.sistema-acesso-opcao{display:block;margin:0;position:relative;cursor:pointer;text-transform:none;letter-spacing:normal;font-size:14px;font-weight:600;color:#e4e4e7}
+#form-chamado #grupo-acesso-senha.so-sysart .campo-linha-sistema{display:none}
+#form-chamado #grupo-acesso-senha.so-sysart #grupo-acesso-sysart{margin-top:0}
+.ch-opcional{font-weight:600;color:var(--texto-3);text-transform:none;letter-spacing:0}
+
+/* ===== Abrir chamado / Solicitar material em tela larga: campos lado a lado ===== */
+@media (min-width:1000px){
+  #form-chamado > .ch-secao:nth-of-type(-n+2),#form-solicitacao > .ch-secao:nth-of-type(-n+2){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px;align-content:start}
+  #form-chamado > .ch-secao:nth-of-type(-n+2) > .ch-secao-cab,#form-solicitacao > .ch-secao:nth-of-type(-n+2) > .ch-secao-cab{grid-column:1/-1}
+  #form-chamado #ch-tipo-opcoes{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  #form-chamado #grupo-acesso-sysart:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px}
+  #form-chamado #grupo-acesso-senha #grupo-acesso-sysart .campo-linha{margin-bottom:14px}
+  #form-chamado #grupo-acesso-senha #grupo-acesso-sysart .campo-linha::before{display:none}
+  #form-chamado #input-descricao-chamado{min-height:130px}
+}
+
+/* nota do donut de categorias (Relatório) */
+.rel-donut-nota{margin-top:8px;font-size:10px;color:#667085;text-align:center}
+
+/* ===== Tela de login: visual novo (abre no Entrar, título por aba, cadastro compacto) ===== */
+.form-panel{grid-template-columns:minmax(0,1fr)}
+#form-login,#form-criar{min-width:0}
+/* cadastro compacto */
+#form-criar label{margin:12px 0 6px}
+#form-criar > label:first-of-type{margin-top:0}
+#form-criar input,#form-criar select{padding:11px 13px}
+#form-criar .icone-perfil-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;margin:0}
+#form-criar .icone-perfil-opcao{width:100%;height:auto;aspect-ratio:1;max-width:44px}
+#form-criar .cad-linha2{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:12px}
+#form-criar .cad-campo{min-width:0}
+#form-criar .cad-campo label{margin-top:12px}
+#form-criar .pergunta-sim-nao{margin-top:0}
+#form-criar .opcao-sim-nao{padding:11px 10px}
+#form-criar #campo-email-criar label,#form-criar #campo-crm-criar label{margin-top:12px}
+#form-criar .btn-principal{margin-top:18px}
+#form-login .btn-principal{margin-top:14px}
+/* o lado esquerdo não fica "pulando" ao trocar de aba */
+@media (min-width:981px){
+  .login-side{justify-content:center}
+  .login-panel{justify-content:center}
+}
+@media (max-width:420px){
+  #form-criar .icone-perfil-grid{gap:6px}
+  #form-criar .cad-linha2{grid-template-columns:1fr;gap:0}
+}
 </style>
 </head>
 <body>
@@ -4522,9 +4573,9 @@ table.pc-tabela tbody tr.pc2-marcado td{background:rgba(6,1,254,.07)}
 
       <div class="login-panel">
         <div class="panel-header">
-          <div class="eyebrow">Entrar no portal</div>
-          <div class="panel-title">Bem-vindo de volta</div>
-          <p class="panel-sub">Use seu e-mail cadastrado para continuar.</p>
+          <div class="eyebrow" id="login-eyebrow">Entrar no portal</div>
+          <div class="panel-title" id="login-titulo">Bem-vindo de volta</div>
+          <p class="panel-sub" id="login-sub">Use seu e-mail ou CRM cadastrado para continuar.</p>
         </div>
 
         <div class="form-panel">
@@ -4532,7 +4583,7 @@ table.pc-tabela tbody tr.pc2-marcado td{background:rgba(6,1,254,.07)}
             <label for="email-login">E-mail ou CRM cadastrado</label>
             <input id="email-login" type="text" placeholder="nome@exemplo.com ou CRM (médicos)" required autocomplete="username">
             <div class="msg-caixa erro" id="erro-login"></div>
-            <button type="submit" class="btn-principal" id="btn-login">Confirmar</button>
+            <button type="submit" class="btn-principal" id="btn-login">Entrar</button>
           </form>
           <div class="carregando" id="carregando-login">Verificando cadastro...</div>
 
@@ -4543,6 +4594,8 @@ table.pc-tabela tbody tr.pc2-marcado td{background:rgba(6,1,254,.07)}
             <div class="icone-perfil-grid" id="icone-perfil-grid"></div>
             <!-- ADIÇÃO: setor do usuário — usado para colocá-lo automaticamente
                  no grupo do Chat Interno do seu setor -->
+            <div class="cad-linha2">
+            <div class="cad-campo">
             <label for="setor-criar">Setor</label>
             <select id="setor-criar" required>
               <option value="">Selecione</option>
@@ -4561,13 +4614,18 @@ table.pc-tabela tbody tr.pc2-marcado td{background:rgba(6,1,254,.07)}
               <option>UCO</option><option>UTI</option><option>UTI Neo</option>
               <option>Outro</option>
             </select>
+            </div>
+
             <!-- ADIÇÃO: pergunta "Você é médico?" — quem responder "Sim" já entra
                  automaticamente no grupo "Médicos" do Chat Interno, além do
                  grupo do próprio setor (ver usuarios.medico e Gerenciar usuários) -->
+            <div class="cad-campo">
             <label>Você é médico?</label>
             <div class="pergunta-sim-nao" id="medico-criar-grupo" role="radiogroup" aria-label="Você é médico?">
               <button type="button" class="opcao-sim-nao selecionada" data-valor="nao" aria-pressed="true">Não</button>
               <button type="button" class="opcao-sim-nao" data-valor="sim" aria-pressed="false">Sim</button>
+            </div>
+            </div>
             </div>
             <div id="campo-email-criar">
               <label for="email-criar">E-mail</label>
@@ -4992,11 +5050,19 @@ table.pc-tabela tbody tr.pc2-marcado td{background:rgba(6,1,254,.07)}
             <div class="ch-ctrl"><svg class="ch-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.5"/></svg><select name="categoria" id="input-categoria-chamado" required>
               <option value="">Selecione</option>
               <option>Sysart</option><option>Impressora</option><option>Rede / Internet</option>
-              <option>Computador</option><option>Acesso / Senha</option><option>Windows</option>
+              <option>Computador</option><option>Windows</option>
               <option>Outro</option>
             </select></div>
             <div class="ch-dica" id="ch-dica-categoria" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></svg><div><b id="ch-dica-titulo"></b><ul id="ch-dica-lista"></ul></div></div>
           </div>
+
+        <!-- ADIÇÃO: tipo do problema — Sysart (Acesso / Senha × Erro) e
+             Computador (Monitor, Mouse / Teclado, PC, Outro). Opções montadas
+             por renderTiposChamado(); radios nativos (mouse, toque e teclado). -->
+        <div id="grupo-tipo-chamado" hidden>
+          <div class="ch-tipo-label" id="label-tipo-chamado">Tipo do problema</div>
+          <div class="sistema-acesso-opcoes" id="ch-tipo-opcoes" role="radiogroup" aria-labelledby="label-tipo-chamado"></div>
+        </div>
 
         <!-- ADIÇÃO: campos extras exibidos apenas quando Categoria = "Acesso / Senha" -->
         <div id="grupo-acesso-senha" style="display:none">
@@ -5091,7 +5157,7 @@ table.pc-tabela tbody tr.pc2-marcado td{background:rgba(6,1,254,.07)}
 
 
           <div class="ch-campo">
-            <label for="input-descricao-chamado">Descrição</label>
+            <label for="input-descricao-chamado">Descrição <span class="ch-opcional" id="ch-desc-opcional" hidden>(opcional)</span></label>
             <textarea name="descricao" id="input-descricao-chamado" required placeholder="Descreva o problema com o máximo de detalhes possível..."></textarea>
             <div class="ch-contador"><span>Quanto mais detalhe, mais rápido a TI resolve.</span><span id="ch-contador-desc">0 caracteres</span></div>
           </div>
@@ -10449,24 +10515,96 @@ function sistemaAcessoSelecionado(){
 // Função central: decide, a partir da categoria e do sistema escolhido, se os
 // campos do SysArt aparecem e se são obrigatórios. Esconder não apaga o que já
 // foi digitado — ao voltar para "SysArt" os valores continuam lá.
+
+// ADIÇÃO: "Tipo do problema" para as categorias Sysart e Computador.
+// Sysart → Acesso / Senha (mostra Nome/Matrícula/Profissão/Registro e a
+// descrição fica opcional) ou Erro (descrição obrigatória, como sempre).
+// Computador → Monitor, Mouse / Teclado, PC ou Outro. O tipo vai salvo no
+// início da descrição ("Tipo: ...") — a tabela "chamados" não tem coluna
+// própria e o pedido é não mexer no Supabase; o Painel lê de volta.
+// ADIÇÃO: "Acesso / Senha" agora é um tipo dentro do Sysart. Pra Dashboard,
+// Relatório e filtros, um chamado "Sysart → Acesso / Senha" conta nas DUAS
+// categorias (Sysart e Acesso / Senha). Chamados antigos da categoria
+// "Acesso / Senha" continuam contando só nela, como sempre.
+var RX_SYSART_ACESSO = /^(?:Agendado para:[^\n]*\n\n)?Tipo: Acesso \/ Senha(?:\n|$)/;
+function chamadoEhSysartAcesso(c){
+  return !!c && c.categoria === 'Sysart' && RX_SYSART_ACESSO.test(String(c.descricao || ''));
+}
+function categoriasDoChamado(c){
+  var cat = (c && c.categoria) || 'Outro';
+  return chamadoEhSysartAcesso(c) ? [cat, 'Acesso / Senha'] : [cat];
+}
+function chamadoNaCategoria(c, filtro){
+  if(!filtro) return true;
+  return categoriasDoChamado(c).indexOf(filtro) !== -1;
+}
+var TIPOS_POR_CATEGORIA = {
+  'Sysart': [ { v:'Acesso / Senha', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg>' }, { v:'Erro', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>' } ],
+  'Rede / Internet': [ { v:'Wi-Fi', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>' }, { v:'PC', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>' }, { v:'Ambas', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3M12 12V8"/></svg>' } ],
+  'Computador': [ { v:'Monitor', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>' }, { v:'Mouse / Teclado', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>' }, { v:'PC', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M10 6h4M10 10h4M12 17h.01"/></svg>' }, { v:'Outro', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>' } ]
+};
+var grupoTipoChamado = document.getElementById('grupo-tipo-chamado');
+var opcoesTipoChamado = document.getElementById('ch-tipo-opcoes');
+var inputDescricaoChamado = document.getElementById('input-descricao-chamado');
+var descOpcionalEl = document.getElementById('ch-desc-opcional');
+var PLACEHOLDER_DESC_PADRAO = inputDescricaoChamado ? inputDescricaoChamado.placeholder : '';
+function tipoChamadoSelecionado(){
+  var r = opcoesTipoChamado ? opcoesTipoChamado.querySelector('input[name="tipo_chamado"]:checked') : null;
+  return r ? r.value : '';
+}
+function modoSysartAcesso(){
+  return !!selectCategoriaChamado && selectCategoriaChamado.value === 'Sysart' && tipoChamadoSelecionado() === 'Acesso / Senha';
+}
+function renderTiposChamado(){
+  if(!grupoTipoChamado || !opcoesTipoChamado || !selectCategoriaChamado) return;
+  var cat = selectCategoriaChamado.value;
+  var tipos = TIPOS_POR_CATEGORIA[cat];
+  if(!tipos){ grupoTipoChamado.hidden = true; grupoTipoChamado.removeAttribute('data-cat'); opcoesTipoChamado.innerHTML = ''; return; }
+  grupoTipoChamado.hidden = false;
+  if(grupoTipoChamado.getAttribute('data-cat') === cat) return;
+  grupoTipoChamado.setAttribute('data-cat', cat);
+  opcoesTipoChamado.innerHTML = tipos.map(function(t, i){
+    return '<label class="sistema-acesso-opcao">' +
+      '<input type="radio" name="tipo_chamado" value="' + t.v + '" required' + (i === 0 ? ' aria-describedby="label-tipo-chamado"' : '') + '>' +
+      '<span class="sistema-acesso-card"><span class="sistema-acesso-ico">' + t.ic + '</span><span class="sistema-acesso-txt">' + t.v + '</span>' +
+      '<span class="sistema-acesso-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span>' +
+    '</label>';
+  }).join('');
+}
+function atualizarDescricaoChamado(){
+  if(!inputDescricaoChamado) return;
+  var opcional = modoSysartAcesso();
+  inputDescricaoChamado.required = !opcional;
+  if(descOpcionalEl) descOpcionalEl.hidden = !opcional;
+  inputDescricaoChamado.placeholder = opcional ? 'Se quiser, conte algo a mais (ex.: o usuário está bloqueado, precisa de acesso a outro setor...)' : PLACEHOLDER_DESC_PADRAO;
+}
 function atualizarCamposSistemaAcesso(){
   var grupoVisivel = !!grupoAcessoSenha && grupoAcessoSenha.style.display !== 'none';
-  var ehSysart = grupoVisivel && sistemaAcessoSelecionado() === 'SysArt';
+  // ALTERADO: em "Sysart → Acesso / Senha" os campos do SysArt aparecem
+  // direto (sem a etapa Sistema / Aplicativo, que fica escondida).
+  var ehSysart = grupoVisivel && (sistemaAcessoSelecionado() === 'SysArt' || modoSysartAcesso());
   if(grupoAcessoSysart) grupoAcessoSysart.hidden = !ehSysart;
   if(grupoAcessoSenha) grupoAcessoSenha.classList.toggle('sem-sysart', !ehSysart);
   CAMPOS_ACESSO_SENHA.forEach(function(campo){ campo.required = ehSysart; });
 }
 function atualizarObrigatoriedadeAcessoSenha(mostrar){
-  RADIOS_SISTEMA_ACESSO.forEach(function(r){ r.required = mostrar; });
+  // ALTERADO: no modo "Sysart → Acesso / Senha" não existe a escolha de sistema
+  var pedeSistema = mostrar && !modoSysartAcesso();
+  RADIOS_SISTEMA_ACESSO.forEach(function(r){ r.required = pedeSistema; });
+  if(grupoAcessoSenha) grupoAcessoSenha.classList.toggle('so-sysart', mostrar && modoSysartAcesso());
   atualizarCamposSistemaAcesso();
 }
 RADIOS_SISTEMA_ACESSO.forEach(function(r){ r.addEventListener('change', atualizarCamposSistemaAcesso); });
+function sincronizarGrupoAcessoSenha(){
+  if(!selectCategoriaChamado || !grupoAcessoSenha) return;
+  renderTiposChamado();
+  var mostrar = selectCategoriaChamado.value === 'Acesso / Senha' || modoSysartAcesso();
+  grupoAcessoSenha.style.display = mostrar ? 'block' : 'none';
+  atualizarObrigatoriedadeAcessoSenha(mostrar);
+  atualizarDescricaoChamado();
+}
+if(opcoesTipoChamado) opcoesTipoChamado.addEventListener('change', sincronizarGrupoAcessoSenha);
 if(selectCategoriaChamado && grupoAcessoSenha){
-  function sincronizarGrupoAcessoSenha(){
-    var mostrar = selectCategoriaChamado.value === 'Acesso / Senha';
-    grupoAcessoSenha.style.display = mostrar ? 'block' : 'none';
-    atualizarObrigatoriedadeAcessoSenha(mostrar);
-  }
   selectCategoriaChamado.addEventListener('change', sincronizarGrupoAcessoSenha);
   // ADIÇÃO: já sincroniza no carregamento — cobre o estado inicial (grupo
   // escondido) e um eventual reload com a categoria já pré-selecionada.
@@ -10564,6 +10702,36 @@ abaCriarBtn.addEventListener('click', function(){
   esconderMsgsLogin();
   nomeCriarInput.focus();
 });
+
+
+// ============================================================
+// ADIÇÃO (tela de login): abre direto no "Entrar" e o título do painel
+// muda conforme a aba (Entrar / Criar conta).
+// ============================================================
+var LOGIN_TEXTOS = {
+  entrar: { eyebrow:'Entrar no portal', titulo:'Bem-vindo de volta', sub:'Use seu e-mail ou CRM cadastrado para continuar.' },
+  criar:  { eyebrow:'Novo por aqui', titulo:'Criar sua conta', sub:'Leva menos de um minuto. Preencha seus dados abaixo.' }
+};
+function loginAplicarTextos(modo){
+  var t = LOGIN_TEXTOS[modo] || LOGIN_TEXTOS.entrar;
+  var e1 = document.getElementById('login-eyebrow'), e2 = document.getElementById('login-titulo'), e3 = document.getElementById('login-sub');
+  if(e1) e1.textContent = t.eyebrow;
+  if(e2) e2.textContent = t.titulo;
+  if(e3) e3.textContent = t.sub;
+}
+function loginAbrirEntrar(focar){
+  abaEntrarBtn.classList.add('ativa');
+  abaCriarBtn.classList.remove('ativa');
+  formLogin.classList.remove('form-oculto');
+  formCriar.classList.add('form-oculto');
+  subDinamico.textContent = 'Informe o e-mail cadastrado';
+  loginAplicarTextos('entrar');
+  if(focar) emailLoginInput.focus();
+}
+abaEntrarBtn.addEventListener('click', function(){ loginAplicarTextos('entrar'); });
+abaCriarBtn.addEventListener('click', function(){ loginAplicarTextos('criar'); });
+btnSair.addEventListener('click', function(){ setTimeout(function(){ loginAbrirEntrar(false); }, 0); }); // depois do handler original (que esconde os formulários)
+loginAbrirEntrar(false);
 
 // ---- Cadastro ----
 formCriar.addEventListener('submit', async function(e){
@@ -10816,7 +10984,7 @@ async function enviarAnexos(){
       alert('Arquivo acima de 10 MB: ' + f.name);
       continue;
     }
-    let caminho = Date.now() + '_' + f.name.replace(/[^\w.\-]+/g, '_');
+    let caminho = Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '_' + f.name.replace(/[^\w.\-]+/g, '_');
     let { error } = await db.storage.from('anexos').upload(caminho, f);
     if(error){
       alert('Falha ao enviar o arquivo ' + f.name + ': ' + error.message);
@@ -10855,11 +11023,29 @@ formChamado.addEventListener('submit', async function(e){
     // schema no Supabase), então eles vão formatados no início do campo
     // "descricao" — chegam de fato junto com o restante dos dados do chamado.
     let descricaoFinal = d.descricao;
+    // ADIÇÃO: "Tipo do problema" (Sysart / Computador) vai no início da
+    // descrição como "Tipo: ...". Em "Sysart → Acesso / Senha" os dados do
+    // SysArt vêm logo depois (mesmo formato de "Acesso / Senha", que o Painel
+    // já sabe ler) e a descrição digitada é opcional.
+    let tipoChamado = (d.tipo_chamado || '').trim();
+    if(d.categoria === 'Sysart' && tipoChamado === 'Acesso / Senha'){
+      let conselhoSys = MAPA_CONSELHO_PROFISSAO[d.acesso_profissao] || '';
+      descricaoFinal = 'Tipo: Acesso / Senha\n\n' + [
+        'Nome: ' + (d.acesso_nome || ''),
+        'Número de Matrícula: ' + (d.acesso_matricula || ''),
+        'Profissão: ' + (d.acesso_profissao || ''),
+        'Número de Registro' + (conselhoSys ? ' (' + conselhoSys + ')' : '') + ': ' + (d.acesso_registro || '')
+      ].join('\n') + '\n\n' + (d.descricao || '').trim();
+    }else if(TIPOS_POR_CATEGORIA[d.categoria] && tipoChamado){
+      descricaoFinal = 'Tipo: ' + tipoChamado + '\n\n' + d.descricao;
+    }
     // ADIÇÃO: "Outro aplicativo" não envia os campos do SysArt (mesmo que algo
     // tenha sido digitado antes de trocar a opção) — só registra o sistema.
     // O formato do SysArt abaixo continua exatamente o mesmo de antes, pra não
     // quebrar a leitura desses dados no Painel de Chamados e no Histórico.
-    if(d.categoria === 'Acesso / Senha' && d.acesso_sistema === 'Outro aplicativo'){
+    if(d.categoria !== 'Acesso / Senha'){
+      // (tipo já tratado acima)
+    }else if(d.categoria === 'Acesso / Senha' && d.acesso_sistema === 'Outro aplicativo'){
       descricaoFinal = 'Sistema: Outro aplicativo\n\n' + d.descricao;
     }else if(d.categoria === 'Acesso / Senha'){
       let conselhoAcesso = MAPA_CONSELHO_PROFISSAO[d.acesso_profissao] || '';
@@ -10899,6 +11085,7 @@ formChamado.addEventListener('submit', async function(e){
     if(grupoAcessoSenha) grupoAcessoSenha.style.display = 'none';
     atualizarObrigatoriedadeAcessoSenha(false);
     atualizarLabelAcessoRegistro();
+    sincronizarGrupoAcessoSenha();
   }catch(err){
     msgChamado.innerHTML = '<div class="msg-caixa erro" style="display:block">Erro ao enviar (' + (err && err.message ? err.message : 'falha desconhecida') + ').</div>';
   }finally{
@@ -10920,7 +11107,7 @@ async function enviarAnexosSolicitacao(){
       alert('Arquivo acima de 10 MB: ' + f.name);
       continue;
     }
-    let caminho = Date.now() + '_' + f.name.replace(/[^\w.\-]+/g, '_');
+    let caminho = Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '_' + f.name.replace(/[^\w.\-]+/g, '_');
     let { error } = await db.storage.from('anexos').upload(caminho, f);
     if(error){
       alert('Falha ao enviar o arquivo ' + f.name + ': ' + error.message);
@@ -11531,7 +11718,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   function cpnPassaFiltrosPainel(c){
     if(filtroStatusPainel !== 'todos' && cpnClasseParaBucket(cpnBucketDoChamado(c)) !== filtroStatusPainel) return false;
     if(filtroSetorPainel && (c.setor || '') !== filtroSetorPainel) return false;
-    if(filtroTipoPainel && (c.categoria || '') !== filtroTipoPainel) return false;
+    if(filtroTipoPainel && !chamadoNaCategoria(c, filtroTipoPainel)) return false;
     if(filtroAtendentePainel && (c.atendido_por || '') !== filtroAtendentePainel) return false;
     return true;
   }
@@ -11758,7 +11945,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     var itens = [
       { icone: ICONE_WHATSAPP, classe: 'cpn-meta-icon-whatsapp', label: 'WhatsApp', valor: c.whatsapp || '—' },
       { icone: ICONE_ANYDESK, classe: 'cpn-meta-icon-anydesk', label: 'AnyDesk', valor: c.anydesk || '—' },
-      { icone: ICONE_LAYERS, classe: '', label: 'Setor / Tipo', valor: (c.setor || '—') + ' · ' + (c.categoria || '—') },
+      { icone: ICONE_LAYERS, classe: '', label: 'Setor / Tipo', valor: (c.setor || '—') + ' · ' + cpnCategoriaComTipo(c) },
       { icone: ICONE_CALENDAR, classe: '', label: 'Aberto em', valor: formatarDataChamado(c.created_at || c.criado_em || c.data) }
     ];
     if(opcoes.atendente) itens.push({ icone: ICONE_USER, classe: '', label: 'Atendido por', valor: c.atendido_por || '—' });
@@ -11786,10 +11973,34 @@ formSolicitacao.addEventListener('submit', async function(e){
   // funcionalidade existir).
   var RX_DADOS_ACESSO_SENHA = /^Nome: ([^\n]*)\nNúmero de Matrícula: ([^\n]*)\nProfissão: ([^\n]*)\nNúmero de Registro(?: \(([^)]*)\))?: ([^\n]*)\n\n([\s\S]*)$/;
   function cpnDadosAcessoSenha(c){
-    if(!c || c.categoria !== 'Acesso / Senha' || !c.descricao) return null;
+    // ALTERADO: também lê "Sysart → Acesso / Senha" (mesmo formato de dados)
+    if(!c || (c.categoria !== 'Acesso / Senha' && c.categoria !== 'Sysart') || !c.descricao) return null;
     var m = RX_DADOS_ACESSO_SENHA.exec(c.descricao);
     if(!m) return null;
     return { nome: m[1], matricula: m[2], profissao: m[3], conselho: m[4] || '', registro: m[5], resto: m[6] };
+  }
+
+  // ADIÇÃO: "Tipo do problema" (Sysart / Computador) salvo no início da
+  // descrição como "Tipo: ...\n\n" pelo formulário de Abrir chamado.
+  var RX_TIPO_CHAMADO = /^Tipo: ([^\n]*)\n\n([\s\S]*)$/;
+  function cpnDadosTipo(c){
+    if(!c || !c.descricao || (c.categoria !== 'Sysart' && c.categoria !== 'Computador' && c.categoria !== 'Rede / Internet')) return null;
+    var m = RX_TIPO_CHAMADO.exec(c.descricao);
+    return m ? { tipo: m[1], resto: m[2] } : null;
+  }
+  function cpnTipoDe(c){
+    var ag = cpnDadosAgendamento(c);
+    var t = cpnDadosTipo(ag ? Object.assign({}, c, { descricao: ag.resto }) : c);
+    return t ? t.tipo : '';
+  }
+  function cpnCategoriaComTipo(c){
+    var t = cpnTipoDe(c);
+    return (c.categoria || '—') + (t ? ' · ' + t : '');
+  }
+  window.cpnCategoriaComTipo = cpnCategoriaComTipo; // usado também na tela de Avaliação e nas Atividades recentes
+
+  function cpnDescricaoSemTipo(texto){
+    return String(texto || '').replace(/^((?:Agendado para: [^\n]*\n\n)?)Tipo: [^\n]*\n\n/, '$1');
   }
 
   // ADIÇÃO: bloco visual (destacado, com ícone de escudo) com os dados de
@@ -12159,8 +12370,13 @@ formSolicitacao.addEventListener('submit', async function(e){
         // ALTERADO: exclui na tabela certa (chamados ou solicitacoes); a
         // renumeração (que fecha os "buracos" na contagem) só existe/faz
         // sentido para "chamados".
-        await db.from(tabelaDe(c)).delete().eq('numero', c.numero);
-        if(tabelaDe(c) === 'chamados') await renumerarChamados();
+        // CORREÇÃO: não renumera mais os outros chamados depois de excluir.
+        // A renumeração tinha um defeito (os chamados ficavam presos com
+        // número 1.000.0xx) e, mesmo funcionando, mudava o número de
+        // chamados antigos — quebrando o vínculo com avaliações e o que o
+        // solicitante já tinha visto. Número de chamado agora é fixo.
+        var resExc = await db.from(tabelaDe(c)).delete().eq('numero', c.numero);
+        if(resExc && resExc.error) throw resExc.error;
         carregarChamados();
       }catch(err){
         alert('Não foi possível excluir o chamado.');
@@ -12226,11 +12442,15 @@ formSolicitacao.addEventListener('submit', async function(e){
     // o "descricao" completo, com o prefixo, usado por cpnAgendamentoHtml).
     var dadosAgendamento = cpnDadosAgendamento(c);
     var cSemAgendamento = dadosAgendamento ? Object.assign({}, c, { descricao: dadosAgendamento.resto }) : c;
+    // ADIÇÃO: tira também o "Tipo: ..." (Sysart / Computador) — o tipo
+    // aparece junto da categoria, não no título.
+    var dadosTipoCh = cpnDadosTipo(cSemAgendamento);
+    if(dadosTipoCh) cSemAgendamento = Object.assign({}, cSemAgendamento, { descricao: dadosTipoCh.resto });
     var dadosAcessoSenha = cpnDadosAcessoSenha(cSemAgendamento);
     // ADIÇÃO: mesma lógica acima, agora para solicitações de material — o
     // título mostra só o motivo digitado, e o item vai à parte (cpnSolicitacaoHtml).
     var dadosSolicitacao = cpnDadosSolicitacao(cSemAgendamento);
-    var descricao = (dadosAcessoSenha ? dadosAcessoSenha.resto : (dadosSolicitacao ? dadosSolicitacao.resto : cSemAgendamento.descricao)) || ('Chamado de ' + (c.solicitante || '—'));
+    var descricao = (dadosAcessoSenha ? (dadosAcessoSenha.resto.trim() || ('Acesso / senha no SysArt — ' + (dadosAcessoSenha.nome || 'sem nome') + (dadosAcessoSenha.profissao ? ' (' + dadosAcessoSenha.profissao + ')' : ''))) : (dadosSolicitacao ? dadosSolicitacao.resto : cSemAgendamento.descricao)) || ('Chamado de ' + (c.solicitante || '—'));
 
     // ALTERADO: o cartão "Aberto" agora também mostra o detalhe completo
     // (WhatsApp/AnyDesk/Setor/Aberto em, anexos, observações internas) —
@@ -12260,7 +12480,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       '<div class="cpn-card-titulo">' + descricao + '</div>' +
       '<div class="cpn-card-sub">' +
         '<span>' + ICONE_USER + (c.solicitante || '—') + '</span>' +
-        '<span>' + ICONE_LAYERS + (c.setor || '—') + ' · ' + (c.categoria || '—') + '</span>' +
+        '<span>' + ICONE_LAYERS + (c.setor || '—') + ' · ' + cpnCategoriaComTipo(c) + '</span>' +
         '<span title="Aberto em">' + ICONE_CALENDAR + formatarDataChamado(dataAbertura) + '</span>' +
         (statusClasse !== 'aberto' ? '<span title="Atendido por">' + ICONE_HEADSET + (c.atendido_por || '—') + '</span>' : '') +
         (statusClasse === 'concluido' && c.concluido_em ? '<span title="Concluído em">' + ICONE_CHECK_CIRCULO + formatarDataChamado(c.concluido_em) + '</span>' : '') +
@@ -12680,7 +12900,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     }
     var exibir = opcoes.limite ? entradas.slice(0, opcoes.limite) : entradas;
     var max = Math.max.apply(null, entradas.map(function(e){ return e[1]; }));
-    var soma = entradas.reduce(function(t, e){ return t + e[1]; }, 0);
+    var soma = opcoes.totalBase || entradas.reduce(function(t, e){ return t + e[1]; }, 0);
     // REDESIGN (aprovado): barras mais limpas, com a % do total ao lado do número
     el.innerHTML = exibir.map(function(e){
       var larg = max ? Math.max(1, Math.round((e[1] / max) * 100)) : 0;
@@ -12765,7 +12985,8 @@ formSolicitacao.addEventListener('submit', async function(e){
       montarBarChart(id, estado.contagens, {
         limite: estado.expandido ? null : estado.limiteInicial,
         corMapa: estado.corMapa,
-        avatar: estado.avatar
+        avatar: estado.avatar,
+        totalBase: estado.totalBase
       });
       btn.classList.toggle('expandido', estado.expandido);
       btn.querySelector('.btn-ver-detalhes-txt').textContent = estado.expandido ? 'Ver menos' : 'Ver detalhes';
@@ -12797,7 +13018,8 @@ formSolicitacao.addEventListener('submit', async function(e){
       montarBarChart(id, estado.contagens, {
         limite: estado.expandido ? null : estado.limiteInicial,
         corMapa: estado.corMapa,
-        avatar: estado.avatar
+        avatar: estado.avatar,
+        totalBase: estado.totalBase
       });
       btn.classList.toggle('expandido', estado.expandido);
       btn.querySelector('.btn-ver-detalhes-txt').textContent = estado.expandido ? 'Ver menos' : 'Ver detalhes';
@@ -13251,7 +13473,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       var setor = c.setor || 'Não informado';
       porStatus[status] = (porStatus[status] || 0) + 1;
       porPrioridade[prioridade] = (porPrioridade[prioridade] || 0) + 1;
-      porCategoria[categoria] = (porCategoria[categoria] || 0) + 1;
+      categoriasDoChamado(c).forEach(function(cat){ porCategoria[cat] = (porCategoria[cat] || 0) + 1; });
       porSetor[setor] = (porSetor[setor] || 0) + 1;
     });
 
@@ -13283,8 +13505,8 @@ formSolicitacao.addEventListener('submit', async function(e){
 
     function adicionarBarras(cfg){
       dashGridEl.appendChild(criarCartaoDashboard(cfg));
-      var totalEntradas = montarBarChart('chart-' + cfg.id, cfg.contagens, { limite:cfg.limiteInicial, corMapa:cfg.corMapa });
-      DASH_ESTADO['chart-' + cfg.id] = { contagens:cfg.contagens, corMapa:cfg.corMapa, limiteInicial:cfg.limiteInicial, expandido:false };
+      var totalEntradas = montarBarChart('chart-' + cfg.id, cfg.contagens, { limite:cfg.limiteInicial, corMapa:cfg.corMapa, totalBase:cfg.totalBase });
+      DASH_ESTADO['chart-' + cfg.id] = { contagens:cfg.contagens, corMapa:cfg.corMapa, limiteInicial:cfg.limiteInicial, expandido:false, totalBase:cfg.totalBase };
       if(totalEntradas <= cfg.limiteInicial){
         var rodape = dashGridEl.querySelector('#chart-' + cfg.id).closest('.chart-card').querySelector('.chart-card-rodape');
         if(rodape) rodape.style.display = 'none';
@@ -13300,7 +13522,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     dashGridEl.appendChild(cartaoRk);
     dbMontarRanking(chamados);
 
-    adicionarBarras({ id:'categoria', icone:ICONE_GRADE, titulo:'Por categoria', subtitulo:'Chamados agrupados por categoria.', contagens:porCategoria, limiteInicial:5 });
+    adicionarBarras({ id:'categoria', icone:ICONE_GRADE, titulo:'Por categoria', subtitulo:'Chamados agrupados por categoria. Sysart → Acesso / Senha conta nas duas.', contagens:porCategoria, limiteInicial:5, totalBase:chamados.length });
     adicionarBarras({ id:'setor', icone:ICONE_PREDIO, titulo:'Top setores', subtitulo:'Setores com mais chamados registrados.', contagens:porSetor, limiteInicial:5 });
   }
 
@@ -13507,7 +13729,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     var any = c.anydesk
       ? '<div class="kb-dado any">' + ICONE_ANYDESK + '<span>' + cpnEscHtml(c.anydesk) + '</span></div>'
       : '<div class="kb-dado falta">' + ICONE_ANYDESK + '<span>Sem AnyDesk</span></div>';
-    var sistema = c.categoria || c.item_solicitado || '—';
+    var sistema = c.categoria ? cpnCategoriaComTipo(c) : (c.item_solicitado || '—');
 
     div.innerHTML =
       '<div class="kb-topo">' + kbChipPrio(prioridade) + '<span class="kb-num">#' + (c.numero != null ? c.numero : '—') + '</span>' + kbEsperaHtml(c) + '</div>' +
@@ -13548,8 +13770,13 @@ formSolicitacao.addEventListener('submit', async function(e){
     div.querySelector('.kb-excluir').addEventListener('click', async function(){
       if(!confirm('Excluir chamado #' + c.numero + '?')) return;
       try{
-        await db.from(tabelaDe(c)).delete().eq('numero', c.numero);
-        if(tabelaDe(c) === 'chamados') await renumerarChamados();
+        // CORREÇÃO: não renumera mais os outros chamados depois de excluir.
+        // A renumeração tinha um defeito (os chamados ficavam presos com
+        // número 1.000.0xx) e, mesmo funcionando, mudava o número de
+        // chamados antigos — quebrando o vínculo com avaliações e o que o
+        // solicitante já tinha visto. Número de chamado agora é fixo.
+        var resExc = await db.from(tabelaDe(c)).delete().eq('numero', c.numero);
+        if(resExc && resExc.error) throw resExc.error;
         carregarChamados();
       }catch(err){
         alert('Não foi possível excluir o chamado.');
@@ -13687,7 +13914,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     var info = [
       ['Usuário', c.solicitante],
       ['Setor', c.setor],
-      [tabelaDe(c) === 'solicitacoes' ? 'Tipo' : 'Sistema', c.categoria],
+      [tabelaDe(c) === 'solicitacoes' ? 'Tipo' : 'Sistema', c.categoria ? cpnCategoriaComTipo(c) : c.categoria],
       ['Aberto em', formatarDataChamado(kbDataAbertura(c))],
       ['Atendente', c.atendido_por || 'Não atribuído'],
       ['WhatsApp', c.whatsapp],
@@ -13706,12 +13933,12 @@ formSolicitacao.addEventListener('submit', async function(e){
           '<button type="button" class="kbg-fechar" title="Fechar (Esc)" aria-label="Fechar">' + ICONE_KB_X + '</button>' +
         '</div>' +
         '<div class="kbg-nome">' + cpnEscHtml(c.solicitante || '—') + '</div>' +
-        '<div class="kb-onde">' + (tabelaDe(c) === 'solicitacoes' ? '<b class="kb-tag-sol">Solicitação</b>' : '') + cpnEscHtml(c.setor || '—') + '<i>·</i>' + cpnEscHtml(c.categoria || c.item_solicitado || '—') +
+        '<div class="kb-onde">' + (tabelaDe(c) === 'solicitacoes' ? '<b class="kb-tag-sol">Solicitação</b>' : '') + cpnEscHtml(c.setor || '—') + '<i>·</i>' + cpnEscHtml(c.categoria ? cpnCategoriaComTipo(c) : (c.item_solicitado || '—')) +
           (esp ? '<i>·</i><span class="kbg-espera nivel-' + esp.nivel + '">' + cpnEscHtml(esp.texto) + '</span>' : '') +
         '</div>' +
       '</div>' +
       '<div class="kbg-corpo">' +
-        '<section class="kbg-sec"><h4>O que aconteceu</h4><div class="kbg-desc">' + (c.descricao ? cpnEscHtml(c.descricao) : '<span class="kbg-sem">Sem descrição.</span>') + '</div></section>' +
+        '<section class="kbg-sec"><h4>O que aconteceu</h4><div class="kbg-desc">' + (c.descricao ? cpnEscHtml(cpnDescricaoSemTipo(c.descricao)) : '<span class="kbg-sem">Sem descrição.</span>') + '</div></section>' +
         '<section class="kbg-sec"><h4>Contato</h4>' + cpnContatosHtml(c) + '</section>' +
         '<section class="kbg-sec"><h4>Informações</h4><div class="kbg-grid">' + info.map(function(it){
           return '<div><small>' + it[0] + '</small><b>' + cpnEscHtml(it[1] || '—') + '</b></div>';
@@ -14133,7 +14360,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       if(f.setor && c.setor !== f.setor) return false;
       if(f.status && (c.status || 'Aberto') !== f.status) return false;
       if(f.prioridade && (c.prioridade || '') !== f.prioridade) return false;
-      if(f.categoria && (c.categoria || '') !== f.categoria) return false;
+      if(f.categoria && !chamadoNaCategoria(c, f.categoria)) return false;
       if(f.atendente && (c.atendido_por || '') !== f.atendente) return false;
       return true;
     });
@@ -14169,7 +14396,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       '<path d="' + linha + '" fill="none" stroke="#0501d0" stroke-width="2"/>' + pontosSvg + labels + '</svg>';
   }
 
-  function relSvgDonut(itens){
+  function relSvgDonut(itens, totalCentro){
     var total = itens.reduce(function(s, it){ return s + it.valor; }, 0);
     var cx = 52, cy = 52, r = 42, r2 = 25;
     var svg = '<svg viewBox="0 0 104 104" width="104" height="104" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">';
@@ -14190,7 +14417,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       });
     }
     svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r2 + '" fill="#fff"/>';
-    svg += '<text x="' + cx + '" y="' + (cy + 5) + '" font-size="16" font-weight="800" fill="#0f1b3d" text-anchor="middle">' + total + '</text>';
+    svg += '<text x="' + cx + '" y="' + (cy + 5) + '" font-size="16" font-weight="800" fill="#0f1b3d" text-anchor="middle">' + (totalCentro != null ? totalCentro : total) + '</text>';
     svg += '</svg>';
     return svg;
   }
@@ -14232,7 +14459,8 @@ formSolicitacao.addEventListener('submit', async function(e){
   var REL_ICO_CALENDAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
   var REL_ICO_BALAO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
 
-  function relDonutBloco(titulo, contagens, categoriasFixas, mapaCores){
+  function relDonutBloco(titulo, contagens, categoriasFixas, mapaCores, opc){
+    opc = opc || {};
     var total = 0;
     var itens = categoriasFixas.map(function(cat, i){
       var v = contagens[cat] || 0;
@@ -14240,12 +14468,14 @@ formSolicitacao.addEventListener('submit', async function(e){
       return { label:cat, valor:v, cor: mapaCores[cat] || REL_PALETA[i % REL_PALETA.length] };
     });
     var legenda = itens.map(function(it){
-      var pct = total > 0 ? Math.round(it.valor / total * 100) : 0;
+      var base = opc.totalChamados || total;
+      var pct = base > 0 ? Math.round(it.valor / base * 100) : 0;
       return '<div class="legenda-linha"><span class="pt" style="background:' + it.cor + '"></span>' + relEsc(it.label) + ' - <b>' + it.valor + ' (' + pct + '%)</b></div>';
     }).join('');
     return '<div class="rel-donut-card">' +
       '<div class="rel-secao-titulo" style="margin-bottom:0">' + relEsc(titulo) + '</div>' +
-      '<div class="rel-donut-corpo">' + relSvgDonut(itens) + '<div class="rel-donut-legenda">' + legenda + '</div></div>' +
+      '<div class="rel-donut-corpo">' + relSvgDonut(itens, opc.totalChamados) + '<div class="rel-donut-legenda">' + legenda + '</div></div>' +
+      (opc.nota ? '<div class="rel-donut-nota">' + relEsc(opc.nota) + '</div>' : '') +
       '</div>';
   }
 
@@ -14264,7 +14494,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       var atendente = c.atendido_por || 'Não atribuído';
       porStatus[status] = (porStatus[status] || 0) + 1;
       porPrioridade[prioridade] = (porPrioridade[prioridade] || 0) + 1;
-      porCategoria[categoria] = (porCategoria[categoria] || 0) + 1;
+      categoriasDoChamado(c).forEach(function(cat){ porCategoria[cat] = (porCategoria[cat] || 0) + 1; });
       porSetor[setor] = (porSetor[setor] || 0) + 1;
       porAtendente[atendente] = (porAtendente[atendente] || 0) + 1;
     });
@@ -14325,7 +14555,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     var cardCategoria =
       '<div class="rel-card"><div class="rel-card-icone">' + REL_ICO_GRADE + '</div>' +
       '<div class="num">' + lista.length + '</div><div class="tit">Por categoria</div>' +
-      '<div class="desc">Chamados agrupados por categoria.</div>' + relRenderMiniLista(relOrdenarDesc(porCategoria), 4) + '</div>';
+      '<div class="desc">Chamados agrupados por categoria (Sysart → Acesso / Senha conta nas duas).</div>' + relRenderMiniLista(relOrdenarDesc(porCategoria), 4) + '</div>';
     var cardSetores =
       '<div class="rel-card"><div class="rel-card-icone">' + REL_ICO_PREDIO + '</div>' +
       '<div class="num">' + listaSetores.length + '</div><div class="tit">Top setores</div>' +
@@ -14349,7 +14579,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     // ---- donuts ----
     var donutsHtml = '<div class="rel-donuts">' +
       relDonutBloco('CHAMADOS POR PRIORIDADE', porPrioridade, REL_PRIORIDADES, REL_CORES_PRIORIDADE) +
-      relDonutBloco('CHAMADOS POR CATEGORIA', porCategoria, REL_CATEGORIAS, {}) +
+      relDonutBloco('CHAMADOS POR CATEGORIA', porCategoria, REL_CATEGORIAS, {}, { totalChamados: lista.length, nota: 'Chamados de Sysart → Acesso / Senha contam no Sysart e no Acesso / Senha.' }) +
       '</div>';
 
     // ---- top 5 setores (barras) ----
@@ -14403,7 +14633,10 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(obsEl) obsEl.addEventListener('input', function(){ relObservacoesTexto = obsEl.textContent; });
   }
 
+  // DESATIVADA (ver CORREÇÃO na exclusão de chamados): mantida só como
+  // referência; não é mais chamada em lugar nenhum.
   async function renumerarChamados(){
+    return;
     try{
       var { data, error } = await db.from('chamados').select('numero').order('numero', { ascending:true });
       if(error || !data || !data.length) return;
@@ -16051,7 +16284,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     setTxt('aval-det-situacao', c.status || 'Concluído');
     setTxt('aval-det-conclusao', formatarDataHoraAval(c.concluido_em));
     setTxt('aval-det-atendente', c.atendido_por);
-    setTxt('aval-det-categoria', c.categoria);
+    setTxt('aval-det-categoria', (typeof window.cpnCategoriaComTipo === 'function' && c.categoria) ? window.cpnCategoriaComTipo(c) : c.categoria);
     setTxt('aval-det-setor', c.setor);
   }
 
@@ -16479,6 +16712,13 @@ formSolicitacao.addEventListener('submit', async function(e){
   var RX_HIST_SOLICITACAO = /^Item solicitado: ([^\n]*)\n\n([\s\S]*)$/;
   var RX_HIST_ACESSO_SENHA = /^Nome: ([^\n]*)\nNúmero de Matrícula: ([^\n]*)\nProfissão: ([^\n]*)\nNúmero de Registro(?: \(([^)]*)\))?: ([^\n]*)\n\n([\s\S]*)$/;
 
+  // ADIÇÃO: " · Tipo" (Sysart / Computador) pra mostrar junto da categoria
+  function histTipoDe(c){
+    if(c.categoria !== 'Sysart' && c.categoria !== 'Computador' && c.categoria !== 'Rede / Internet') return '';
+    var t = String(c.descricao || '').replace(/^Agendado para: [^\n]*\n\n/, '');
+    var m = /^Tipo: ([^\n]*)\n\n/.exec(t);
+    return m ? ' · ' + m[1] : '';
+  }
   function descricaoLimpaHist(c){
     var texto = c.descricao || '';
     var mAgenda = RX_HIST_AGENDAMENTO.exec(texto);
@@ -16491,9 +16731,15 @@ formSolicitacao.addEventListener('submit', async function(e){
       var mSol = RX_HIST_SOLICITACAO.exec(texto);
       if(mSol) return 'Item solicitado: ' + (mSol[1] || '—');
     }
-    if(c.categoria === 'Acesso / Senha'){
+    // ADIÇÃO: "Tipo: ..." de Sysart / Computador
+    var tipoHist = '';
+    if(c.categoria === 'Sysart' || c.categoria === 'Computador' || c.categoria === 'Rede / Internet'){
+      var mTipo = /^Tipo: ([^\n]*)\n\n([\s\S]*)$/.exec(texto);
+      if(mTipo){ tipoHist = mTipo[1]; texto = mTipo[2]; }
+    }
+    if(c.categoria === 'Acesso / Senha' || (c.categoria === 'Sysart' && tipoHist === 'Acesso / Senha')){
       var mAcesso = RX_HIST_ACESSO_SENHA.exec(texto);
-      if(mAcesso) texto = mAcesso[6];
+      if(mAcesso) texto = mAcesso[6].trim() || ('Acesso / senha no SysArt — ' + (mAcesso[1] || 'sem nome'));
     }
     return texto || ('Chamado de ' + (c.solicitante || '—'));
   }
@@ -16564,7 +16810,7 @@ formSolicitacao.addEventListener('submit', async function(e){
         '<div class="cpn-atend-desc">' + descricaoLimpaHist(c) + '</div>' +
         '<div class="cpn-atend-meta">' +
           '<span>Setor: ' + (c.setor || '—') + '</span>' +
-          '<span>Categoria: ' + (ehSolicitacao ? 'Solicitação de Material' : (c.categoria || '—')) + '</span>' +
+          '<span>Categoria: ' + (ehSolicitacao ? 'Solicitação de Material' : ((c.categoria || '—') + histTipoDe(c))) + '</span>' +
           '<span>Aberto em: ' + formatarDataHist(c.created_at || c.criado_em || c.data) + '</span>' +
           (classe === 'concluido' ? '<span>Concluído em: ' + formatarDataHist(c.concluido_em) + '</span>' : '') +
           (c.atendido_por ? '<span>Atendido por: ' + c.atendido_por + '</span>' : '') +
@@ -16671,7 +16917,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // Avaliação ficam de fora de propósito (não foram pedidas).
   // ALTERADO: a Início (portal) também passou a ocupar a largura toda da
   // tela, sem o espaço vazio nas laterais — a pedido do usuário.
-  var TELAS_LARGURA_TOTAL = { portal:1, painel:1, admin:1, estoque:1, computadores:1, chat:1, agenda:1, auditoria:1, tv:1 };
+  var TELAS_LARGURA_TOTAL = { portal:1, painel:1, admin:1, estoque:1, computadores:1, chat:1, agenda:1, auditoria:1, tv:1, chamado:1, solicitacao:1 };
   var mainAreaEl = document.getElementById('mainArea');
 
   // Move os botões reais de notificação/sair para dentro da barra do topo,
@@ -16790,18 +17036,28 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(listaAtividadesHome && lista.length){
       atividadeBloco.style.display = 'block';
       var recentes = lista.slice().sort(function(a,b){
-        var ta = new Date(a.created_at || 0).getTime();
-        var tb = new Date(b.created_at || 0).getTime();
+        // CORREÇÃO: a tabela usa "criado_em" (não "created_at") — sem isso a
+        // ordem saía aleatória e o horário ficava em branco.
+        var ta = new Date(a.criado_em || a.created_at || 0).getTime();
+        var tb = new Date(b.criado_em || b.created_at || 0).getTime();
         return tb - ta;
       }).slice(0, 4);
+      function descricaoCurta(c){
+        var t = String(c.descricao || '');
+        t = t.replace(/^Agendado para:[^\n]*\n\n/, '').replace(/^Tipo: [^\n]*\n\n/, '').replace(/^Sistema: [^\n]*\n\n/, '');
+        var mNome = /^Nome: ([^\n]*)\nNúmero de Matrícula:[^\n]*\nProfissão:[^\n]*\nNúmero de Registro[^\n]*\n*/.exec(t);
+        if(mNome) t = 'Acesso / senha — ' + mNome[1] + (t.slice(mNome[0].length).trim() ? ' — ' + t.slice(mNome[0].length).trim() : '');
+        return t.replace(/\s+/g, ' ').trim().slice(0, 60);
+      }
+      function escAtv(v){ return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
       listaAtividadesHome.innerHTML = recentes.map(function(c){
         return '<div class="atividade-item">' +
           '<div class="atividade-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>' +
           '<div class="atividade-txt">' +
-            '<div class="atividade-titulo">Chamado #' + String(c.numero).padStart(5,'0') + ' — ' + (c.categoria || 'Chamado') + '</div>' +
-            '<div class="atividade-sub">' + (c.setor || '') + (c.descricao ? ' — ' + c.descricao.slice(0,60) : '') + '</div>' +
+            '<div class="atividade-titulo">Chamado #' + String(c.numero).padStart(5,'0') + ' — ' + escAtv((typeof window.cpnCategoriaComTipo === 'function' && c.categoria) ? window.cpnCategoriaComTipo(c) : (c.categoria || 'Chamado')) + '</div>' +
+            '<div class="atividade-sub">' + escAtv(c.setor || '') + (descricaoCurta(c) ? ' — ' + escAtv(descricaoCurta(c)) : '') + '</div>' +
           '</div>' +
-          '<div class="atividade-hora">' + tempoAtras(c.created_at) + '</div>' +
+          '<div class="atividade-hora">' + tempoAtras(c.criado_em || c.created_at) + '</div>' +
         '</div>';
       }).join('');
     }
@@ -17147,7 +17403,13 @@ formSolicitacao.addEventListener('submit', async function(e){
     resumoLista.innerHTML = '';
     linha('Solicitante', d.solicitante || '—');
     linha('Setor', d.setor || '—');
-    linha('Categoria', d.categoria || '—');
+    linha('Categoria', (d.categoria || '—') + (d.tipo_chamado ? ' · ' + d.tipo_chamado : ''));
+    if(d.categoria === 'Sysart' && d.tipo_chamado === 'Acesso / Senha'){
+      linha('Nome', d.acesso_nome || '—');
+      linha('Matrícula', d.acesso_matricula || '—');
+      linha('Profissão', d.acesso_profissao || '—');
+      linha('Registro', d.acesso_registro || '—');
+    }
     if(d.categoria === 'Acesso / Senha' && d.acesso_sistema){
       linha('Sistema', d.acesso_sistema);
       if(d.acesso_sistema === 'SysArt'){
@@ -17159,7 +17421,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     }
     if((d.whatsapp_numero || '').trim()) linha('WhatsApp', (d.whatsapp_ddi || '+55') + ' ' + d.whatsapp_numero.trim());
     if((d.anydesk || '').trim()) linha('AnyDesk', d.anydesk.trim());
-    linha('Descrição', d.descricao || '—', 'ch-resumo-desc');
+    linha('Descrição', (d.descricao || '').trim() || (d.categoria === 'Sysart' && d.tipo_chamado === 'Acesso / Senha' ? 'Sem descrição (opcional)' : '—'), 'ch-resumo-desc');
     linha('Anexos', arquivos.length ? (arquivos.length === 1 ? '1 arquivo' : arquivos.length + ' arquivos') : 'Nenhum');
     modal.hidden = false;
     var btn = el('ch-resumo-confirmar'); if(btn) btn.focus();
