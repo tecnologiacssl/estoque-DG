@@ -4488,6 +4488,11 @@ html.modo-app-chat #btn-voltar-portal-chat,
 html.modo-app-chat #tela-chat > .topo-chamado,
 html.modo-app-chat .login-creditos{display:none !important}
 html.modo-app-chat #tela-chat{padding-top:12px}
+/* app: o chat ocupa a janela inteira (largura e altura), sem sobra embaixo */
+html.modo-app-chat main#mainArea{max-width:none !important;padding:0 14px 14px !important}
+html.modo-app-chat .shell{min-height:0}
+html.modo-app-chat body:has(#tela-chat[style*="block"]){overflow:hidden}
+html.modo-app-chat #tela-chat .chat-cartao{height:calc(100vh - 64px - 12px - 14px) !important;min-height:360px}
 html.modo-app-chat .marca .texto b{font-size:0}
 html.modo-app-chat .marca .texto b::after{content:"Chat Interno";font-size:15px}
 html.modo-app-chat #tela-login .hero-login h2{font-size:0}
