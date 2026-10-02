@@ -11419,6 +11419,8 @@ formSolicitacao.addEventListener('submit', async function(e){
   // (necessário no Android/mobile) e caindo para o construtor direto (funciona no desktop)
   // caso o Service Worker não esteja disponível.
   function exibirNotificacaoLocal(titulo, opcoes){
+    // app "Chat Interno": só avisa do chat — chamados ficam pro app Central de TI
+    if(window.CSSL_APP_CHAT) return;
     if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
     // app de computador: notificação direta do Windows (o service worker do
     // navegador não mostra notificação dentro do app); clicar traz a janela
@@ -16452,6 +16454,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // ---- Detecta chamados/solicitações concluídos que pertencem ao usuário logado ----
   function tratarChamadoConcluido(chamadoNovo){
     if(!chamadoNovo || !emailLogado) return;
+    if(window.CSSL_APP_CHAT) return; // app "Chat Interno": sem tela de avaliação
     if((chamadoNovo.email_solicitante || '').toLowerCase() !== emailLogado.toLowerCase()) return;
     if(chamadoNovo.status !== 'Concluído' || chamadoNovo.avaliado) return;
     var origemNovo = chamadoNovo._tabela || 'chamados';
@@ -16488,6 +16491,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // (cobre o caso de o usuário estar offline no momento da conclusão)
   async function verificarAvaliacoesPendentes(){
     if(!db || !emailLogado) return;
+    if(window.CSSL_APP_CHAT) return; // app "Chat Interno": a avaliação aparece no portal/Central de TI
     try{
       // ALTERADO: a pedido, só "chamados" entra na avaliação — "solicitacoes"
       // (Fazer Solicitação) fica de fora de propósito.
@@ -16647,7 +16651,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     numerosJaNotificados[chaveNotif] = true;
     // ADIÇÃO: mostra o nome de quem abriu/está atendendo o chamado
     var nomeResponsavelAceite = (chamadoNovo.atendido_por || '').trim() || 'a equipe de TI';
-    toastAceite('✅ Seu chamado foi aberto por ' + nomeResponsavelAceite + '.');
+    if(!window.CSSL_APP_CHAT) toastAceite('✅ Seu chamado foi aberto por ' + nomeResponsavelAceite + '.');
     exibirNotificacaoLocalAceite(nomeResponsavelAceite, chamadoNovo.numero);
     buscarEmAtendimento();
   }
@@ -16659,6 +16663,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // (aqui a gente só exibe — não pede permissão, pra não interromper o
   // usuário com um pop-up de permissão sem contexto).
   function exibirNotificacaoLocalAceite(nomeResponsavel, numero){
+    if(window.CSSL_APP_CHAT) return; // app "Chat Interno": sem avisos de chamado
     if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
     var titulo = '✅ Chamado ' + (numero ? ('#' + String(numero).padStart(5,'0')) : '') + ' aberto';
     var corpo = 'Seu chamado foi aberto por ' + nomeResponsavel + '.';
