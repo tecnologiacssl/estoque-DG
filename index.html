@@ -4502,6 +4502,15 @@ html.app-chat-sem-acesso #mainArea::before{content:"Seu usuário não tem acesso
 
 /* app de computador (portal inteiro ou só chat): não tem "instalar app" */
 html.app-desktop #btn-instalar-app{display:none !important}
+/* app de computador: a barra branca do Windows foi tirada — o cabeçalho
+   escuro vira a barra da janela (arrastar / duplo clique pra maximizar) e
+   os botões minimizar/maximizar/fechar ficam no canto direito dele */
+html.app-desktop header.nav{-webkit-app-region:drag;padding-right:150px !important;user-select:none}
+html.app-desktop header.nav *{-webkit-app-region:no-drag}
+html.app-desktop header.nav .marca,html.app-desktop header.nav .marca .ponto,html.app-desktop header.nav .marca .texto,html.app-desktop header.nav .marca .texto *{-webkit-app-region:drag}
+html.app-desktop [class*="overlay"],html.app-desktop [class*="modal"],html.app-desktop [class*="gaveta"],
+html.app-desktop [class*="drawer"],html.app-desktop [class*="menu"],html.app-desktop [class*="toast"],
+html.app-desktop [role="dialog"],html.app-desktop [id*="modal"],html.app-desktop [id*="Modal"]{-webkit-app-region:no-drag}
 </style>
 </head>
 <body>
