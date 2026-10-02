@@ -4543,6 +4543,9 @@ html.app-desktop [role="dialog"],html.app-desktop [id*="modal"],html.app-desktop
     if(desk){ window.CSSL_APP_DESKTOP = desk.app || true; document.documentElement.classList.add('app-desktop'); }
     var ehApp = /[?&]app=chat(?:&|$)/.test(location.search) || (desk && desk.app === 'chat-interno');
     if(ehApp){ document.documentElement.classList.add('modo-app-chat'); window.CSSL_APP_CHAT = true; }
+    // ADIÇÃO: no app Central de TI, se o app Chat Interno estiver instalado
+    // neste computador, o chat abre lá (e só lá avisa de mensagem/ligação)
+    window.CSSL_CHAT_NO_OUTRO_APP = !!(desk && desk.app === 'central-ti' && desk.temAppChat === true && typeof desk.abrirAppChat === 'function');
   }catch(e){}
 })();
 </script>
@@ -15728,10 +15731,8 @@ formSolicitacao.addEventListener('submit', async function(e){
   function tratarNovoChamado(chamado){
     if(!usuarioEhAdmin || !chamado) return;
 
-    // se o admin já está com o Painel de Chamados aberto na tela, atualiza a lista na hora
-    if(telaPainelEl && telaPainelEl.style.display === 'block'){
-      carregarChamados();
-    }
+    // ALTERADO: a lista do Painel agora é atualizada em tempo real, cartão
+    // por cartão, por cpnRealtimeMudanca() (sem recarregar tudo).
 
     if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
 
@@ -15765,14 +15766,15 @@ formSolicitacao.addEventListener('submit', async function(e){
   // que não foi alterado aqui (mudança de schema/infra fica de fora, por
   // instrução: qualquer ajuste assim seria feito manualmente pelo painel do
   // Supabase, e não automaticamente por este código).
-  function tratarChamadoAgendado(chamado){
+  // ALTERADO: recebe também o chamado como estava ANTES (cópia local) e só
+  // avisa quando o agendamento é novo ou mudou — antes, qualquer mudança num
+  // chamado agendado (status, prioridade...) repetia o aviso "agendado".
+  function tratarChamadoAgendado(chamado, anterior){
     if(!usuarioEhAdmin || !chamado) return;
     var dadosAgenda = cpnDadosAgendamento(chamado);
     if(!dadosAgenda) return;
-
-    if(telaPainelEl && telaPainelEl.style.display === 'block'){
-      carregarChamados();
-    }
+    var agendaAntes = anterior ? cpnDadosAgendamento(anterior) : null;
+    if(agendaAntes && agendaAntes.quando === dadosAgenda.quando) return;
 
     if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
 
@@ -15786,6 +15788,120 @@ formSolicitacao.addEventListener('submit', async function(e){
     });
   }
 
+
+  // ============================================================
+  // ADIÇÃO: Painel em tempo real de verdade. Quando outro admin muda um
+  // chamado (status, prioridade, atendente, conclusão, agendamento) ou um
+  // chamado/solicitação entra ou é excluído, o Painel, o Kanban, o Dashboard
+  // e o resumo da Início se atualizam na hora — só o cartão que mudou é
+  // redesenhado (quem está com cartões abertos não perde nada). Se a pessoa
+  // estiver digitando dentro daquele cartão, espera ela sair do campo.
+  // ============================================================
+  var cpnFilaRealtime = {};
+  var cpnTimerRealtime = null;
+  function cpnCopiaLocal(tabela, novo){
+    if(!novo) return null;
+    var local = ultimosChamados.find(function(x){ return tabelaDe(x) === tabela && String(x.numero) === String(novo.numero); });
+    return local ? Object.assign({}, local) : null;
+  }
+  function cpnRealtimeMudanca(tabela, evento, novo, antigo){
+    if(!usuarioEhAdmin) return;
+    var numero = (novo && novo.numero != null) ? novo.numero : (antigo && antigo.numero);
+    if(numero == null) return;
+    var chave = tabela + '-' + numero;
+    var anterior = cpnFilaRealtime[chave];
+    // um INSERT seguido de UPDATE antes de aplicar continua sendo INSERT
+    var ev = (anterior && anterior.evento === 'INSERT' && evento === 'UPDATE') ? 'INSERT' : evento;
+    cpnFilaRealtime[chave] = { tabela: tabela, evento: ev, novo: novo, numero: numero };
+    clearTimeout(cpnTimerRealtime);
+    cpnTimerRealtime = setTimeout(cpnAplicarRealtime, 200);
+  }
+  function cpnEntradaPorChave(chave){
+    var datas = Object.keys(mapaCartoesPorData);
+    for(var i = 0; i < datas.length; i++){
+      var lista = mapaCartoesPorData[datas[i]] || [];
+      for(var j = 0; j < lista.length; j++){
+        if(itemBateChave(lista[j].c, chave)) return { data: datas[i], idx: j, entry: lista[j] };
+      }
+    }
+    return null;
+  }
+  function cpnCartaoOcupado(el){
+    var a = document.activeElement;
+    if(!el || !a || !el.contains(a)) return false;
+    return /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable;
+  }
+  function cpnAplicarRealtime(){
+    var fila = cpnFilaRealtime;
+    cpnFilaRealtime = {};
+    var listaCarregada = Object.keys(mapaCartoesPorData).length > 0 || ultimosChamados.length > 0;
+    var mudou = false, adiou = false;
+    Object.keys(fila).forEach(function(chave){
+      var m = fila[chave];
+      var idx = ultimosChamados.findIndex(function(x){ return itemBateChave(x, chave); });
+      var achado = cpnEntradaPorChave(chave);
+      if(m.evento === 'DELETE'){
+        if(idx > -1){ ultimosChamados.splice(idx, 1); mudou = true; }
+        if(achado){
+          mapaCartoesPorData[achado.data].splice(achado.idx, 1);
+          if(!mapaCartoesPorData[achado.data].length) delete mapaCartoesPorData[achado.data];
+          mudou = true;
+        }
+        return;
+      }
+      if(!m.novo) return;
+      var dados = Object.assign({}, m.novo, { _tabela: m.tabela });
+      if(idx === -1){
+        if(!listaCarregada) return; // o Painel ainda não foi aberto: carrega tudo quando abrir
+        ultimosChamados.push(dados);
+        var div = document.createElement('div');
+        preencherCardChamado(div, dados);
+        var chaveData = chaveDataChamado(dados) || 'sem-data';
+        if(!mapaCartoesPorData[chaveData]) mapaCartoesPorData[chaveData] = [];
+        mapaCartoesPorData[chaveData].unshift({ el: div, c: dados });
+        mudou = true;
+        return;
+      }
+      var local = ultimosChamados[idx];
+      if(achado && cpnCartaoOcupado(achado.entry.el)){
+        cpnFilaRealtime[chave] = m; // alguém digitando neste cartão: aplica depois
+        adiou = true;
+        return;
+      }
+      Object.assign(local, dados);
+      if(achado){
+        achado.entry.c = local;
+        preencherCardChamado(achado.entry.el, local);
+      }
+      mudou = true;
+    });
+    if(mudou){
+      try{ atualizarSeletorDeDatas(); }catch(e){}
+      try{ cpnAtualizarResumoETabs(); }catch(e){}
+      try{ if(telaPainelEl && telaPainelEl.style.display === 'block') desenharGruposDeChamados(); }catch(e){}
+      try{ renderDashboard(ultimosChamados); }catch(e){}
+      try{ if(kanbanEl && kanbanEl.style.display !== 'none') renderKanban(ultimosChamados); }catch(e){}
+      try{ window.csslUltimosChamados = ultimosChamados; }catch(e){}
+    }
+    if(adiou){
+      clearTimeout(cpnTimerRealtime);
+      cpnTimerRealtime = setTimeout(cpnAplicarRealtime, 1500);
+    }
+  }
+  // ao voltar pra aba/janela, confere se perdeu alguma atualização (ex.: PC
+  // dormiu e a conexão de tempo real caiu)
+  var cpnEscondidoDesde = 0;
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'hidden'){ cpnEscondidoDesde = Date.now(); return; }
+    var longe = cpnEscondidoDesde && (Date.now() - cpnEscondidoDesde > 2 * 60 * 1000);
+    cpnEscondidoDesde = 0;
+    if(longe && usuarioEhAdmin && telaPainelEl && telaPainelEl.style.display === 'block'){
+      clearTimeout(cpnTimerVisivel);
+      cpnTimerVisivel = setTimeout(function(){ if(!document.querySelector('#tela-painel :focus')) carregarChamados(); }, 400);
+    }
+  });
+  var cpnTimerVisivel = null;
+
   // ADIÇÃO: assina o "canal" do Supabase Realtime pra saber assim que um
   // chamado é inserido (novo chamado) ou atualizado (agendamento)
   function iniciarNotificacoesChamados(){
@@ -15794,9 +15910,14 @@ formSolicitacao.addEventListener('submit', async function(e){
       .channel('chamados-notificacoes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chamados' }, function(payload){
         tratarNovoChamado(payload.new);
+        cpnRealtimeMudanca('chamados', 'INSERT', payload.new, payload.old);
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chamados' }, function(payload){
-        tratarChamadoAgendado(payload.new);
+        tratarChamadoAgendado(payload.new, cpnCopiaLocal('chamados', payload.new));
+        cpnRealtimeMudanca('chamados', 'UPDATE', payload.new, payload.old);
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chamados' }, function(payload){
+        cpnRealtimeMudanca('chamados', 'DELETE', payload.new, payload.old);
       })
       // ADIÇÃO: "Fazer Solicitação" agora grava numa tabela própria
       // ("solicitacoes") — reaproveita as mesmas duas funções acima (só
@@ -15805,9 +15926,14 @@ formSolicitacao.addEventListener('submit', async function(e){
       // de agendamentos nelas também.
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'solicitacoes' }, function(payload){
         tratarNovoChamado(payload.new);
+        cpnRealtimeMudanca('solicitacoes', 'INSERT', payload.new, payload.old);
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'solicitacoes' }, function(payload){
-        tratarChamadoAgendado(payload.new);
+        tratarChamadoAgendado(payload.new, cpnCopiaLocal('solicitacoes', payload.new));
+        cpnRealtimeMudanca('solicitacoes', 'UPDATE', payload.new, payload.old);
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'solicitacoes' }, function(payload){
+        cpnRealtimeMudanca('solicitacoes', 'DELETE', payload.new, payload.old);
       })
       .subscribe();
   }
@@ -20218,6 +20344,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // está aberta. No navegador comum nada muda (o push do servidor já avisa).
   function chatNotificarApp(titulo, corpo, tag, aoClicar){
     if(!window.CSSL_APP_CHAT && !window.CSSL_APP_DESKTOP) return;
+    if(window.CSSL_CHAT_NO_OUTRO_APP) return; // o app Chat Interno é quem avisa
     try{
       if(window.csslDesktop && typeof window.csslDesktop.novaMensagem === 'function') window.csslDesktop.novaMensagem();
       if(typeof Notification === 'undefined' || Notification.permission === 'denied') return;
@@ -22767,6 +22894,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(!tipo) return;
 
     if(tipo === 'convite'){
+      if(window.CSSL_CHAT_NO_OUTRO_APP) return; // a ligação toca no app Chat Interno
       if(chatChamadaAtual){
         // já estou chamando/em outra chamada — avisa que estou ocupado
         chatEnviarSinalPara(dados.deId, { tipo:'ocupado', chamadaId: dados.chamadaId, deId: chatMeuId, paraId: dados.deId });
@@ -27240,6 +27368,21 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
     var portal = document.getElementById('tela-portal');
     if(portal && portal.style.display === 'block'){ tentativas = 0; setTimeout(abrirChat, 50); }
   }).observe(document.getElementById('tela-portal') || document.body, { attributes:true, attributeFilter:['style'] });
+})();
+</script>
+
+<!-- ADIÇÃO: no app Central de TI, clicar no Chat (cartão, ícone do topo ou
+     menu lateral) abre o app Chat Interno, quando ele está instalado. -->
+<script>
+(function(){
+  if(!window.CSSL_CHAT_NO_OUTRO_APP) return;
+  document.addEventListener('click', function(e){
+    var alvo = e.target && e.target.closest && e.target.closest('#card-chat, #navBtnChat, .side-item[data-target="chat"]');
+    if(!alvo) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    try{ window.csslDesktop.abrirAppChat(); }catch(err){ console.warn('Não foi possível abrir o app Chat Interno.', err); }
+  }, true);
 })();
 </script>
 </body>
