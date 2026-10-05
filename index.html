@@ -4626,6 +4626,15 @@ td.rl-barcel{width:28%;padding-left:10px}
   .rl-tb-datas{width:100%}
   .rl-tb-datas input[type=date]{flex:1;min-width:0}
 }
+
+/* ADIÇÃO (apps de computador): os painéis laterais (Sugestões e detalhes do
+   Kanban) começam logo abaixo do cabeçalho do portal (64px), pra não ficarem
+   embaixo dos botões minimizar/maximizar/fechar da janela. O fundo escuro
+   também começa ali, deixando o cabeçalho à mostra. */
+html.app-desktop .sug-drawer,
+html.app-desktop #kb-gaveta{top:64px;border-top:1px solid var(--borda-forte,rgba(255,255,255,.12));border-top-left-radius:12px}
+html.app-desktop .sug-overlay,
+html.app-desktop #kb-gaveta-fundo{top:64px}
 </style>
 </head>
 <body>
