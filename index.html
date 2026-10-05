@@ -4511,6 +4511,121 @@ html.app-desktop header.nav .marca,html.app-desktop header.nav .marca .ponto,htm
 html.app-desktop [class*="overlay"],html.app-desktop [class*="modal"],html.app-desktop [class*="gaveta"],
 html.app-desktop [class*="drawer"],html.app-desktop [class*="menu"],html.app-desktop [class*="toast"],
 html.app-desktop [role="dialog"],html.app-desktop [id*="modal"],html.app-desktop [id*="Modal"]{-webkit-app-region:no-drag}
+/* ===== Relatório de chamados v2: 2 folhas A4 fixas ===== */
+#rel-chamados-doc{background:transparent;box-shadow:none;border-radius:0;overflow-x:auto}
+#rel-chamados-doc .rel-pagina.rl-v2,.rel-pagina.rl-v2{padding:0;display:flex;flex-direction:column;align-items:center;gap:18px}
+.rl-folha{width:794px;min-height:1123px;flex:0 0 auto;background:#fff;color:#1b2534;box-shadow:0 2px 10px rgba(16,24,40,.18);border-radius:4px;padding:34px 40px 22px;display:flex;flex-direction:column;box-sizing:border-box}
+.rl-conteudo{flex:1;display:flex;flex-direction:column;gap:12px}
+.rl-folha .rl-header{margin-bottom:2px}
+.rl-filtros{margin-top:4px;font-size:10px;color:#667085;font-weight:600}
+.rl-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rl-kpi{border:1px solid #e6e9f2;border-radius:12px;padding:12px 13px 11px;min-width:0}
+.rl-kpi-destaque{background:#0501d0;border-color:#0501d0;color:#fff}
+.rl-kpi-rot{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#667085}
+.rl-kpi-destaque .rl-kpi-rot,.rl-kpi-destaque .rl-kpi-sub{color:rgba(255,255,255,.82)}
+.rl-kpi-num{font-size:30px;font-weight:800;line-height:1.1;margin:5px 0 3px;color:#0f1b3d;letter-spacing:-.02em}
+.rl-kpi-destaque .rl-kpi-num{color:#fff}
+.rl-kpi-num small{font-size:14px;font-weight:700;color:#98a2b3;margin-left:2px}
+.rl-kpi-sub{font-size:9.5px;color:#667085;line-height:1.35}
+.rl-delta{font-weight:800;white-space:nowrap}
+.rl-card{border:1px solid #e6e9f2;border-radius:12px;padding:13px 15px;break-inside:avoid;page-break-inside:avoid;min-width:0}
+.rl-card-cab{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.rl-card-tit{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;color:#0f1b3d;text-transform:uppercase;letter-spacing:.03em}
+.rl-card-tit svg{width:14px;height:14px;color:#0501d0}
+.rl-card > .rl-card-tit{margin-bottom:8px}
+.rl-card-sub{font-size:10px;color:#667085}
+.rl-svg{width:100%;height:auto;display:block}
+.rl-duas{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rl-donut{display:flex;align-items:center;gap:14px}
+.rl-legenda{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
+.rl-leg{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#344054}
+.rl-leg-pt{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.rl-leg-nome{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rl-leg b{color:#0f1b3d}
+.rl-leg-pct{width:30px;text-align:right;color:#98a2b3}
+.rl-nota{margin-top:7px;font-size:9.5px;color:#667085}
+.rl-hbar{display:flex;align-items:center;gap:10px;font-size:10.5px;color:#344054;padding:3px 0}
+.rl-hbar-rot{width:150px;flex:0 0 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rl-hbar-trilho{flex:1;height:9px;background:#f1f3f8;border-radius:5px;overflow:hidden}
+.rl-hbar-barra{height:100%;background:#0501d0;border-radius:5px}
+.rl-hbar-val{width:62px;flex:0 0 auto;text-align:right;white-space:nowrap}
+.rl-hbar-val b{color:#0f1b3d}
+.rl-hbar-val span{color:#98a2b3;margin-left:6px}
+.rl-cab2{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #0501d0;padding-bottom:8px;font-size:11px;color:#667085}
+.rl-cab2 b{font-size:13px;color:#0f1b3d;text-transform:uppercase;letter-spacing:.02em}
+table.rl-tabela{width:100%;border-collapse:collapse;font-size:10.5px}
+table.rl-tabela th{text-align:left;font-size:9px;font-weight:800;color:#667085;text-transform:uppercase;letter-spacing:.04em;padding:0 6px 6px;border-bottom:1px solid #e6e9f2}
+table.rl-tabela td{padding:5px 6px;border-bottom:1px solid #f1f3f8;color:#344054}
+table.rl-tabela tfoot td{font-weight:800;color:#0f1b3d;border-bottom:0;border-top:1px solid #e6e9f2}
+table.rl-tabela .rl-num{text-align:right;white-space:nowrap}
+.rl-cinza{color:#98a2b3 !important}
+td.rl-barcel{width:28%;padding-left:10px}
+.rl-minibar{height:7px;border-radius:4px;background:#6d6af5;min-width:2px}
+.rl-sat{display:grid;grid-template-columns:150px 1fr 1fr;gap:18px;align-items:start}
+.rl-sat-nota{text-align:center;border-right:1px solid #eef0f5;padding-right:14px}
+.rl-sat-num{font-size:40px;font-weight:800;color:#0f1b3d;line-height:1}
+.rl-estrelas{font-size:15px;color:#e4e7ec;letter-spacing:1px;margin:4px 0 2px}
+.rl-estrelas .on{color:#f59e0b}
+.rl-sat-leg{font-size:9.5px;color:#98a2b3}
+.rl-sat-res{margin-top:10px;font-size:10px;color:#344054;line-height:1.35}
+.rl-sat-res b{color:#16a34a;font-size:12px}
+.rl-sat-sub{font-size:9.5px;font-weight:800;color:#667085;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.rl-sat .rl-hbar-rot{width:86px}
+.rl-sat .rl-hbar-val{width:56px}
+.rl-obs-texto{min-height:40px;font-size:11px;line-height:1.5;color:#344054;outline:none;text-align:left}
+.rl-obs-texto:empty:before{content:attr(data-placeholder);color:#98a2b3}
+.rl-folha .rl-rodape{margin-top:12px}
+@media print{
+  @page{size:A4 portrait;margin:0}
+  html:has(body.rel-imprimindo),body.rel-imprimindo{background:#fff !important;margin:0 !important;padding:0 !important;min-height:0 !important;height:auto !important}
+  body.rel-imprimindo > *:not(#rel-print-host){display:none !important}
+  body.rel-imprimindo #rel-print-host,body.rel-imprimindo #rel-print-host *{visibility:visible !important}
+  body.rel-imprimindo #rel-print-host{display:block !important;position:static !important}
+  body.rel-imprimindo #rel-print-host .rel-doc{position:static !important;overflow:visible;background:#fff;border-radius:0;box-shadow:none}
+  body.rel-imprimindo #rel-print-host .rel-pagina.rl-v2{padding:0 !important;gap:0;display:block}
+  body.rel-imprimindo .rl-folha{width:210mm;min-height:0;height:296.5mm;box-shadow:none;border-radius:0;padding:10mm 11mm 7mm;overflow:hidden;break-after:page;page-break-after:always}
+  body.rel-imprimindo .rl-folha.rl-folha-ultima{break-after:auto;page-break-after:auto;height:auto;min-height:296mm;overflow:visible}
+  body.rel-imprimindo .rl-obs:has(.rl-obs-texto:empty){display:none}
+}
+
+/* ===== Barra do relatório v2 ===== */
+.rel-toolbar.rl-tb{display:block;padding:12px 14px}
+.rl-tb-linha{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rl-tb-periodo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex:1 1 auto;min-width:0}
+.rl-tb-rot{font-size:10px;font-weight:700;color:var(--cinza-claro);text-transform:uppercase;letter-spacing:.04em}
+.rl-tb-chips{display:inline-flex;flex-wrap:wrap;gap:2px;padding:3px;background:rgba(255,255,255,.035);border:1px solid var(--borda);border-radius:10px}
+.rl-tb-chips button{width:auto;margin:0;background:transparent;border:0;color:var(--cinza-claro);font:600 12.5px/1 inherit;padding:8px 11px;border-radius:7px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.rl-tb-chips button:hover{background:rgba(255,255,255,.06);color:#fff}
+.rl-tb-chips button.ativo{background:rgba(125,123,255,.22);color:#fff}
+.rl-tb-chips button:focus-visible{outline:2px solid var(--azul-claro);outline-offset:1px}
+.rl-tb-datas{display:flex;align-items:center;gap:6px;color:var(--cinza-claro);font-size:12px}
+.rl-tb-datas input[type=date]{background:var(--vidro);border:1px solid var(--borda);color:#fff;border-radius:8px;padding:7px 9px;font-size:12.5px;font-family:inherit;color-scheme:dark;height:36px;box-sizing:border-box}
+.rl-tb-acoes{display:flex;gap:8px;margin-left:auto}
+.rl-tb-acoes button{width:auto;margin:0;height:38px;padding:0 15px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:13px;border-radius:10px;box-sizing:border-box}
+.rl-tb-acoes button .ic{width:15px;height:15px}
+#rel-btn-filtros.aberto{border-color:rgba(125,123,255,.5);color:#fff}
+.rl-tb-cont{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--azul-claro);color:#09090b;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}
+.rl-tb-cont[hidden]{display:none}
+.rl-tb-painel{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--borda)}
+.rl-tb-painel[hidden],.rl-tb-ativos[hidden]{display:none}
+.rl-tb-painel .rel-campo{min-width:0}
+.rl-tb-painel select{width:100%;height:36px;box-sizing:border-box}
+.rl-tb-ativos{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px}
+.rl-tb-tag{width:auto;margin:0;display:inline-flex;align-items:center;gap:6px;background:rgba(125,123,255,.12);border:1px solid rgba(125,123,255,.3);color:#d4d4f8;font:500 12px/1 inherit;padding:6px 9px 6px 11px;border-radius:999px;cursor:pointer}
+.rl-tb-tag b{color:#fff;font-weight:700}
+.rl-tb-tag span{font-size:10px;opacity:.7}
+.rl-tb-tag:hover{background:rgba(125,123,255,.22)}
+.rl-tb-limpar{width:auto;margin:0;background:none;border:0;color:var(--cinza-claro);font:600 12px inherit;text-decoration:underline;cursor:pointer;padding:6px 4px}
+@media (max-width:900px){
+  .rl-tb-painel{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rl-tb-acoes{margin-left:0;width:100%}
+  .rl-tb-acoes button{flex:1;justify-content:center}
+}
+@media (max-width:520px){
+  .rl-tb-painel{grid-template-columns:1fr}
+  .rl-tb-datas{width:100%}
+  .rl-tb-datas input[type=date]{flex:1;min-width:0}
+}
 </style>
 </head>
 <body>
@@ -5588,24 +5703,39 @@ html.app-desktop [role="dialog"],html.app-desktop [id*="modal"],html.app-desktop
 
     <!-- ADIÇÃO: aba "Relatório" — relatório de chamados profissional, pronto para impressão/PDF -->
     <div id="relatorio-chamados-painel" style="display:none">
-      <div class="rel-toolbar" id="rel-toolbar">
-        <div class="rel-campo"><label>Data inicial</label><input type="date" id="rel-f-inicio"></div>
-        <div class="rel-campo"><label>Data final</label><input type="date" id="rel-f-fim"></div>
-        <div class="rel-campo"><label>Setor</label><select id="rel-f-setor"><option value="">Todos os setores</option></select></div>
-        <div class="rel-campo"><label>Status</label><select id="rel-f-status"><option value="">Todos os status</option></select></div>
-        <div class="rel-campo"><label>Prioridade</label><select id="rel-f-prioridade"><option value="">Todas as prioridades</option></select></div>
-        <div class="rel-campo"><label>Categoria</label><select id="rel-f-categoria"><option value="">Todas as categorias</option></select></div>
-        <div class="rel-campo"><label>Técnico</label><select id="rel-f-atendente"><option value="">Todos os técnicos</option></select></div>
-        <div class="rel-toolbar-acoes">
-          <button class="btn-secundario" id="rel-btn-limpar" type="button">Limpar filtros</button>
-          <!-- ADIÇÃO: só a partir daqui é que o relatório é montado/mostrado —
-               os dois se revezam (nunca os dois visíveis ao mesmo tempo): um
-               pra mostrar, outro (só aparece depois) pra fechar de novo. -->
-          <button class="btn-principal" id="rel-btn-mostrar-previa" type="button"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Mostrar prévia</button>
-          <button class="btn-secundario" id="rel-btn-fechar-previa" type="button" style="display:none"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg> Fechar prévia</button>
-          <button class="btn-secundario" id="rel-btn-exportar-pdf" type="button">⬇ Exportar PDF</button>
-          <button class="btn-principal" id="rel-btn-imprimir" type="button"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Imprimir relatório</button>
+      <!-- ALTERADO (barra do relatório v2): atalhos de período + datas,
+           filtros guardados no botão "Filtros", prévia automática e um
+           botão só pra imprimir/salvar PDF. -->
+      <div class="rel-toolbar rl-tb" id="rel-toolbar">
+        <div class="rl-tb-linha">
+          <div class="rl-tb-periodo">
+            <span class="rl-tb-rot">Período</span>
+            <div class="rl-tb-chips" id="rel-atalhos" role="group" aria-label="Atalhos de período">
+              <button type="button" data-periodo="mes">Este mês</button>
+              <button type="button" data-periodo="mes-passado">Mês passado</button>
+              <button type="button" data-periodo="7">7 dias</button>
+              <button type="button" data-periodo="30">30 dias</button>
+              <button type="button" data-periodo="ano">Este ano</button>
+            </div>
+            <div class="rl-tb-datas">
+              <input type="date" id="rel-f-inicio" aria-label="Data inicial">
+              <span aria-hidden="true">→</span>
+              <input type="date" id="rel-f-fim" aria-label="Data final">
+            </div>
+          </div>
+          <div class="rl-tb-acoes">
+            <button class="btn-secundario" id="rel-btn-filtros" type="button" aria-expanded="false" aria-controls="rel-filtros-painel"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg> Filtros <span class="rl-tb-cont" id="rel-filtros-cont" hidden>0</span></button>
+            <button class="btn-principal" id="rel-btn-imprimir" type="button"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Imprimir / Salvar PDF</button>
+          </div>
         </div>
+        <div class="rl-tb-painel" id="rel-filtros-painel" hidden>
+          <div class="rel-campo"><label for="rel-f-setor">Setor</label><select id="rel-f-setor"><option value="">Todos os setores</option></select></div>
+          <div class="rel-campo"><label for="rel-f-status">Status</label><select id="rel-f-status"><option value="">Todos os status</option></select></div>
+          <div class="rel-campo"><label for="rel-f-prioridade">Prioridade</label><select id="rel-f-prioridade"><option value="">Todas as prioridades</option></select></div>
+          <div class="rel-campo"><label for="rel-f-categoria">Categoria</label><select id="rel-f-categoria"><option value="">Todas as categorias</option></select></div>
+          <div class="rel-campo"><label for="rel-f-atendente">Técnico</label><select id="rel-f-atendente"><option value="">Todos os técnicos</option></select></div>
+        </div>
+        <div class="rl-tb-ativos" id="rel-filtros-ativos" hidden></div>
       </div>
       <!-- ADIÇÃO: estado inicial da aba — nada de relatório montado ainda,
            só um aviso pedindo pra clicar em "Mostrar prévia" -->
@@ -12915,6 +13045,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       ultimosChamados = data;
       renderDashboard(ultimosChamados);
       renderKanban(ultimosChamados);
+      relAtualizarSeVisivel();
       if(!data || !data.length){
         listaChamadosEl.innerHTML = '<p class="small">Nenhum chamado registrado ainda.</p>';
         mapaCartoesPorData = {};
@@ -14229,7 +14360,8 @@ formSolicitacao.addEventListener('submit', async function(e){
       // em "Mostrar prévia" (ver relEsconderPrevia/relMostrarPrevia logo
       // abaixo). Isso evita montar o relatório inteiro (que pode ter bastante
       // chamado) toda vez que a pessoa só passa o olho na aba.
-      if(qual === 'relatorio') relEsconderPrevia();
+      // ALTERADO (barra v2): prévia automática — o relatório aparece ao abrir a aba
+      if(qual === 'relatorio') relMostrarPrevia();
     }
     abaListaBtn.addEventListener('click', function(){ ativarAbaPainel('lista'); });
     abaKanbanBtn.addEventListener('click', function(){ ativarAbaPainel('kanban'); });
@@ -14253,8 +14385,15 @@ formSolicitacao.addEventListener('submit', async function(e){
   var relBtnFecharPreviaEl = document.getElementById('rel-btn-fechar-previa');
   var relPreviaGerada = false;
 
+  // ADIÇÃO (barra v2): mantém o relatório em dia quando chegam chamados novos
+  function relAtualizarSeVisivel(){
+    try{
+      if(relPreviaGerada && relatorioChamadosPainelEl && relatorioChamadosPainelEl.style.display === 'block' && !document.body.classList.contains('rel-imprimindo') && !(document.activeElement && document.activeElement.id === 'rel-obs-texto')) gerarRelatorioChamados();
+    }catch(e){}
+  }
   function relMostrarPrevia(){
     relPreviaGerada = true;
+    relAvalCache = null; // busca as avaliações de novo a cada prévia
     if(relPreviewVazioEl) relPreviewVazioEl.style.display = 'none';
     if(relChamadosDocEl) relChamadosDocEl.style.display = 'block';
     // ADIÇÃO: com a prévia visível, troca o botão "Mostrar prévia" pelo
@@ -14339,10 +14478,12 @@ formSolicitacao.addEventListener('submit', async function(e){
     relPopularSelect(selCategoria, REL_CATEGORIAS, 'Todas as categorias');
     relPopularSelect(selAtendente, OPCOES_ATENDENTE, 'Todos os técnicos');
 
+    // ALTERADO (barra v2): padrão "30 dias", com data local (toISOString
+    // usava UTC e, depois das 21h, pulava pro dia seguinte)
     var hoje = new Date(); hoje.setHours(0,0,0,0);
-    var inicioPadrao = new Date(hoje); inicioPadrao.setDate(inicioPadrao.getDate() - 13);
-    fInicio.value = inicioPadrao.toISOString().slice(0,10);
-    fFim.value = hoje.toISOString().slice(0,10);
+    var inicioPadrao = new Date(hoje); inicioPadrao.setDate(inicioPadrao.getDate() - 29);
+    fInicio.value = relChaveISO(inicioPadrao);
+    fFim.value = relChaveISO(hoje);
 
     // ALTERADO: enquanto a prévia ainda não foi mostrada (relPreviaGerada
     // false), mexer nos filtros só fica "guardado" pra quando a pessoa
@@ -14356,10 +14497,74 @@ formSolicitacao.addEventListener('submit', async function(e){
     var btnLimpar = document.getElementById('rel-btn-limpar');
     if(btnLimpar) btnLimpar.addEventListener('click', function(){
       selSetor.value = ''; selStatus.value = ''; selPrioridade.value = ''; selCategoria.value = ''; selAtendente.value = '';
-      fInicio.value = inicioPadrao.toISOString().slice(0,10);
-      fFim.value = hoje.toISOString().slice(0,10);
+      relAtualizarBarra();
       if(relPreviaGerada) gerarRelatorioChamados();
     });
+
+    // ---- ADIÇÃO (barra v2): atalhos de período ----
+    function relDatasDoAtalho(tipo){
+      var h = new Date(); h.setHours(0,0,0,0);
+      var ini, fim = new Date(h);
+      if(tipo === 'mes') ini = new Date(h.getFullYear(), h.getMonth(), 1);
+      else if(tipo === 'mes-passado'){ ini = new Date(h.getFullYear(), h.getMonth() - 1, 1); fim = new Date(h.getFullYear(), h.getMonth(), 0); }
+      else if(tipo === 'ano') ini = new Date(h.getFullYear(), 0, 1);
+      else { ini = new Date(h); ini.setDate(ini.getDate() - (parseInt(tipo, 10) - 1)); }
+      return { ini: relChaveISO(ini), fim: relChaveISO(fim) };
+    }
+    var atalhosEl = document.getElementById('rel-atalhos');
+    if(atalhosEl) atalhosEl.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-periodo]'); if(!b) return;
+      var d = relDatasDoAtalho(b.getAttribute('data-periodo'));
+      fInicio.value = d.ini; fFim.value = d.fim;
+      relAtualizarBarra();
+      if(relPreviaGerada) gerarRelatorioChamados();
+    });
+    // data final antes da inicial: acompanha a outra
+    fInicio.addEventListener('change', function(){ if(fInicio.value && fFim.value && fFim.value < fInicio.value){ fFim.value = fInicio.value; if(relPreviaGerada) gerarRelatorioChamados(); } relAtualizarBarra(); });
+    fFim.addEventListener('change', function(){ if(fInicio.value && fFim.value && fFim.value < fInicio.value){ fInicio.value = fFim.value; if(relPreviaGerada) gerarRelatorioChamados(); } relAtualizarBarra(); });
+
+    // ---- ADIÇÃO (barra v2): botão "Filtros" + etiquetas dos filtros ativos ----
+    var btnFiltros = document.getElementById('rel-btn-filtros');
+    var painelFiltros = document.getElementById('rel-filtros-painel');
+    if(btnFiltros && painelFiltros) btnFiltros.addEventListener('click', function(){
+      var abrir = painelFiltros.hidden;
+      painelFiltros.hidden = !abrir;
+      btnFiltros.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+      btnFiltros.classList.toggle('aberto', abrir);
+    });
+    var CAMPOS_FILTRO = [['rel-f-setor','Setor'],['rel-f-status','Status'],['rel-f-prioridade','Prioridade'],['rel-f-categoria','Categoria'],['rel-f-atendente','Técnico']];
+    function relAtualizarBarra(){
+      // atalho ativo (se as datas batem com algum)
+      if(atalhosEl) atalhosEl.querySelectorAll('button[data-periodo]').forEach(function(b){
+        var d = relDatasDoAtalho(b.getAttribute('data-periodo'));
+        var ativo = fInicio.value === d.ini && fFim.value === d.fim;
+        b.classList.toggle('ativo', ativo);
+        b.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+      });
+      // contador + etiquetas
+      var ativos = CAMPOS_FILTRO.filter(function(c){ var el = document.getElementById(c[0]); return el && el.value; });
+      var cont = document.getElementById('rel-filtros-cont');
+      if(cont){ cont.textContent = ativos.length; cont.hidden = !ativos.length; }
+      var area = document.getElementById('rel-filtros-ativos');
+      if(area){
+        area.innerHTML = ativos.map(function(c){
+          var v = document.getElementById(c[0]).value;
+          return '<button type="button" class="rl-tb-tag" data-limpar="' + c[0] + '" title="Remover este filtro">' + relEsc(c[1]) + ': <b>' + relEsc(v) + '</b><span aria-hidden="true">✕</span></button>';
+        }).join('') + (ativos.length > 1 ? '<button type="button" class="rl-tb-limpar" data-limpar="todos">Limpar todos</button>' : '');
+        area.hidden = !ativos.length;
+      }
+    }
+    window.relAtualizarBarra = relAtualizarBarra;
+    var areaAtivos = document.getElementById('rel-filtros-ativos');
+    if(areaAtivos) areaAtivos.addEventListener('click', function(e){
+      var b = e.target.closest('[data-limpar]'); if(!b) return;
+      var alvo = b.getAttribute('data-limpar');
+      CAMPOS_FILTRO.forEach(function(c){ if(alvo === 'todos' || alvo === c[0]){ var el = document.getElementById(c[0]); if(el) el.value = ''; } });
+      relAtualizarBarra();
+      if(relPreviaGerada) gerarRelatorioChamados();
+    });
+    [selSetor, selStatus, selPrioridade, selCategoria, selAtendente].forEach(function(el){ if(el) el.addEventListener('change', relAtualizarBarra); });
+    relAtualizarBarra();
     // ADIÇÃO: botão "Mostrar prévia" — existe duas vezes na tela (um fixo na
     // barra de filtros, outro dentro do aviso "prévia ainda não gerada"),
     // os dois fazem a mesma coisa.
@@ -14397,11 +14602,29 @@ formSolicitacao.addEventListener('submit', async function(e){
     estiloPagina.id = 'rel-estilo-pagina-temp';
     estiloPagina.textContent = '@media print{ @page{ size:A4 portrait; margin:0; } }';
     document.head.appendChild(estiloPagina);
+    // ALTERADO (relatório v2): imprime uma CÓPIA do relatório colocada
+    // direto no <body>, com todo o resto escondido (display:none) — assim
+    // ele começa no topo da folha e não sobra página em branco.
+    var hostAntigo = document.getElementById('rel-print-host');
+    if(hostAntigo) hostAntigo.remove();
+    var host = document.createElement('div');
+    host.id = 'rel-print-host';
+    var copia = relChamadosDocEl ? relChamadosDocEl.cloneNode(true) : null;
+    if(copia){
+      copia.removeAttribute('id');
+      copia.style.display = 'block';
+      copia.querySelectorAll('[id]').forEach(function(el){ el.removeAttribute('id'); });
+      copia.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); });
+      host.appendChild(copia);
+    }
+    document.body.appendChild(host);
     document.body.classList.add('rel-imprimindo');
     function limpar(){
       document.body.classList.remove('rel-imprimindo');
       var el = document.getElementById('rel-estilo-pagina-temp');
       if(el) el.remove();
+      var h = document.getElementById('rel-print-host');
+      if(h) h.remove();
       window.removeEventListener('afterprint', limpar);
     }
     window.addEventListener('afterprint', limpar);
@@ -14549,155 +14772,334 @@ formSolicitacao.addEventListener('submit', async function(e){
       '</div>';
   }
 
+  // ============================================================
+  // ALTERADO (relatório v2): 2 folhas A4 fixas, sem repetição de dados,
+  // com comparação com o período anterior e satisfação (avaliações).
+  // Folha 1: números principais + gráficos. Folha 2: tabelas + satisfação.
+  // ============================================================
+  var relAvalCache = null, relAvalBuscando = false;
+  function relAvaliacoesDisponiveis(){
+    if(typeof avaliacoesCarregadas !== 'undefined' && avaliacoesCarregadas) return ultimasAvaliacoes || [];
+    if(relAvalCache) return relAvalCache;
+    if(!relAvalBuscando && typeof db !== 'undefined' && db){
+      relAvalBuscando = true;
+      db.from('avaliacoes').select('numero_chamado,origem,atendimento,problema_resolvido,tempo_atendimento,created_at')
+        .then(function(r){
+          relAvalBuscando = false;
+          relAvalCache = (r && !r.error && r.data) ? r.data : [];
+          if(relPreviaGerada) gerarRelatorioChamados();
+        }, function(){ relAvalBuscando = false; relAvalCache = []; });
+    }
+    return null; // ainda carregando
+  }
+  function relNum(v, casas){
+    return Number(v).toFixed(casas || 0).replace('.', ',');
+  }
+  function relPct(parte, total){ return total > 0 ? Math.round(parte / total * 100) : 0; }
+  function relPeriodoAnterior(f){
+    if(!f.inicio || !f.fim || f.fim < f.inicio) return null;
+    var dias = Math.round((new Date(f.fim.getFullYear(), f.fim.getMonth(), f.fim.getDate()) - new Date(f.inicio.getFullYear(), f.inicio.getMonth(), f.inicio.getDate())) / 864e5) + 1;
+    var fimAnt = new Date(f.inicio.getFullYear(), f.inicio.getMonth(), f.inicio.getDate() - 1, 23, 59, 59);
+    var iniAnt = new Date(f.inicio.getFullYear(), f.inicio.getMonth(), f.inicio.getDate() - dias, 0, 0, 0);
+    return Object.assign({}, f, { inicio: iniAnt, fim: fimAnt });
+  }
+  function relResumoSatisfacao(listaChamados, avals){
+    if(!avals) return null;
+    var chaves = {};
+    listaChamados.forEach(function(c){ chaves[tabelaDe(c) + '-' + c.numero] = true; });
+    var doPeriodo = avals.filter(function(a){ return chaves[(a.origem || 'chamados') + '-' + a.numero_chamado]; });
+    var notas = doPeriodo.map(function(a){ return NOTA_AVAL_ATENDIMENTO[a.atendimento]; }).filter(function(n){ return n; });
+    var porNota = {}, porTempo = {}, resolvidoSim = 0, resolvidoResp = 0;
+    doPeriodo.forEach(function(a){
+      if(a.atendimento) porNota[a.atendimento] = (porNota[a.atendimento] || 0) + 1;
+      if(a.tempo_atendimento) porTempo[a.tempo_atendimento] = (porTempo[a.tempo_atendimento] || 0) + 1;
+      if(a.problema_resolvido){ resolvidoResp++; if(/^sim/i.test(a.problema_resolvido)) resolvidoSim++; }
+    });
+    return {
+      total: doPeriodo.length,
+      media: notas.length ? notas.reduce(function(s, n){ return s + n; }, 0) / notas.length : null,
+      porNota: porNota, porTempo: porTempo,
+      bons: (porNota['Excelente'] || 0) + (porNota['Bom'] || 0),
+      resolvidoPct: resolvidoResp ? relPct(resolvidoSim, resolvidoResp) : null
+    };
+  }
+  // colunas (volume por dia/semana) — SVG puro
+  function relSvgColunas(pontos){
+    var w = 720, h = 185, padL = 26, padR = 6, padT = 16, padB = 20;
+    var max = Math.max.apply(null, pontos.map(function(p){ return p.qtd; }).concat([1]));
+    var passoY = Math.ceil(max / 4) || 1, maxEixo = passoY * 4;
+    var n = pontos.length || 1, innerW = w - padL - padR, innerH = h - padT - padB;
+    var slot = innerW / n, barW = Math.max(2, Math.min(28, slot * 0.64));
+    var svg = '';
+    for(var g = 0; g <= 4; g++){
+      var val = g * passoY, yy = padT + innerH - innerH * val / maxEixo;
+      svg += '<line x1="' + padL + '" y1="' + yy.toFixed(1) + '" x2="' + (w - padR) + '" y2="' + yy.toFixed(1) + '" stroke="' + (g ? '#eef0f5' : '#d0d5dd') + '" stroke-width="1"/>' +
+             '<text x="' + (padL - 6) + '" y="' + (yy + 3).toFixed(1) + '" font-size="9" fill="#98a2b3" text-anchor="end">' + val + '</text>';
+    }
+    var passoLabel = Math.ceil(n / 12) || 1;
+    pontos.forEach(function(p, i){
+      var cx = padL + slot * i + slot / 2;
+      if(p.qtd > 0){
+        var bh = innerH * p.qtd / maxEixo, y = padT + innerH - bh;
+        svg += '<rect x="' + (cx - barW / 2).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + bh.toFixed(1) + '" rx="2" fill="' + (p.qtd === max ? '#0501d0' : '#6d6af5') + '"/>';
+        if(p.qtd === max || n <= 16) svg += '<text x="' + cx.toFixed(1) + '" y="' + (y - 4).toFixed(1) + '" font-size="9" font-weight="700" fill="#0f1b3d" text-anchor="middle">' + p.qtd + '</text>';
+      }
+      if(i % passoLabel === 0 || i === n - 1){
+        if(i === n - 1 && i % passoLabel !== 0 && (i % passoLabel) < passoLabel / 2) return; // evita rótulos colados
+        svg += '<text x="' + cx.toFixed(1) + '" y="' + (h - 5) + '" font-size="8.5" fill="#667085" text-anchor="middle">' + relEsc(p.label) + '</text>';
+      }
+    });
+    return '<svg class="rl-svg" viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">' + svg + '</svg>';
+  }
+  // barra horizontal em HTML (setores, técnicos, semanas, notas)
+  function relBarraLinha(rotulo, valor, max, extra, cor){
+    var largura = max > 0 ? Math.max(valor > 0 ? 2 : 0, Math.round(valor / max * 100)) : 0;
+    return '<div class="rl-hbar"><div class="rl-hbar-rot" title="' + relEsc(rotulo) + '">' + relEsc(rotulo) + '</div>' +
+      '<div class="rl-hbar-trilho"><div class="rl-hbar-barra" style="width:' + largura + '%;' + (cor ? 'background:' + cor : '') + '"></div></div>' +
+      '<div class="rl-hbar-val"><b>' + valor + '</b>' + (extra ? '<span>' + extra + '</span>' : '') + '</div></div>';
+  }
+  function relDonutCard(titulo, itens, totalCentro, nota){
+    itens = itens.filter(function(it){ return it.valor > 0; });
+    var legenda = itens.length ? itens.map(function(it){
+      return '<div class="rl-leg"><span class="rl-leg-pt" style="background:' + it.cor + '"></span><span class="rl-leg-nome">' + relEsc(it.label) + '</span><b>' + it.valor + '</b><span class="rl-leg-pct">' + relPct(it.valor, totalCentro) + '%</span></div>';
+    }).join('') : '<div class="rel-vazio">Sem dados no período.</div>';
+    return '<div class="rl-card"><div class="rl-card-tit">' + relEsc(titulo) + '</div>' +
+      '<div class="rl-donut">' + relSvgDonut(itens, totalCentro) + '<div class="rl-legenda">' + legenda + '</div></div>' +
+      (nota ? '<div class="rl-nota">' + relEsc(nota) + '</div>' : '') + '</div>';
+  }
+
   function gerarRelatorioChamados(){
     if(!relPaginaEl) return;
     var filtros = relColetarFiltros();
     var todos = ultimosChamados || [];
     var lista = relAplicarFiltros(todos, filtros);
+    var total = lista.length;
+    var dIni = filtros.inicio, dFim = filtros.fim;
 
     var porStatus = {}, porPrioridade = {}, porCategoria = {}, porSetor = {}, porAtendente = {};
     lista.forEach(function(c){
-      var status = c.status || 'Aberto';
-      var prioridade = c.prioridade || 'Não atribuído';
-      var categoria = c.categoria || 'Outro';
-      var setor = c.setor || 'Não informado';
-      var atendente = c.atendido_por || 'Não atribuído';
-      porStatus[status] = (porStatus[status] || 0) + 1;
-      porPrioridade[prioridade] = (porPrioridade[prioridade] || 0) + 1;
+      var st = c.status || 'Aberto';
+      porStatus[st] = (porStatus[st] || 0) + 1;
+      var pr = c.prioridade || 'Não atribuído';
+      porPrioridade[pr] = (porPrioridade[pr] || 0) + 1;
       categoriasDoChamado(c).forEach(function(cat){ porCategoria[cat] = (porCategoria[cat] || 0) + 1; });
-      porSetor[setor] = (porSetor[setor] || 0) + 1;
-      porAtendente[atendente] = (porAtendente[atendente] || 0) + 1;
+      var se = c.setor || 'Não informado';
+      porSetor[se] = (porSetor[se] || 0) + 1;
+      var at = c.atendido_por || 'Não atribuído';
+      porAtendente[at] = (porAtendente[at] || 0) + 1;
     });
 
-    var listaStatus = relOrdenarDesc(porStatus);
-    var listaSetores = relOrdenarDesc(porSetor);
-    var top5Setores = listaSetores.slice(0, 5);
-    var listaAtendentes = relOrdenarDesc(porAtendente);
-    var top5Atendentes = listaAtendentes.slice(0, 5);
+    // ---- período anterior (mesma duração, mesmos filtros) ----
+    var fAnt = relPeriodoAnterior(filtros);
+    var listaAnt = fAnt ? relAplicarFiltros(todos, fAnt) : null;
 
-    var dIni = filtros.inicio, dFim = filtros.fim;
+    // ---- satisfação ----
+    var avals = relAvaliacoesDisponiveis();
+    var sat = relResumoSatisfacao(lista, avals);
+    var satAnt = (avals && listaAnt) ? relResumoSatisfacao(listaAnt, avals) : null;
 
-    // volume diário no período selecionado (usado no gráfico de linha e na tabela)
+    // ---- dias do período ----
     var dias = [];
     if(dIni && dFim && dFim >= dIni){
-      var cursor = new Date(dIni.getFullYear(), dIni.getMonth(), dIni.getDate());
-      var limite = new Date(dFim.getFullYear(), dFim.getMonth(), dFim.getDate());
-      var guard = 0;
-      while(cursor <= limite && guard < 370){
-        dias.push({ data: new Date(cursor), chave: relChaveISO(cursor), qtd: 0 });
-        cursor.setDate(cursor.getDate() + 1);
-        guard++;
-      }
+      var cur = new Date(dIni.getFullYear(), dIni.getMonth(), dIni.getDate());
+      var lim = new Date(dFim.getFullYear(), dFim.getMonth(), dFim.getDate());
+      for(var g = 0; cur <= lim && g < 400; g++){ dias.push({ data: new Date(cur), chave: relChaveISO(cur), qtd: 0, concl: 0 }); cur.setDate(cur.getDate() + 1); }
     }
     var porDia = {};
     dias.forEach(function(d){ porDia[d.chave] = d; });
     lista.forEach(function(c){
-      var d = relDataChamado(c);
-      if(!d) return;
-      var chave = relChaveISO(d);
-      if(porDia[chave]) porDia[chave].qtd++;
+      var d = relDataChamado(c); if(!d) return;
+      var dia = porDia[relChaveISO(d)]; if(!dia) return;
+      dia.qtd++; if((c.status || '') === 'Concluído') dia.concl++;
     });
 
-    // ---- cabeçalho ----
     var agora = new Date();
-    var headerHtml =
-      '<div class="rel-header">' +
+    var periodoTxt = (dIni ? relFormatarBR(dIni) : '—') + ' a ' + (dFim ? relFormatarBR(dFim) : '—');
+    var filtrosAtivos = [];
+    if(filtros.setor) filtrosAtivos.push('Setor: ' + filtros.setor);
+    if(filtros.status) filtrosAtivos.push('Status: ' + filtros.status);
+    if(filtros.prioridade) filtrosAtivos.push('Prioridade: ' + filtros.prioridade);
+    if(filtros.categoria) filtrosAtivos.push('Categoria: ' + filtros.categoria);
+    if(filtros.atendente) filtrosAtivos.push('Técnico: ' + filtros.atendente);
+
+    // ================= FOLHA 1 =================
+    var header =
+      '<div class="rel-header rl-header">' +
         '<div class="rel-header-esq"><div class="rel-logo">T</div>' +
-          '<div><div class="marca-nome">TI - CSSL</div><div class="marca-sub">Tecnologia da Informação</div></div>' +
-        '</div>' +
+          '<div><div class="marca-nome">TI - CSSL</div><div class="marca-sub">Tecnologia da Informação</div></div></div>' +
         '<div class="rel-header-centro"><h1>RELATÓRIO DE CHAMADOS</h1>' +
-          '<div class="periodo">PERÍODO: ' + (dIni ? relFormatarBR(dIni) : '—') + ' a ' + (dFim ? relFormatarBR(dFim) : '—') + '</div>' +
+          '<div class="periodo">PERÍODO: ' + periodoTxt + '</div>' +
+          (filtrosAtivos.length ? '<div class="rl-filtros">' + relEsc(filtrosAtivos.join(' · ')) + '</div>' : '') +
         '</div>' +
         '<div class="rel-header-dir">' + REL_ICO_CALENDAR +
-          '<div><div>Data do Relatório:</div><div class="rel-data-valor">' + relFormatarBR(agora) + ' ' + String(agora.getHours()).padStart(2,'0') + ':' + String(agora.getMinutes()).padStart(2,'0') + '</div></div>' +
-        '</div>' +
+          '<div><div>Gerado em</div><div class="rel-data-valor">' + relFormatarBR(agora) + ' ' + String(agora.getHours()).padStart(2,'0') + ':' + String(agora.getMinutes()).padStart(2,'0') + '</div></div></div>' +
       '</div>';
 
-    // ---- resumo geral ----
-    var cardStatus =
-      '<div class="rel-card"><div class="rel-card-icone">' + REL_ICO_INDICADOR + '</div>' +
-      '<div class="num">' + lista.length + '</div><div class="tit">Por status</div>' +
-      '<div class="desc">Acompanhe os chamados por status atual.</div>' + relRenderMiniLista(listaStatus, 4) + '</div>';
-    var cardPrioridade =
-      '<div class="rel-card"><div class="rel-card-icone">' + REL_ICO_ESTRELA + '</div>' +
-      '<div class="num">' + lista.length + '</div><div class="tit">Por prioridade</div>' +
-      '<div class="desc">Distribuição dos chamados por prioridade.</div>' + relRenderMiniLista(relOrdenarDesc(porPrioridade), 4) + '</div>';
-    var cardCategoria =
-      '<div class="rel-card"><div class="rel-card-icone">' + REL_ICO_GRADE + '</div>' +
-      '<div class="num">' + lista.length + '</div><div class="tit">Por categoria</div>' +
-      '<div class="desc">Chamados agrupados por categoria (Sysart → Acesso / Senha conta nas duas).</div>' + relRenderMiniLista(relOrdenarDesc(porCategoria), 4) + '</div>';
-    var cardSetores =
-      '<div class="rel-card"><div class="rel-card-icone">' + REL_ICO_PREDIO + '</div>' +
-      '<div class="num">' + listaSetores.length + '</div><div class="tit">Top setores</div>' +
-      '<div class="desc">Setores com maior número de chamados.</div>' + relRenderMiniLista(top5Setores, 4) + '</div>';
-    var cardAtendente =
-      '<div class="rel-card"><div class="rel-card-icone">' + REL_ICO_USER + '</div>' +
-      '<div class="num">' + top5Atendentes.length + '</div><div class="tit">Atendido por</div>' +
-      '<div class="desc">Técnicos que mais atenderam chamados.</div>' + relRenderMiniLista(top5Atendentes, 4) + '</div>';
-    var cardTendencia =
-      '<div class="rel-card rel-card-largo"><div class="rel-card-icone">' + REL_ICO_TENDENCIA + '</div>' +
-      '<div class="num">' + lista.length + '</div><div class="tit">Chamados abertos</div>' +
-      '<div class="desc">Evolução dos chamados no período selecionado.</div>' +
-      (dias.length ? relSvgLinha(dias.map(function(d){ return { label: relRotuloCurto(d.data), qtd: d.qtd }; })) : '<div class="rel-vazio">Selecione um período para ver a evolução.</div>') +
-      '</div>';
-
-    var resumoHtml =
-      '<div class="rel-secao-titulo">' + REL_ICO_GRADE + ' RESUMO GERAL</div>' +
-      '<div class="rel-cards-grid">' + cardStatus + cardPrioridade + cardCategoria + cardSetores + '</div>' +
-      '<div class="rel-cards-grid duas">' + cardAtendente + cardTendencia + '</div>';
-
-    // ---- donuts ----
-    var donutsHtml = '<div class="rel-donuts">' +
-      relDonutBloco('CHAMADOS POR PRIORIDADE', porPrioridade, REL_PRIORIDADES, REL_CORES_PRIORIDADE) +
-      relDonutBloco('CHAMADOS POR CATEGORIA', porCategoria, REL_CATEGORIAS, {}, { totalChamados: lista.length, nota: 'Chamados de Sysart → Acesso / Senha contam no Sysart e no Acesso / Senha.' }) +
-      '</div>';
-
-    // ---- top 5 setores (barras) ----
-    var barrasHtml = '<div class="rel-barras-card">' +
-      '<div class="rel-secao-titulo" style="margin-bottom:0">TOP 5 SETORES COM MAIS CHAMADOS</div>' +
-      (top5Setores.length ? relSvgBarras(top5Setores) : '<div class="rel-vazio" style="text-align:center;padding:36px 0">Sem dados ainda.</div>') +
-      '</div>';
-
-    // ---- tabelas ----
-    var linhasAtendentes = top5Atendentes.length ? top5Atendentes.map(function(a){
-      return '<tr><td>' + relEsc(a.label) + '</td><td>' + a.valor + '</td></tr>';
-    }).join('') : '<tr><td colspan="2" style="text-align:center;color:#98a2b3">Sem dados ainda.</td></tr>';
-    var tabelaAtendentesHtml = '<div class="rel-tabela-card"><h4>Atendido por (Top 5)</h4>' +
-      '<table class="rel-tabela"><thead><tr><th>Técnico</th><th>Quantidade</th></tr></thead><tbody>' + linhasAtendentes +
-      '<tr class="rel-total"><td>TOTAL</td><td>' + lista.length + '</td></tr></tbody></table></div>';
-
-    var tabelaVolumeHtml;
-    if(!dias.length){
-      tabelaVolumeHtml = '<div class="rel-tabela-card"><h4>Volume diário de chamados</h4><div class="rel-vazio" style="text-align:center;padding:16px 0">Selecione um período válido.</div></div>';
-    }else{
-      var metade = Math.ceil(dias.length / 2);
-      var colEsq = dias.slice(0, metade), colDir = dias.slice(metade);
-      var linhasVolume = '', totalVolume = 0;
-      for(var i = 0; i < colEsq.length; i++){
-        var e = colEsq[i], d2 = colDir[i];
-        totalVolume += e.qtd; if(d2) totalVolume += d2.qtd;
-        linhasVolume += '<tr><td>' + relFormatarBR(e.data) + '</td><td>' + e.qtd + '</td>' +
-          (d2 ? ('<td>' + relFormatarBR(d2.data) + '</td><td>' + d2.qtd + '</td>') : '<td></td><td></td>') + '</tr>';
+    // KPI 1: total + comparação
+    var compTxt = '';
+    if(listaAnt){
+      var nAnt = listaAnt.length;
+      var faixaAnt = relRotuloCurto(fAnt.inicio) + ' a ' + relRotuloCurto(fAnt.fim);
+      if(nAnt > 0){
+        var difAbs = total - nAnt;
+        var seta = difAbs > 0 ? '▲' : (difAbs < 0 ? '▼' : '=');
+        // com poucos chamados antes, a % fica sem sentido (ex.: 3 → 158 = 5167%)
+        var variacao = nAnt >= 10 ? Math.abs(Math.round(difAbs / nAnt * 100)) + '%' : (difAbs > 0 ? '+' : '') + difAbs;
+        compTxt = '<span class="rl-delta">' + seta + ' ' + variacao + '</span> vs ' + nAnt + ' (' + faixaAnt + ')';
+      }else{
+        compTxt = 'Nenhum chamado de ' + faixaAnt;
       }
-      tabelaVolumeHtml = '<div class="rel-tabela-card"><h4>Volume diário de chamados (' + dias.length + ' dias)</h4>' +
-        '<table class="rel-tabela"><thead><tr><th>Data</th><th>Quantidade</th><th>Data</th><th>Quantidade</th></tr></thead><tbody>' + linhasVolume + '</tbody>' +
-        '<tfoot><tr class="rel-total"><td>TOTAL</td><td colspan="3">' + totalVolume + '</td></tr></tfoot></table></div>';
     }
-    var tabelasHtml = '<div class="rel-tabelas">' + tabelaAtendentesHtml + tabelaVolumeHtml + '</div>';
-
-    // ---- observações (texto real, digitado pelo administrador — nunca fictício) ----
-    var obsHtml = '<div class="rel-observacoes">' +
-      '<div class="rel-secao-titulo" style="justify-content:center;margin-bottom:8px">' + REL_ICO_BALAO + ' OBSERVAÇÕES</div>' +
-      '<div class="rel-obs-texto" id="rel-obs-texto" contenteditable="true" data-placeholder="Sem observações registradas.">' + relEsc(relObservacoesTexto) + '</div>' +
+    var concluidos = porStatus['Concluído'] || 0;
+    var pendDetalhe = [['Aberto','aberto','abertos'],['Em andamento','em andamento','em andamento'],['Aguardando retorno','aguardando','aguardando']]
+      .filter(function(s){ return porStatus[s[0]]; })
+      .map(function(s){ var v = porStatus[s[0]]; return v + ' ' + (v === 1 ? s[1] : s[2]); });
+    var pendentes = total - concluidos;
+    var satNum, satSub;
+    if(!sat){ satNum = '…'; satSub = 'Carregando avaliações…'; }
+    else if(!sat.total || sat.media === null){ satNum = '—'; satSub = 'Nenhuma avaliação no período'; }
+    else{
+      satNum = relNum(sat.media, 1) + '<small>/5</small>';
+      satSub = sat.total + (sat.total === 1 ? ' avaliação' : ' avaliações') + ' · ' + relPct(sat.bons, sat.total) + '% Excelente ou Bom';
+      if(satAnt && satAnt.media !== null){
+        var dn = sat.media - satAnt.media;
+        if(Math.abs(dn) >= 0.05) satSub += ' · <span class="rl-delta">' + (dn > 0 ? '▲ +' : '▼ ') + relNum(dn, 1) + '</span>';
+      }
+    }
+    var kpis =
+      '<div class="rl-kpis">' +
+        '<div class="rl-kpi rl-kpi-destaque"><div class="rl-kpi-rot">Chamados no período</div><div class="rl-kpi-num">' + total + '</div><div class="rl-kpi-sub">' + (compTxt || '&nbsp;') + '</div></div>' +
+        '<div class="rl-kpi"><div class="rl-kpi-rot">Concluídos</div><div class="rl-kpi-num">' + concluidos + '</div><div class="rl-kpi-sub">' + relPct(concluidos, total) + '% do total</div></div>' +
+        '<div class="rl-kpi"><div class="rl-kpi-rot">Pendentes</div><div class="rl-kpi-num">' + pendentes + '</div><div class="rl-kpi-sub">' + (pendDetalhe.join(' · ') || 'Nenhum pendente') + '</div></div>' +
+        '<div class="rl-kpi"><div class="rl-kpi-rot">Satisfação</div><div class="rl-kpi-num">' + satNum + '</div><div class="rl-kpi-sub">' + satSub + '</div></div>' +
       '</div>';
 
-    // ---- rodapé ----
-    var rodapeHtml = '<div class="rel-rodape">' +
-      '<div>TI - CSSL | Relatório gerado automaticamente pelo sistema</div>' +
-      '<div class="meio">Tecnologia a serviço da vida.</div>' +
-      '<div>Página 1 de 1</div></div>';
+    // evolução (por dia; por semana se o período for longo)
+    var pontosEvo = [], unidadeEvo = 'dia';
+    if(dias.length > 62){
+      unidadeEvo = 'semana';
+      for(var s = 0; s < dias.length; s += 7){
+        var bloco = dias.slice(s, s + 7);
+        pontosEvo.push({ label: relRotuloCurto(bloco[0].data), qtd: bloco.reduce(function(a, d){ return a + d.qtd; }, 0) });
+      }
+    }else{
+      pontosEvo = dias.map(function(d){ return { label: relRotuloCurto(d.data), qtd: d.qtd }; });
+    }
+    var evoSub = '';
+    if(pontosEvo.length){
+      var pico = pontosEvo.reduce(function(m, p){ return p.qtd > m.qtd ? p : m; }, pontosEvo[0]);
+      var media = total / (dias.length || 1);
+      evoSub = 'Média de ' + relNum(media, 1) + ' por dia · ' + (unidadeEvo === 'dia' ? 'dia' : 'semana') + ' mais movimentad' + (unidadeEvo === 'dia' ? 'o' : 'a') + ': ' + (unidadeEvo === 'dia' ? pico.label : 'a partir de ' + pico.label) + ' (' + pico.qtd + ')';
+    }
+    var evolucao = '<div class="rl-card"><div class="rl-card-cab"><div class="rl-card-tit">Chamados abertos por ' + unidadeEvo + '</div><div class="rl-card-sub">' + evoSub + '</div></div>' +
+      (pontosEvo.length ? relSvgColunas(pontosEvo) : '<div class="rel-vazio">Selecione um período para ver a evolução.</div>') + '</div>';
 
-    relPaginaEl.innerHTML = headerHtml + resumoHtml + donutsHtml + barrasHtml + tabelasHtml + obsHtml + rodapeHtml;
+    // prioridade + categoria
+    var itensPrio = REL_PRIORIDADES.concat(['Não atribuído']).map(function(p){ return { label: p === 'Não atribuído' ? 'Sem prioridade' : p, valor: porPrioridade[p] || 0, cor: REL_CORES_PRIORIDADE[p] || '#c4c9d4' }; });
+    Object.keys(porPrioridade).forEach(function(p){ if(REL_PRIORIDADES.indexOf(p) < 0 && p !== 'Não atribuído') itensPrio.push({ label:p, valor:porPrioridade[p], cor:'#98a2b3' }); });
+    var itensCat = REL_CATEGORIAS.map(function(cat, i){ return { label:cat, valor: porCategoria[cat] || 0, cor: REL_PALETA[i % REL_PALETA.length] }; })
+      .sort(function(a, b){ return b.valor - a.valor; });
+    var temSysartAcesso = (porCategoria['Acesso / Senha'] || 0) > 0;
+    var donuts = '<div class="rl-duas">' +
+      relDonutCard('Por prioridade', itensPrio, total) +
+      relDonutCard('Por categoria', itensCat, total, temSysartAcesso ? 'Sysart → Acesso / Senha conta nas duas categorias.' : '') +
+      '</div>';
+
+    // top setores (barras horizontais, nomes inteiros)
+    var listaSetores = relOrdenarDesc(porSetor);
+    var topSetores = listaSetores.slice(0, 8);
+    var maxSetor = topSetores.length ? topSetores[0].valor : 0;
+    var setores = '<div class="rl-card"><div class="rl-card-cab"><div class="rl-card-tit">Setores com mais chamados</div><div class="rl-card-sub">' +
+      (listaSetores.length ? listaSetores.length + (listaSetores.length === 1 ? ' setor abriu chamado' : ' setores abriram chamados') + ' no período' : '') + '</div></div>' +
+      (topSetores.length ? topSetores.map(function(s){ return relBarraLinha(s.label, s.valor, maxSetor, relPct(s.valor, total) + '%'); }).join('') : '<div class="rel-vazio">Sem dados no período.</div>') +
+      '</div>';
+
+    var rodape = function(n){
+      return '<div class="rel-rodape rl-rodape"><div>TI - CSSL · Relatório gerado automaticamente pelo sistema</div>' +
+        '<div class="meio">Tecnologia a serviço da vida.</div><div>Página ' + n + ' de 2</div></div>';
+    };
+
+    var folha1 = '<section class="rl-folha"><div class="rl-conteudo">' + header + kpis + evolucao + donuts + setores + '</div>' + rodape(1) + '</section>';
+
+    // ================= FOLHA 2 =================
+    var cab2 = '<div class="rl-cab2"><b>Relatório de Chamados</b><span>' + periodoTxt + '</span></div>';
+
+    // atendido por (duplas mantidas como estão)
+    var listaAt = relOrdenarDesc(porAtendente);
+    var LIM_AT = 8, topAt = listaAt.slice(0, LIM_AT), restoAt = listaAt.slice(LIM_AT);
+    var maxAt = topAt.length ? topAt[0].valor : 0;
+    var linhasAt = topAt.map(function(a){
+      return '<tr><td>' + relEsc(a.label) + '</td><td class="rl-num">' + a.valor + '</td><td class="rl-num rl-cinza">' + relPct(a.valor, total) + '%</td>' +
+        '<td class="rl-barcel"><div class="rl-minibar" style="width:' + (maxAt ? Math.round(a.valor / maxAt * 100) : 0) + '%"></div></td></tr>';
+    }).join('');
+    if(restoAt.length){
+      var somaResto = restoAt.reduce(function(s, a){ return s + a.valor; }, 0);
+      linhasAt += '<tr><td class="rl-cinza">Outros (' + restoAt.length + ')</td><td class="rl-num">' + somaResto + '</td><td class="rl-num rl-cinza">' + relPct(somaResto, total) + '%</td><td></td></tr>';
+    }
+    var tabAt = '<div class="rl-card"><div class="rl-card-tit">Atendido por</div>' +
+      '<table class="rl-tabela"><thead><tr><th>Técnico</th><th class="rl-num">Chamados</th><th class="rl-num">%</th><th></th></tr></thead><tbody>' +
+      (linhasAt || '<tr><td colspan="4" class="rl-cinza">Sem dados no período.</td></tr>') +
+      '</tbody><tfoot><tr><td>Total</td><td class="rl-num">' + total + '</td><td></td><td></td></tr></tfoot></table></div>';
+
+    // volume por semana (ou por mês, se o período for muito longo)
+    var grupos = [], porMes = dias.length > 7 * 14;
+    if(porMes){
+      var mapaMes = {};
+      dias.forEach(function(d){
+        var k = d.data.getFullYear() + '-' + d.data.getMonth();
+        if(!mapaMes[k]){ mapaMes[k] = { ini:d.data, fim:d.data, qtd:0, concl:0 }; grupos.push(mapaMes[k]); }
+        mapaMes[k].fim = d.data; mapaMes[k].qtd += d.qtd; mapaMes[k].concl += d.concl;
+      });
+    }else{
+      for(var w = 0; w < dias.length; w += 7){
+        var sem = dias.slice(w, w + 7);
+        grupos.push({ ini: sem[0].data, fim: sem[sem.length - 1].data, qtd: sem.reduce(function(a, d){ return a + d.qtd; }, 0), concl: sem.reduce(function(a, d){ return a + d.concl; }, 0) });
+      }
+    }
+    var MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    var maxGrupo = Math.max.apply(null, grupos.map(function(g){ return g.qtd; }).concat([1]));
+    var linhasSem = grupos.map(function(g){
+      var rot = porMes ? (MESES[g.ini.getMonth()] + '/' + g.ini.getFullYear()) : (relRotuloCurto(g.ini) + (g.fim > g.ini ? ' – ' + relRotuloCurto(g.fim) : ''));
+      return '<tr><td>' + rot + '</td><td class="rl-num">' + g.qtd + '</td><td class="rl-num rl-cinza">' + g.concl + '</td>' +
+        '<td class="rl-barcel"><div class="rl-minibar" style="width:' + Math.round(g.qtd / maxGrupo * 100) + '%"></div></td></tr>';
+    }).join('');
+    var totalConclGrupos = grupos.reduce(function(a, g){ return a + g.concl; }, 0);
+    var tabSem = '<div class="rl-card"><div class="rl-card-tit">Volume por ' + (porMes ? 'mês' : 'semana') + '</div>' +
+      (grupos.length ?
+        '<table class="rl-tabela"><thead><tr><th>' + (porMes ? 'Mês' : 'Semana') + '</th><th class="rl-num">Abertos</th><th class="rl-num">Concluídos</th><th></th></tr></thead><tbody>' + linhasSem +
+        '</tbody><tfoot><tr><td>Total</td><td class="rl-num">' + total + '</td><td class="rl-num">' + totalConclGrupos + '</td><td></td></tr></tfoot></table>'
+        : '<div class="rel-vazio">Selecione um período válido.</div>') + '</div>';
+
+    // satisfação
+    var satHtml;
+    if(!sat){
+      satHtml = '<div class="rl-card"><div class="rl-card-tit">Satisfação dos usuários</div><div class="rel-vazio">Carregando avaliações…</div></div>';
+    }else if(!sat.total){
+      satHtml = '<div class="rl-card"><div class="rl-card-tit">Satisfação dos usuários</div><div class="rel-vazio">Nenhum chamado deste período foi avaliado.</div></div>';
+    }else{
+      var maxNota = Math.max.apply(null, AV_ORDEM_NOTAS.map(function(n){ return sat.porNota[n] || 0; }).concat([1]));
+      var barrasNotas = AV_ORDEM_NOTAS.map(function(n){ return relBarraLinha(n, sat.porNota[n] || 0, maxNota, relPct(sat.porNota[n] || 0, sat.total) + '%', CORES_AVAL_ATENDIMENTO[n]); }).join('');
+      var tempos = relOrdenarDesc(sat.porTempo);
+      var maxTempo = tempos.length ? tempos[0].valor : 0;
+      var barrasTempo = tempos.map(function(t){ return relBarraLinha(t.label, t.valor, maxTempo, relPct(t.valor, sat.total) + '%', '#0891b2'); }).join('');
+      var estrelas = '';
+      for(var e = 1; e <= 5; e++) estrelas += '<span class="' + (sat.media >= e - 0.25 ? 'on' : '') + '">★</span>';
+      satHtml = '<div class="rl-card"><div class="rl-card-cab"><div class="rl-card-tit">Satisfação dos usuários</div><div class="rl-card-sub">' + sat.total + ' de ' + concluidos + ' chamados concluídos foram avaliados (' + relPct(sat.total, concluidos) + '%)</div></div>' +
+        '<div class="rl-sat">' +
+          '<div class="rl-sat-nota"><div class="rl-sat-num">' + relNum(sat.media, 1) + '</div><div class="rl-estrelas">' + estrelas + '</div><div class="rl-sat-leg">nota média (1 a 5)</div>' +
+            (sat.resolvidoPct !== null ? '<div class="rl-sat-res"><b>' + sat.resolvidoPct + '%</b> disseram que o problema foi resolvido</div>' : '') + '</div>' +
+          '<div class="rl-sat-col"><div class="rl-sat-sub">Atendimento</div>' + barrasNotas + '</div>' +
+          '<div class="rl-sat-col"><div class="rl-sat-sub">Tempo de atendimento</div>' + (barrasTempo || '<div class="rel-vazio">Sem respostas.</div>') + '</div>' +
+        '</div></div>';
+    }
+
+    var obs = '<div class="rl-card rl-obs"><div class="rl-card-tit">' + REL_ICO_BALAO + ' Observações</div>' +
+      '<div class="rel-obs-texto rl-obs-texto" id="rel-obs-texto" contenteditable="true" data-placeholder="Clique aqui para escrever observações (opcional).">' + relEsc(relObservacoesTexto) + '</div></div>';
+
+    var folha2 = '<section class="rl-folha rl-folha-ultima"><div class="rl-conteudo">' + cab2 + '<div class="rl-duas">' + tabAt + tabSem + '</div>' + satHtml + obs + '</div>' + rodape(2) + '</section>';
+
+    relPaginaEl.innerHTML = folha1 + folha2;
+    relPaginaEl.classList.add('rl-v2');
 
     var obsEl = document.getElementById('rel-obs-texto');
     if(obsEl) obsEl.addEventListener('input', function(){ relObservacoesTexto = obsEl.textContent; });
@@ -15884,6 +16286,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       try{ renderDashboard(ultimosChamados); }catch(e){}
       try{ if(kanbanEl && kanbanEl.style.display !== 'none') renderKanban(ultimosChamados); }catch(e){}
       try{ window.csslUltimosChamados = ultimosChamados; }catch(e){}
+      relAtualizarSeVisivel();
     }
     if(adiou){
       clearTimeout(cpnTimerRealtime);
