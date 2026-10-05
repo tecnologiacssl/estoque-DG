@@ -15834,6 +15834,8 @@ formSolicitacao.addEventListener('submit', async function(e){
   function cpnAplicarRealtime(){
     var fila = cpnFilaRealtime;
     cpnFilaRealtime = {};
+    // avisa a Início (faixa "Painel de Chamados" e chips) que algo mudou
+    try{ if(Object.keys(fila).length) document.dispatchEvent(new CustomEvent('cssl:chamados-mudaram')); }catch(e){}
     var listaCarregada = Object.keys(mapaCartoesPorData).length > 0 || ultimosChamados.length > 0;
     var mudou = false, adiou = false;
     Object.keys(fila).forEach(function(chave){
@@ -17998,6 +18000,30 @@ formSolicitacao.addEventListener('submit', async function(e){
   document.addEventListener('cssl:permissoes-aplicadas', function(){
     if(cardPainelObs && cardPainelObs.style.display !== 'none') atualizarChipPainel();
   });
+
+  // ADIÇÃO: a faixa "Painel de Chamados" da Início era contada só uma vez,
+  // ao entrar no portal, e ficava com números velhos. Agora ela recalcula
+  // quando chega mudança em tempo real, quando a janela volta a aparecer
+  // e, por segurança, a cada 1 minuto enquanto a janela está visível.
+  var timerResumoInicio = null;
+  function recontarInicio(){
+    clearTimeout(timerResumoInicio);
+    timerResumoInicio = setTimeout(function(){
+      if(window.CSSL_APP_CHAT) return;
+      var login = document.getElementById('tela-login');
+      if(login && login.offsetParent !== null) return; // ninguém logado
+      if(cardPainelObs && cardPainelObs.style.display !== 'none') atualizarChipPainel();
+      atualizarChipChamado();
+    }, 500);
+  }
+  window.csslRecontarInicio = recontarInicio;
+  document.addEventListener('cssl:chamados-mudaram', recontarInicio);
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'visible') recontarInicio();
+  });
+  setInterval(function(){
+    if(document.visibilityState === 'visible') recontarInicio();
+  }, 60 * 1000);
 
   // ADIÇÃO: esconde o título de um grupo da Início (Atendimento, Gestão de
   // TI, Comunicação, Administração) quando nenhum card dele está visível —
