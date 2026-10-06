@@ -4683,6 +4683,13 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
 .sug-adm-vazio b{color:#fff;font-size:15px}
 .sug-adm-vazio-ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(250,204,21,.1);color:#facc15;margin-bottom:6px}
 .sug-adm-vazio-ico svg{width:24px;height:24px}
+
+/* Auditoria: selo "Ao vivo" */
+.aud-aovivo{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:99px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:#86efac;font-size:11px;font-weight:700;letter-spacing:.02em;vertical-align:middle}
+.aud-aovivo[hidden]{display:none}
+.aud-aovivo i{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:audPulso 1.8s ease-out infinite}
+@keyframes audPulso{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+@media (prefers-reduced-motion:reduce){.aud-aovivo i{animation:none}}
 </style>
 </head>
 <body>
@@ -27913,6 +27920,87 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   elBusca.addEventListener('input', renderLista);
   elFilPessoa.addEventListener('change', function(){ marcarFiltrosAtivos(); renderLista(); });
   elFilSetor.addEventListener('change', function(){ marcarFiltrosAtivos(); renderLista(); });
+
+  /* ============ ADIÇÃO: tempo real (igual ao Painel de Chamados) ============
+     Enquanto a Auditoria está aberta, escuta as mensagens diretas novas,
+     editadas ou apagadas: a lista, os números do topo e a conversa aberta
+     se atualizam sozinhos, sem precisar sair e entrar de novo. Continua
+     100% somente leitura (só escuta, nunca grava nada). */
+  var canalAuditoria = null, timerListaRT = null;
+  var elAoVivo = document.createElement('span');
+  elAoVivo.className = 'aud-aovivo';
+  elAoVivo.hidden = true;
+  elAoVivo.title = 'As conversas se atualizam sozinhas enquanto esta tela está aberta';
+  elAoVivo.innerHTML = '<i></i>Ao vivo';
+  (function(){ var h2 = tela.querySelector('.topo-chamado h2'); if(h2) h2.appendChild(elAoVivo); })();
+  function telaAberta(){ return tela.style.display === 'block'; }
+  function recarregarListaDepois(){
+    clearTimeout(timerListaRT);
+    timerListaRT = setTimeout(function(){
+      if(!telaAberta()) return;
+      if(carregandoAgora){ recarregarListaDepois(); return; }
+      carregarConversas();
+    }, 700);
+  }
+  function aplicarNaConversaAberta(evento, nova, antiga){
+    var conv = conversaAtiva;
+    if(!conv) return;
+    var id = (nova && nova.id != null) ? nova.id : (antiga && antiga.id);
+    var convId = (nova && nova.conversa_id) || (antiga && antiga.conversa_id);
+    var idx = mensagensAtuais.findIndex(function(m){ return String(m.id) === String(id); });
+    if(convId && String(convId) !== String(conv.id) && idx < 0) return;
+    if(evento === 'INSERT'){
+      if(idx > -1) return;
+      mensagensAtuais.push(nova);
+      mensagensAtuais.sort(function(a, b){ return new Date(a.criado_em) - new Date(b.criado_em); });
+    }else if(evento === 'UPDATE'){
+      if(idx < 0) return;
+      mensagensAtuais[idx] = Object.assign({}, mensagensAtuais[idx], nova);
+    }else if(evento === 'DELETE'){
+      if(idx < 0) return;
+      mensagensAtuais.splice(idx, 1);
+    }
+    // quem está lendo mensagens antigas não é jogado pro fim da conversa
+    var caixa = elThreadMensagens;
+    var noFim = caixa.scrollHeight - caixa.scrollTop - caixa.clientHeight < 80;
+    var posAntes = caixa.scrollTop;
+    atualizarSub();
+    renderMensagens();
+    if(!noFim && elBuscaBar.hidden) caixa.scrollTop = posAntes;
+  }
+  function ligarTempoReal(){
+    var c = cliente();
+    if(!c || canalAuditoria || !c.channel) return;
+    canalAuditoria = c.channel('auditoria-conversas-' + Date.now())
+      .on('postgres_changes', { event:'*', schema:'public', table:'chat_mensagens' }, function(payload){
+        if(!telaAberta()) return;
+        aplicarNaConversaAberta(payload.eventType, payload.new, payload.old);
+        recarregarListaDepois();
+      })
+      .subscribe(function(estado){ elAoVivo.hidden = estado !== 'SUBSCRIBED'; });
+  }
+  function desligarTempoReal(){
+    var c = cliente();
+    clearTimeout(timerListaRT);
+    elAoVivo.hidden = true;
+    if(canalAuditoria && c && c.removeChannel){ try{ c.removeChannel(canalAuditoria); }catch(e){} }
+    canalAuditoria = null;
+  }
+  // liga quando a tela aparece e desliga quando some (Voltar, Início, outra tela)
+  new MutationObserver(function(){
+    if(telaAberta()) ligarTempoReal(); else desligarTempoReal();
+  }).observe(tela, { attributes:true, attributeFilter:['style'] });
+  // PC dormiu / aba ficou escondida muito tempo: confere se perdeu alguma coisa
+  var escondidaDesde = 0;
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'hidden'){ escondidaDesde = Date.now(); return; }
+    var longe = escondidaDesde && (Date.now() - escondidaDesde > 2 * 60 * 1000);
+    escondidaDesde = 0;
+    if(longe && telaAberta()){
+      recarregarListaDepois();
+      if(conversaAtiva) abrirConversa(conversaAtiva);
+    }
+  });
 })();
 </script>
 
