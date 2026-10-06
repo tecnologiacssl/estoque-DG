@@ -4635,6 +4635,54 @@ html.app-desktop .sug-drawer,
 html.app-desktop #kb-gaveta{top:64px;border-top:1px solid var(--borda-forte,rgba(255,255,255,.12));border-top-left-radius:12px}
 html.app-desktop .sug-overlay,
 html.app-desktop #kb-gaveta-fundo{top:64px}
+
+/* ===== Formulários (TV, Computador, Manutenção) e Sugestões ===== */
+/* botões de toque no lugar de listas curtas */
+.seg-select-escondido{position:absolute !important;width:1px !important;height:1px !important;opacity:0 !important;pointer-events:none !important;overflow:hidden;clip:rect(0 0 0 0)}
+.pc-campo:has(.seg-select-escondido){position:relative}
+.seg-grupo{display:flex;flex-wrap:wrap;gap:4px;padding:3px;background:rgba(255,255,255,.035);border:1px solid var(--borda);border-radius:10px;box-sizing:border-box}
+.seg-btn{flex:1 1 auto;width:auto;margin:0;background:transparent;border:0;border-radius:7px;color:var(--cinza-claro);font:600 13px/1.1 inherit;padding:9px 10px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.seg-btn:hover{background:rgba(255,255,255,.06);color:#fff}
+.seg-btn.ativo{background:rgba(125,123,255,.24);color:#fff;box-shadow:inset 0 0 0 1px rgba(125,123,255,.5)}
+.seg-btn:focus-visible{outline:2px solid var(--azul-claro);outline-offset:1px}
+.seg-grupo.seg-erro{border-color:rgba(239,68,68,.7)}
+/* peças como etiquetas */
+#pc-m-pecas-lista .pc-peca-chip{position:relative;display:flex !important;flex-direction:row !important;align-items:center !important;justify-content:flex-start !important;gap:9px;margin:0;text-align:left}
+#pc-m-pecas-lista .pc-peca-chip input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+#pc-m-pecas-lista .pc-peca-chip::before{content:'';flex:0 0 16px;height:16px;border-radius:5px;border:1.5px solid rgba(161,161,170,.5);box-sizing:border-box;background:transparent no-repeat center/11px 11px}
+#pc-m-pecas-lista .pc-peca-chip:has(input:checked){background:rgba(125,123,255,.16);border-color:rgba(125,123,255,.65)}
+#pc-m-pecas-lista .pc-peca-chip:has(input:checked)::before{background-color:#7d7bff;border-color:#7d7bff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E")}
+#pc-m-pecas-lista .pc-peca-chip:has(input:focus-visible){outline:2px solid var(--azul-claro);outline-offset:2px}
+/* anexos: área de arrastar */
+.anx-zona{position:relative;display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:18px 14px;border:1.5px dashed rgba(161,161,170,.35);border-radius:12px;background:rgba(255,255,255,.025);color:var(--cinza-claro);text-align:center;cursor:pointer;transition:border-color .15s,background .15s;margin:0;text-transform:none;letter-spacing:0;font-weight:500}
+.anx-zona:hover,.anx-zona.arrastando{border-color:rgba(125,123,255,.75);background:rgba(125,123,255,.08)}
+.anx-zona:has(.anx-input:focus-visible){outline:2px solid var(--azul-claro);outline-offset:2px}
+.anx-zona svg{width:22px;height:22px;color:var(--azul-claro)}
+.anx-tit{font-size:13px;color:#e4e4e7}
+.anx-tit b{color:#fff}
+.anx-sub{font-size:11.5px;color:var(--cinza-claro)}
+.anx-sub.anx-aviso{color:#fbbf24}
+.anx-input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.anx-lista{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.anx-lista[hidden]{display:none}
+.anx-lista li{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--borda);border-radius:10px;background:rgba(255,255,255,.03);font-size:12.5px;color:#e4e4e7}
+.anx-nome{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.anx-tam{color:var(--cinza-claro);font-size:11.5px;white-space:nowrap}
+.anx-lista button{width:26px;height:26px;margin:0;padding:0;flex:0 0 auto;border:0;border-radius:7px;background:transparent;color:var(--cinza-claro);cursor:pointer;font-size:13px;line-height:1}
+.anx-lista button:hover{background:rgba(239,68,68,.15);color:#fca5a5}
+/* computador: dicas e alertas embaixo dos campos */
+.pc-dica-campo{display:block;margin-top:5px;font-size:11.5px;line-height:1.35}
+.pc-dica-campo[hidden]{display:none}
+.pc-dica-copia{color:var(--cinza-claro)}
+.pc-alerta-dup{color:#fbbf24}
+#pc-modal-form .pc-secao{margin-bottom:16px}
+#pc-modal-form .pc-grid2,#pc-modal-form .pc-grid3{gap:12px}
+#pc-modal-form .pc-grid2[style*="margin-top"],#pc-modal-form .pc-grid3[style*="margin-top"]{margin-top:10px !important}
+/* sugestões: vazio */
+.sug-adm-vazio{display:flex;flex-direction:column;align-items:center;gap:6px}
+.sug-adm-vazio b{color:#fff;font-size:15px}
+.sug-adm-vazio-ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(250,204,21,.1);color:#facc15;margin-bottom:6px}
+.sug-adm-vazio-ico svg{width:24px;height:24px}
 </style>
 </head>
 <body>
@@ -6403,7 +6451,7 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
           <label>Computador</label>
           <select id="pc-m-computador" required></select>
         </div>
-        <div class="pc-grid2" style="margin-bottom:14px">
+        <div style="margin-bottom:14px">
           <div class="pc-campo">
             <label>Tipo de manutenção</label>
             <select id="pc-m-tipo">
@@ -6412,18 +6460,19 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
               <option>Software</option><option>Outro</option>
             </select>
           </div>
-          <div class="pc-campo"><label>Data</label><input type="date" id="pc-m-data" required></div>
         </div>
-        <div class="pc-grid2" style="margin-bottom:14px">
+        <div class="pc-grid3" style="margin-bottom:14px">
+          <div class="pc-campo"><label>Data</label><input type="date" id="pc-m-data" required></div>
           <div class="pc-campo"><label>Técnico</label>
             <select id="pc-m-tecnico">
               <option value="">Selecione...</option>
-              <option value="Daniel Andrade">Daniel Andrade</option>
               <option value="Vinicius Marinho">Vinicius Marinho</option>
+              <option value="Daniel Andrade">Daniel Andrade</option>
               <option value="Guilherme Jandre">Guilherme Jandre</option>
-              <option value="Daniel/Guilherme">Daniel/Guilherme</option>
-              <option value="Daniel/Vinicius">Daniel/Vinicius</option>
-              <option value="Vinicius/Guilherme">Vinicius/Guilherme</option>
+              <option value="Vinicius / Daniel">Vinicius / Daniel</option>
+              <option value="Vinicius / Guilherme">Vinicius / Guilherme</option>
+              <option value="Daniel / Guilherme">Daniel / Guilherme</option>
+              <option value="Vinicius / Daniel / Guilherme">Vinicius / Daniel / Guilherme</option>
             </select>
           </div>
           <div class="pc-campo">
@@ -6453,9 +6502,15 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
           <input type="text" id="pc-m-peca-processador-desc" placeholder="Descreva o processador (Ex.: Intel i5-9400)" style="display:none;margin-top:10px">
         </div>
         <div class="pc-campo" style="margin-bottom:6px">
-          <label>Anexos (PDF, JPG, PNG, DOC, DOCX, XLS, XLSX)</label>
-          <input type="file" id="pc-m-anexos" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx">
-          <p class="small" id="pc-m-anexos-nomes" style="margin-top:6px">Nenhum arquivo escolhido</p>
+          <label for="pc-m-anexos">Anexos</label>
+          <label class="anx-zona" id="pc-m-anexos-zona">
+            <input type="file" id="pc-m-anexos" class="anx-input" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+            <span class="anx-tit"><b>Arraste os arquivos aqui</b> ou clique para escolher</span>
+            <span class="anx-sub" id="pc-m-anexos-sub">PDF, JPG, PNG, Word ou Excel</span>
+          </label>
+          <ul class="anx-lista" id="pc-m-anexos-lista" hidden></ul>
+          <p class="small" id="pc-m-anexos-nomes" hidden>Nenhum arquivo escolhido</p>
         </div>
         <div class="pc-modal-acoes">
           <button type="button" class="btn-secundario" id="pc-manut-cancelar">Cancelar</button>
@@ -6735,7 +6790,15 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
         </div>
       </div>
 
-      <div class="pc-grid3" style="margin-top:14px">
+      <div class="pc-grid2" style="margin-top:14px">
+        <div class="pc-campo">
+          <label>Smart</label>
+          <select id="tv-input-smart">
+            <option value="">Selecione</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </div>
         <div class="pc-campo">
           <label>Antena/Cabo</label>
           <select id="tv-input-antena">
@@ -6744,6 +6807,8 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
             <option value="NÃO TEM">Não tem</option>
           </select>
         </div>
+      </div>
+      <div style="margin-top:14px">
         <div class="pc-campo">
           <label>Controle</label>
           <select id="tv-input-controle">
@@ -6753,16 +6818,7 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
             <option value="NÃO TEM">Não tem</option>
           </select>
         </div>
-        <div class="pc-campo">
-          <label>Smart</label>
-          <select id="tv-input-smart">
-            <option value="">Selecione</option>
-            <option value="sim">Sim</option>
-            <option value="nao">Não</option>
-          </select>
-        </div>
       </div>
-
       <div class="pc-modal-acoes">
         <button type="button" class="btn-secundario" id="tv-form-cancelar">Cancelar</button>
         <button type="button" class="btn-principal" id="tv-form-salvar" style="width:auto">Salvar TV</button>
@@ -17522,7 +17578,11 @@ formSolicitacao.addEventListener('submit', async function(e){
     chat: document.getElementById('tela-chat'),
     agenda: document.getElementById('tela-agenda'), // ADIÇÃO: Agenda também ocupa a largura toda
     auditoria: document.getElementById('tela-auditoria-chat'), // ADIÇÃO: Auditoria de Conversas também ocupa a largura toda
-    tv: document.getElementById('tela-tv') // ADIÇÃO: TVs também ocupa a largura toda
+    tv: document.getElementById('tela-tv'), // ADIÇÃO: TVs também ocupa a largura toda
+    // ADIÇÃO: Sugestões e Wi-Fi não estavam na lista — o cabeçalho sumia
+    // (chat, sino e menu do usuário) quando uma delas estava aberta
+    sugestoes: document.getElementById('tela-sugestoes'),
+    wifi: document.getElementById('tela-wifi')
   };
 
   // ADIÇÃO: telas "de trabalho" (tabela/grade) que devem ocupar a largura
@@ -17531,7 +17591,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // Avaliação ficam de fora de propósito (não foram pedidas).
   // ALTERADO: a Início (portal) também passou a ocupar a largura toda da
   // tela, sem o espaço vazio nas laterais — a pedido do usuário.
-  var TELAS_LARGURA_TOTAL = { portal:1, painel:1, admin:1, estoque:1, computadores:1, chat:1, agenda:1, auditoria:1, tv:1, chamado:1, solicitacao:1 };
+  var TELAS_LARGURA_TOTAL = { portal:1, painel:1, admin:1, estoque:1, computadores:1, chat:1, agenda:1, auditoria:1, tv:1, chamado:1, solicitacao:1, sugestoes:1 };
   var mainAreaEl = document.getElementById('mainArea');
 
   // Move os botões reais de notificação/sair para dentro da barra do topo,
@@ -19992,7 +20052,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(!el) return;
     var f = pcManutFiltro;
     var tipos = {}, tecnicos = {};
-    pcManutencoes.forEach(function(m){ if(m.tipo) tipos[m.tipo] = (tipos[m.tipo] || 0) + 1; if(m.tecnico) tecnicos[m.tecnico] = 1; });
+    pcManutencoes.forEach(function(m){ if(m.tipo) tipos[m.tipo] = (tipos[m.tipo] || 0) + 1; if(m.tecnico) tecnicos[pcNormTecnico(m.tecnico)] = 1; });
     var nAb = pcManutencoes.filter(pc2ManutAberta).length, nCo = pcManutencoes.length - nAb;
     var html = '<span class="pc2-ch-lb">STATUS</span>' +
       [{ v:'', rot:'Todas', n:pcManutencoes.length }, { v:'abertas', rot:'Abertas', n:nAb, cor:'#fbbf24' }, { v:'concluidas', rot:'Concluídas', n:nCo, cor:'#4ade80' }].map(function(c){
@@ -20025,7 +20085,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       if(f.status === 'abertas' && !pc2ManutAberta(m)) return false;
       if(f.status === 'concluidas' && pc2ManutAberta(m)) return false;
       if(f.tipo && m.tipo !== f.tipo) return false;
-      if(f.tecnico && m.tecnico !== f.tecnico) return false;
+      if(f.tecnico && pcNormTecnico(m.tecnico) !== f.tecnico) return false;
       if(termo){
         var comp = buscarComputador(m.computadorId);
         var alvo = pc2Norm([comp ? comp.nome : '', comp ? comp.patrimonio : '', m.tipo, m.descricao, m.pecas, m.tecnico].join(' '));
@@ -20065,7 +20125,7 @@ formSolicitacao.addEventListener('submit', async function(e){
             (comp ? '<button type="button" class="pc2-mi-pc" data-abrir-pc="' + pcEsc(comp.id) + '">' + pcEsc(comp.nome) + '</button> <span class="pc-mono pc2-apagado">' + pcEsc(comp.patrimonio) + '</span>' : '<span class="pc2-apagado">Computador removido</span>') +
           '</div>' +
           (m.descricao ? '<p>' + pcEsc(m.descricao) + '</p>' : '') +
-          '<div class="pc2-mi-meta"><span>' + PC2_IC.user + pcEsc(m.tecnico || 'Sem técnico') + '</span><span>' + PC2_IC.cal + pcFormatarDataSimples(m.data) + '</span>' +
+          '<div class="pc2-mi-meta"><span>' + PC2_IC.user + pcEsc(m.tecnico ? pcNormTecnico(m.tecnico) : 'Sem técnico') + '</span><span>' + PC2_IC.cal + pcFormatarDataSimples(m.data) + '</span>' +
             (m.pecas ? '<span>' + PC2_IC.chave + pcEsc(m.pecas) + '</span>' : '') + '</div>' +
           anexosHtml +
         '</div>' +
@@ -20247,7 +20307,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     var select = document.getElementById('pc-m-computador');
     select.innerHTML = pcComputadores.map(function(c){ return '<option value="' + c.id + '">' + pcEsc(c.patrimonio) + ' — ' + pcEsc(c.nome) + '</option>'; }).join('');
     if(computadorIdPreSelecionado) select.value = computadorIdPreSelecionado;
-    document.getElementById('pc-m-data').value = new Date().toISOString().slice(0,10);
+    var hojeM = new Date(); document.getElementById('pc-m-data').value = hojeM.getFullYear() + '-' + String(hojeM.getMonth()+1).padStart(2,'0') + '-' + String(hojeM.getDate()).padStart(2,'0');
     document.getElementById('pc-m-tecnico').value = '';
     document.getElementById('pc-m-descricao').value = '';
     document.querySelectorAll('.pc-m-peca').forEach(function(cb){ cb.checked = false; });
@@ -20353,6 +20413,16 @@ formSolicitacao.addEventListener('submit', async function(e){
     renderManutencoes();
   }
 
+  // ADIÇÃO: técnicos antigos da manutenção ("Daniel/Guilherme") no mesmo
+  // formato da lista nova ("Daniel / Guilherme"), pra filtro e lista não
+  // separarem a mesma dupla em duas.
+  var PC_TECNICOS_ANTIGOS = { 'Daniel/Guilherme':'Daniel / Guilherme', 'Daniel/Vinicius':'Vinicius / Daniel', 'Vinicius/Guilherme':'Vinicius / Guilherme' };
+  function pcNormTecnico(t){
+    t = String(t || '').trim();
+    if(PC_TECNICOS_ANTIGOS[t]) return PC_TECNICOS_ANTIGOS[t];
+    return t.indexOf('/') > -1 ? t.split('/').map(function(x){ return x.trim(); }).join(' / ') : t;
+  }
+
   /* ============ NOVO: automações do formulário (MAC, IP e Hostname) ============ */
   var PC_PREFIXO_IP = '192.168.9.';
   var pcHostnameEditadoManualmente = false;
@@ -20413,6 +20483,66 @@ formSolicitacao.addEventListener('submit', async function(e){
       }
     });
   }
+
+  // ADIÇÃO (formulário mais esperto): Nome e Hostname em MAIÚSCULAS,
+  // aviso de que o Hostname foi copiado do nome e alerta quando Nome, IP ou
+  // MAC já estão em outro computador (só avisa, não impede de salvar).
+  function pcEmMaiusculas(el, depois){
+    if(!el) return;
+    el.addEventListener('input', function(e){
+      if(e && e.isComposing) return;
+      var ini = this.selectionStart, fim = this.selectionEnd, maior = this.value.toUpperCase();
+      if(maior !== this.value){ this.value = maior; try{ this.setSelectionRange(ini, fim); }catch(err){} }
+      if(depois) depois();
+    });
+    el.addEventListener('compositionend', function(){ this.dispatchEvent(new Event('input')); });
+  }
+  pcEmMaiusculas(campoNomePc, function(){
+    if(campoHostnamePc && !pcHostnameEditadoManualmente) campoHostnamePc.value = campoNomePc.value;
+    pcAtualizarAvisosForm();
+  });
+  pcEmMaiusculas(campoHostnamePc, function(){ pcAtualizarAvisosForm(); });
+  function pcAvisoDoCampo(el, classe){
+    if(!el) return null;
+    var campo = el.closest('.pc-campo') || el.parentNode;
+    var av = campo.querySelector('.' + classe);
+    if(!av){ av = document.createElement('small'); av.className = 'pc-dica-campo ' + classe; av.hidden = true; campo.appendChild(av); }
+    return av;
+  }
+  function pcNormChave(chave, v){
+    v = String(v || '').trim().toUpperCase();
+    if(chave === 'mac') v = v.replace(/[^0-9A-F]/g, '');
+    if(chave === 'ip' && (v === PC_PREFIXO_IP || v === PC_PREFIXO_IP.replace(/\.$/, ''))) v = '';
+    return v;
+  }
+  function pcAtualizarAvisosForm(){
+    var idAtual = String((document.getElementById('pc-form-id') || {}).value || '');
+    [['nome', campoNomePc, 'Nome'], ['ip', campoIP, 'IP'], ['mac', campoMAC, 'MAC']].forEach(function(t){
+      var el = t[1]; if(!el) return;
+      var av = pcAvisoDoCampo(el, 'pc-alerta-dup');
+      var valor = pcNormChave(t[0], el.value);
+      var outro = valor ? (pcComputadores || []).filter(function(c){ return String(c.id) !== idAtual && pcNormChave(t[0], c[t[0]]) === valor; })[0] : null;
+      if(outro){
+        av.textContent = '⚠ Este ' + t[2] + ' já está no ' + (outro.patrimonio ? outro.patrimonio + ' — ' : '') + (outro.nome || 'outro computador');
+        av.hidden = false;
+      }else{ av.hidden = true; }
+    });
+    if(campoHostnamePc){
+      var dica = pcAvisoDoCampo(campoHostnamePc, 'pc-dica-copia');
+      var igual = campoHostnamePc.value && campoNomePc && campoHostnamePc.value === campoNomePc.value;
+      dica.textContent = 'Copiado do nome do computador';
+      dica.hidden = !igual;
+    }
+  }
+  var pcTimerAvisos = null;
+  [campoIP, campoMAC].forEach(function(el){
+    if(el) el.addEventListener('input', function(){ clearTimeout(pcTimerAvisos); pcTimerAvisos = setTimeout(pcAtualizarAvisosForm, 250); });
+  });
+  (function(){
+    var modalPc = document.getElementById('pc-modal-form');
+    if(!modalPc) return;
+    new MutationObserver(function(){ setTimeout(pcAtualizarAvisosForm, 0); }).observe(modalPc, { attributes:true, attributeFilter:['class','style'] });
+  })();
 
   document.getElementById('pc-btn-novo').addEventListener('click', function(){ abrirFormComputador(null); });
   document.getElementById('pc-btn-novo-dash').addEventListener('click', function(){ abrirFormComputador(null); });
@@ -26828,7 +26958,7 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   }).observe(card, { attributes:true, attributeFilter:['style','class'] });
 
   // ---------- Renderização ----------
-  function vazio(titulo, texto){ return '<div class="sug-adm-vazio"><b>' + esc(titulo) + '</b>' + esc(texto) + '</div>'; }
+  function vazio(titulo, texto){ return '<div class="sug-adm-vazio"><div class="sug-adm-vazio-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></div><b>' + esc(titulo) + '</b><span>' + esc(texto) + '</span></div>'; }
 
   function renderizarStats(){
     var cont = { '':todas.length };
@@ -27842,6 +27972,140 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
     e.stopImmediatePropagation();
     try{ window.csslDesktop.abrirAppChat(); }catch(err){ console.warn('Não foi possível abrir o app Chat Interno.', err); }
   }, true);
+})();
+</script>
+
+<script>
+/* ADIÇÃO: botões de toque no lugar de listas curtas (TV e tipo de
+   manutenção) e área de arrastar anexos na manutenção. O <select> e o
+   <input type=file> originais continuam existindo (escondidos), então todo
+   o código que lê/grava esses campos segue funcionando igual. */
+(function(){
+  var sincronizadores = [];
+  function criarSegmentado(sel){
+    if(!sel || sel.__seg) return;
+    var desc = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+    var grupo = document.createElement('div');
+    grupo.className = 'seg-grupo';
+    grupo.setAttribute('role', 'radiogroup');
+    var campo = sel.closest('.pc-campo');
+    var rot = campo && campo.querySelector('label');
+    if(rot) grupo.setAttribute('aria-label', rot.textContent.trim());
+    var botoes = [];
+    Array.prototype.forEach.call(sel.options, function(o){
+      if(o.value === '') return;
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'seg-btn';
+      b.textContent = o.textContent.trim();
+      b.setAttribute('role', 'radio');
+      b.dataset.valor = o.value;
+      b.addEventListener('click', function(){
+        desc.set.call(sel, o.value);
+        sincronizar();
+        sel.dispatchEvent(new Event('change', { bubbles:true }));
+      });
+      grupo.appendChild(b); botoes.push(b);
+    });
+    function sincronizar(){
+      var v = desc.get.call(sel);
+      botoes.forEach(function(b){
+        var on = b.dataset.valor === v;
+        b.classList.toggle('ativo', on);
+        b.setAttribute('aria-checked', on ? 'true' : 'false');
+        b.tabIndex = (on || (!v && b === botoes[0])) ? 0 : -1;
+      });
+      if(v) grupo.classList.remove('seg-erro');
+    }
+    // setas do teclado andam entre as opções
+    grupo.addEventListener('keydown', function(e){
+      var i = botoes.indexOf(document.activeElement); if(i < 0) return;
+      var n = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : (e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0);
+      if(!n) return;
+      e.preventDefault();
+      var alvo = botoes[(i + n + botoes.length) % botoes.length];
+      alvo.focus(); alvo.click();
+    });
+    Object.defineProperty(sel, 'value', { configurable:true,
+      get: function(){ return desc.get.call(sel); },
+      set: function(v){ desc.set.call(sel, v); sincronizar(); } });
+    sel.addEventListener('change', sincronizar);
+    sel.classList.add('seg-select-escondido');
+    sel.setAttribute('tabindex', '-1');
+    sel.setAttribute('aria-hidden', 'true');
+    sel.insertAdjacentElement('afterend', grupo);
+    sel.__seg = sincronizar;
+    sincronizadores.push(sincronizar);
+    sincronizar();
+  }
+  window.csslCriarSegmentado = criarSegmentado;
+  ['tv-input-wifi','tv-input-smart','tv-input-antena','tv-input-controle','pc-m-tipo'].forEach(function(id){
+    criarSegmentado(document.getElementById(id));
+  });
+  // rede de segurança: reset de formulário e mudanças por outros caminhos
+  setInterval(function(){ sincronizadores.forEach(function(fn){ fn(); }); }, 600);
+
+  // ---- anexos da manutenção: arrastar e soltar + lista com "X" ----
+  var input = document.getElementById('pc-m-anexos');
+  var zona = document.getElementById('pc-m-anexos-zona');
+  var lista = document.getElementById('pc-m-anexos-lista');
+  var sub = document.getElementById('pc-m-anexos-sub');
+  if(!input || !zona || !lista || typeof DataTransfer === 'undefined') return;
+  var ACEITOS = /\.(pdf|jpe?g|png|docx?|xlsx?)$/i;
+  var SUB_PADRAO = sub ? sub.textContent : '';
+  var dt = new DataTransfer();
+  function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
+  function tamanho(b){ return b < 1024 * 1024 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1).replace('.', ',') + ' MB'; }
+  function render(){
+    var arqs = Array.prototype.slice.call(dt.files);
+    lista.innerHTML = arqs.map(function(f, i){
+      return '<li><span class="anx-nome" title="' + esc(f.name) + '">' + esc(f.name) + '</span><span class="anx-tam">' + tamanho(f.size) + '</span>' +
+        '<button type="button" data-i="' + i + '" aria-label="Remover ' + esc(f.name) + '" title="Remover">✕</button></li>';
+    }).join('');
+    lista.hidden = !arqs.length;
+  }
+  var timerAviso = null;
+  function avisar(txt){
+    if(!sub) return;
+    sub.textContent = txt; sub.classList.add('anx-aviso');
+    clearTimeout(timerAviso);
+    timerAviso = setTimeout(function(){ sub.textContent = SUB_PADRAO; sub.classList.remove('anx-aviso'); }, 4000);
+  }
+  function adicionar(arquivos){
+    var recusados = 0;
+    Array.prototype.forEach.call(arquivos, function(f){
+      if(!ACEITOS.test(f.name)){ recusados++; return; }
+      var repetido = Array.prototype.some.call(dt.files, function(g){ return g.name === f.name && g.size === f.size; });
+      if(!repetido) dt.items.add(f);
+    });
+    input.files = dt.files;
+    render();
+    if(recusados) avisar(recusados === 1 ? '1 arquivo ignorado: tipo não aceito' : recusados + ' arquivos ignorados: tipo não aceito');
+  }
+  input.addEventListener('change', function(){ adicionar(input.files); });
+  lista.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-i]'); if(!b) return;
+    dt.items.remove(parseInt(b.getAttribute('data-i'), 10));
+    input.files = dt.files;
+    render();
+  });
+  ['dragenter','dragover'].forEach(function(ev){
+    zona.addEventListener(ev, function(e){ e.preventDefault(); zona.classList.add('arrastando'); });
+  });
+  ['dragleave','dragend'].forEach(function(ev){
+    zona.addEventListener(ev, function(e){ if(!zona.contains(e.relatedTarget)) zona.classList.remove('arrastando'); });
+  });
+  zona.addEventListener('drop', function(e){
+    e.preventDefault();
+    zona.classList.remove('arrastando');
+    if(e.dataTransfer && e.dataTransfer.files) adicionar(e.dataTransfer.files);
+  });
+  // ao abrir o formulário de novo, começa sem anexos (o portal limpa o campo)
+  var modal = document.getElementById('pc-modal-manutencao');
+  if(modal) new MutationObserver(function(){
+    setTimeout(function(){
+      if(!input.files || !input.files.length){ dt = new DataTransfer(); render(); }
+    }, 0);
+  }).observe(modal, { attributes:true, attributeFilter:['class','style'] });
 })();
 </script>
 </body>
