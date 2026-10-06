@@ -18300,6 +18300,24 @@ formSolicitacao.addEventListener('submit', async function(e){
     }
   }
 
+  // ADIÇÃO: a data e o "Bom dia/Boa tarde/Boa noite" eram calculados só ao
+  // entrar no portal — com o app aberto de um dia pro outro (perto do
+  // relógio), ficava "Segunda-feira" na terça. Agora confere a cada minuto
+  // e quando a janela volta a aparecer; quando vira o dia, avisa o resto do
+  // portal com o evento "cssl:novo-dia" (ex.: bloco "Próximo evento").
+  var diaDaTela = new Date().toDateString();
+  function conferirHoraEDia(){
+    atualizarSaudacaoPortal();
+    var hojeTxt = new Date().toDateString();
+    if(hojeTxt !== diaDaTela){
+      diaDaTela = hojeTxt;
+      try{ document.dispatchEvent(new CustomEvent('cssl:novo-dia')); }catch(e){}
+    }
+  }
+  setInterval(conferirHoraEDia, 60 * 1000);
+  document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') conferirHoraEDia(); });
+  window.addEventListener('focus', conferirHoraEDia);
+
   // ADIÇÃO: atalho "/" foca a busca da Início (só quando a Início está
   // aberta e a pessoa não está digitando em outro campo).
   document.addEventListener('keydown', function(e){
@@ -25399,6 +25417,9 @@ formSolicitacao.addEventListener('submit', async function(e){
   // ADIÇÃO: atualiza assim que as permissões do usuário forem aplicadas (ver
   // "cssl:permissoes-aplicadas" no módulo de Gerenciar usuários).
   document.addEventListener('cssl:permissoes-aplicadas', function(){ agendaAtualizarBlocoHome(); });
+  // ADIÇÃO: virou o dia com o portal aberto → recalcula o "Próximo evento"
+  // (o "Hoje"/"em X dias" e o evento de ontem que já passou)
+  document.addEventListener('cssl:novo-dia', function(){ agendaAtualizarBlocoHome(); });
 
   if(btnAgendaHomeVerTodos){
     btnAgendaHomeVerTodos.addEventListener('click', function(){ cardAgenda.click(); });
