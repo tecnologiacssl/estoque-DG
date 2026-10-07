@@ -4718,6 +4718,12 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
   .cpn-fila-aviso-acoes{width:100%}
   .cpn-fila-btn-whats{flex:1;justify-content:center}
 }
+
+.cpn-fila-modo{margin-left:auto;display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:9px;background:rgba(0,0,0,.25);border:1px solid var(--borda);font-size:11.5px;color:var(--cinza-claro)}
+.cpn-fila-modo > span{padding:0 6px 0 4px}
+.cpn-fila-modo button{width:auto;margin:0;background:transparent;border:0;border-radius:6px;color:var(--cinza-claro);font:600 11.5px/1 inherit;padding:6px 9px;cursor:pointer;white-space:nowrap}
+.cpn-fila-modo button.ativo{background:rgba(37,211,102,.2);color:#fff}
+@media (max-width:760px){ .cpn-fila-avisos-cab{flex-wrap:wrap} .cpn-fila-modo{margin-left:0} }
 </style>
 </head>
 <body>
@@ -16419,6 +16425,30 @@ formSolicitacao.addEventListener('submit', async function(e){
     }
   }
   var ICONE_WHATS_FILA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>';
+  // ADIÇÃO: como abrir o WhatsApp (escolha guardada neste computador):
+  //  - "web": WhatsApp Web numa aba com nome fixo — o 1º clique abre a aba
+  //    e os próximos REAPROVEITAM a mesma aba (não fica abrindo várias);
+  //  - "app": WhatsApp do computador (WhatsApp Desktop), abre direto na
+  //    janela dele, que já está aberta — sem aba nenhuma.
+  //  No celular sempre usa o wa.me (abre o app do WhatsApp do celular).
+  function cpnWhatsModo(){
+    try{ return localStorage.getItem('cssl_whats_modo') === 'app' ? 'app' : 'web'; }catch(e){ return 'web'; }
+  }
+  function cpnWhatsEhCelular(){
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+  }
+  function cpnFilaAbrirWhats(tel, msg){
+    var texto = encodeURIComponent(msg);
+    if(cpnWhatsEhCelular()){ window.location.href = 'https://wa.me/' + tel + '?text=' + texto; return; }
+    if(cpnWhatsModo() === 'app'){
+      // no app da Central, o próprio app repassa o link pro WhatsApp Desktop
+      window.location.href = 'whatsapp://send?phone=' + tel + '&text=' + texto;
+      return;
+    }
+    var w = window.open('https://web.whatsapp.com/send?phone=' + tel + '&text=' + texto, 'cssl-whatsapp-web');
+    // (não corta o w.opener: é ele que deixa os próximos cliques reusarem a mesma aba)
+    try{ if(w) w.focus(); }catch(e){}
+  }
   function cpnFilaEsc(t){ return String(t == null ? '' : t).replace(/[&<>"]/g, function(ch){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[ch]; }); }
   function cpnFilaAtualizar(){
     // etiquetas "Nº da fila" nos cartões
@@ -16440,7 +16470,12 @@ formSolicitacao.addEventListener('submit', async function(e){
     var assinatura = pend.map(function(p){ return p.c.numero + ':' + p.pos + ':' + p.avisada + ':' + p.tel + ':' + (p.c.atendido_por || ''); }).join('|');
     if(box.getAttribute('data-assinatura') === assinatura && !box.hidden) return;
     box.setAttribute('data-assinatura', assinatura);
-    box.innerHTML = '<div class="cpn-fila-avisos-cab">' + ICONE_WHATS_FILA + '<b>Avisos da fila para mandar no WhatsApp</b><span class="cpn-fila-cont">' + pend.length + '</span></div>' +
+    var modoW = cpnWhatsModo();
+    box.innerHTML = '<div class="cpn-fila-avisos-cab">' + ICONE_WHATS_FILA + '<b>Avisos da fila para mandar no WhatsApp</b><span class="cpn-fila-cont">' + pend.length + '</span>' +
+        (cpnWhatsEhCelular() ? '' : '<span class="cpn-fila-modo" role="group" aria-label="Abrir no"><span>Abrir no</span>' +
+          '<button type="button" data-whats-modo="web" class="' + (modoW === 'web' ? 'ativo' : '') + '" title="Usa sempre a mesma aba do WhatsApp Web">WhatsApp Web</button>' +
+          '<button type="button" data-whats-modo="app" class="' + (modoW === 'app' ? 'ativo' : '') + '" title="Abre direto no WhatsApp instalado no computador">WhatsApp do computador</button></span>') +
+      '</div>' +
       pend.map(function(p, i){
         return '<div class="cpn-fila-aviso">' +
           '<span class="cpn-fila-pos' + (p.pos === 1 ? ' primeiro' : '') + '">' + p.pos + 'º</span>' +
@@ -16461,10 +16496,16 @@ formSolicitacao.addEventListener('submit', async function(e){
   (function(){
     var box = document.getElementById('cpn-fila-avisos');
     if(box) box.addEventListener('click', function(e){
+      var bm = e.target.closest('[data-whats-modo]');
+      if(bm){
+        try{ localStorage.setItem('cssl_whats_modo', bm.getAttribute('data-whats-modo')); }catch(err){}
+        box.querySelectorAll('[data-whats-modo]').forEach(function(x){ x.classList.toggle('ativo', x === bm); });
+        return;
+      }
       var b = e.target.closest('[data-fila-i]'); if(!b || !box.__pendentes) return;
       var p = box.__pendentes[parseInt(b.getAttribute('data-fila-i'), 10)]; if(!p) return;
       if(b.classList.contains('cpn-fila-btn-whats')){
-        window.open('https://wa.me/' + p.tel + '?text=' + encodeURIComponent(p.msg), '_blank', 'noopener');
+        cpnFilaAbrirWhats(p.tel, p.msg);
       }
       cpnFilaMarcarAvisado(p.c, p.pos);
     });
