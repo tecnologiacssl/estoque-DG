@@ -4690,6 +4690,34 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
 .aud-aovivo i{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:audPulso 1.8s ease-out infinite}
 @keyframes audPulso{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
 @media (prefers-reduced-motion:reduce){.aud-aovivo i{animation:none}}
+
+/* ===== Fila de atendimento + avisos no WhatsApp ===== */
+.cpn-fila-chip{display:inline-flex;align-items:center;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:800;background:rgba(125,123,255,.14);border:1px solid rgba(125,123,255,.35);color:#c9c8ff;white-space:nowrap}
+.cpn-fila-chip.primeiro{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.4);color:#86efac}
+.cpn-fila-chip[hidden]{display:none}
+.cpn-fila-avisos{margin:0 0 16px;padding:14px 16px;border-radius:14px;background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.28)}
+.cpn-fila-avisos[hidden]{display:none}
+.cpn-fila-avisos-cab{display:flex;align-items:center;gap:8px;margin-bottom:10px;color:#fff;font-size:13.5px}
+.cpn-fila-avisos-cab svg{width:18px;height:18px;color:#25d366}
+.cpn-fila-cont{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#25d366;color:#05230f;font-size:11.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.cpn-fila-aviso{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.22);border:1px solid var(--borda);margin-top:8px}
+.cpn-fila-pos{flex:0 0 auto;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;background:rgba(125,123,255,.16);color:#c9c8ff}
+.cpn-fila-pos.primeiro{background:rgba(34,197,94,.16);color:#86efac}
+.cpn-fila-aviso-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:12.5px;color:var(--cinza-claro)}
+.cpn-fila-aviso-info b{color:#fff;font-size:13px}
+.cpn-fila-msg{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:italic;opacity:.85}
+.cpn-fila-aviso-acoes{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.cpn-fila-btn-whats{width:auto;margin:0;display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:0;border-radius:10px;background:#25d366;color:#05230f;font:700 13px/1 inherit;cursor:pointer;white-space:nowrap}
+.cpn-fila-btn-whats svg{width:16px;height:16px}
+.cpn-fila-btn-whats:hover{filter:brightness(1.08)}
+.cpn-fila-btn-dispensar{width:auto;margin:0;height:36px;padding:0 12px;border-radius:10px;background:transparent;border:1px solid var(--borda);color:var(--cinza-claro);font:600 12.5px/1 inherit;cursor:pointer;white-space:nowrap}
+.cpn-fila-btn-dispensar:hover{color:#fff;border-color:rgba(161,161,170,.4)}
+.cpn-fila-sem-tel{font-size:12px;color:#fbbf24;white-space:nowrap}
+@media (max-width:760px){
+  .cpn-fila-aviso{flex-wrap:wrap}
+  .cpn-fila-aviso-acoes{width:100%}
+  .cpn-fila-btn-whats{flex:1;justify-content:center}
+}
 </style>
 </head>
 <body>
@@ -5701,6 +5729,8 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
         </div>
       </div>
     </div>
+    <!-- ADIÇÃO: avisos da fila de atendimento pra mandar no WhatsApp -->
+    <div class="cpn-fila-avisos" id="cpn-fila-avisos" hidden></div>
 
     <div class="kanban-board kb-v2" id="kanban-chamados" style="display:none">
       <div class="kb-barra" id="kb-barra">
@@ -12739,6 +12769,7 @@ formSolicitacao.addEventListener('submit', async function(e){
           '<div class="cpn-card-info">' +
             cpnChipPrioridadeHtml(prioridade, flagClasse) +
             cpnBadgeStatusHtml(statusClasse) +
+            (statusClasse === 'andamento' && tabelaDe(c) === 'chamados' ? '<span class="cpn-fila-chip" data-fila-num="' + c.numero + '" hidden></span>' : '') +
             (dadosSolicitacao ? '<span class="cpn-badge-solicitacao">' + ICONE_PACOTE + 'Solicitação</span>' : '') +
             cpnEsperaHtml(dataAbertura, statusClasse) +
           '</div>' +
@@ -13118,6 +13149,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       renderDashboard(ultimosChamados);
       renderKanban(ultimosChamados);
       relAtualizarSeVisivel();
+      try{ cpnFilaAtualizar(); }catch(e){}
       if(!data || !data.length){
         listaChamadosEl.innerHTML = '<p class="small">Nenhum chamado registrado ainda.</p>';
         mapaCartoesPorData = {};
@@ -16305,6 +16337,149 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(!el || !a || !el.contains(a)) return false;
     return /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable;
   }
+
+  /* ============ ADIÇÃO: FILA DE ATENDIMENTO + AVISO NO WHATSAPP ============
+     Fila única de toda a TI: só chamados (tabela "chamados") com status
+     "Em andamento", na ordem em que foram aceitos (coluna aceito_em,
+     preenchida por um gatilho no banco; sem ela, usa a hora de abertura).
+     "Aguardando retorno" não entra. Quem precisa ser avisado aparece no
+     quadro "Avisos da fila"; o botão abre o WhatsApp com a mensagem pronta
+     (wa.me) e grava em fila_avisada a posição avisada, pra sumir pra todos. */
+  var cpnFilaAvisadasLocal = {};
+  try{ cpnFilaAvisadasLocal = JSON.parse(localStorage.getItem('cssl_fila_avisadas') || '{}') || {}; }catch(e){ cpnFilaAvisadasLocal = {}; }
+  function cpnFilaTemColuna(){
+    return (ultimosChamados || []).some(function(c){ return tabelaDe(c) === 'chamados' && Object.prototype.hasOwnProperty.call(c, 'fila_avisada'); });
+  }
+  function cpnFilaHora(c){
+    var t = Date.parse(c.aceito_em || c.criado_em || c.created_at || 0);
+    return isNaN(t) ? 0 : t;
+  }
+  function cpnFilaAtual(){
+    return (ultimosChamados || []).filter(function(c){
+      return tabelaDe(c) === 'chamados' && (c.status || '') === 'Em andamento';
+    }).sort(function(a, b){ return (cpnFilaHora(a) - cpnFilaHora(b)) || (a.numero - b.numero); });
+  }
+  function cpnFilaAvisada(c){
+    if(cpnFilaTemColuna()) return (c.fila_avisada === null || c.fila_avisada === undefined) ? null : Number(c.fila_avisada);
+    var reg = cpnFilaAvisadasLocal[c.numero];
+    return (reg && reg.aceito === (c.aceito_em || c.criado_em)) ? reg.pos : null;
+  }
+  function cpnFilaTelefone(c){
+    var d = String(c.whatsapp || '').replace(/\D/g, '').replace(/^0+/, '');
+    if(d.length === 10 || d.length === 11) d = '55' + d;
+    return (d.length === 12 || d.length === 13) && d.indexOf('55') === 0 ? d : '';
+  }
+  function cpnFilaPrimeiroNome(nome){
+    var p = String(nome || '').trim().split(/\s+/)[0] || '';
+    return p ? p.charAt(0).toUpperCase() + p.slice(1).toLowerCase() : '';
+  }
+  function cpnFilaTecnicos(atendidoPor){
+    var nomes = String(atendidoPor || '').split('/').map(function(n){ return cpnFilaPrimeiroNome(n); }).filter(Boolean);
+    if(!nomes.length) return { quem:'o técnico responsável', verbo:'vai' };
+    var quem = nomes.length === 1 ? nomes[0] : nomes.slice(0, -1).join(', ') + ' e ' + nomes[nomes.length - 1];
+    return { quem: quem, verbo: nomes.length > 1 ? 'vão' : 'vai' };
+  }
+  function cpnFilaMensagem(c, pos, avisada){
+    var nome = cpnFilaPrimeiroNome(c.solicitante);
+    var ola = 'Olá' + (nome ? ', ' + nome : '') + '! Aqui é a TI da Casa de Saúde. ';
+    if(pos === 1){
+      var t = cpnFilaTecnicos(c.atendido_por);
+      return ola + 'Seu chamado nº ' + c.numero + ' foi aceito e ' + t.quem + ' já ' + t.verbo + ' te atender.';
+    }
+    if(avisada === null) return ola + 'Seu chamado nº ' + c.numero + ' foi aceito. No momento você é o ' + pos + 'º da fila de atendimento. Avisaremos por aqui quando chegar a sua vez.';
+    return ola + 'Seu chamado nº ' + c.numero + ' andou na fila: agora você é o ' + pos + 'º. Avisaremos por aqui quando chegar a sua vez.';
+  }
+  function cpnFilaPendentes(){
+    var pend = [];
+    cpnFilaAtual().forEach(function(c, i){
+      var pos = i + 1, avisada = cpnFilaAvisada(c);
+      if(avisada === null || avisada > pos){
+        var tipo = pos === 1 ? (avisada === null ? 'Aceito · já vai ser atendido' : 'Chegou a vez') : (avisada === null ? 'Aceito · ' + pos + 'º da fila' : 'Andou na fila · agora ' + pos + 'º');
+        pend.push({ c:c, pos:pos, avisada:avisada, tipo:tipo, tel:cpnFilaTelefone(c), msg:cpnFilaMensagem(c, pos, avisada) });
+      }
+    });
+    return pend;
+  }
+  async function cpnFilaMarcarAvisado(c, pos){
+    if(cpnFilaTemColuna()){
+      c.fila_avisada = pos; // some na hora daqui; o tempo real avisa os outros
+      cpnFilaAtualizar();
+      try{
+        var r = await db.from('chamados').update({ fila_avisada: pos }).eq('numero', c.numero);
+        if(r && r.error) throw r.error;
+      }catch(err){
+        console.warn('Fila: não foi possível gravar o aviso.', err);
+        c.fila_avisada = null; cpnFilaAtualizar();
+        alert('Não foi possível registrar o aviso agora. Verifique a conexão e tente de novo.');
+      }
+    }else{
+      cpnFilaAvisadasLocal[c.numero] = { pos: pos, aceito: (c.aceito_em || c.criado_em) };
+      try{ localStorage.setItem('cssl_fila_avisadas', JSON.stringify(cpnFilaAvisadasLocal)); }catch(e){}
+      cpnFilaAtualizar();
+    }
+  }
+  var ICONE_WHATS_FILA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>';
+  function cpnFilaEsc(t){ return String(t == null ? '' : t).replace(/[&<>"]/g, function(ch){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[ch]; }); }
+  function cpnFilaAtualizar(){
+    // etiquetas "Nº da fila" nos cartões
+    var fila = cpnFilaAtual(), posPorNum = {};
+    fila.forEach(function(c, i){ posPorNum[c.numero] = i + 1; });
+    document.querySelectorAll('.cpn-fila-chip[data-fila-num]').forEach(function(el){
+      var pos = posPorNum[el.getAttribute('data-fila-num')];
+      var txt = pos ? (pos === 1 ? '1º da fila' : pos + 'º da fila') : '';
+      if(el.textContent !== txt) el.textContent = txt;
+      el.hidden = !pos;
+      el.classList.toggle('primeiro', pos === 1);
+    });
+    // quadro de avisos
+    var box = document.getElementById('cpn-fila-avisos');
+    if(!box) return;
+    if(typeof usuarioEhAdmin !== 'undefined' && !usuarioEhAdmin){ box.hidden = true; return; }
+    var pend = cpnFilaPendentes();
+    if(!pend.length){ if(!box.hidden){ box.hidden = true; box.innerHTML = ''; } return; }
+    var assinatura = pend.map(function(p){ return p.c.numero + ':' + p.pos + ':' + p.avisada + ':' + p.tel + ':' + (p.c.atendido_por || ''); }).join('|');
+    if(box.getAttribute('data-assinatura') === assinatura && !box.hidden) return;
+    box.setAttribute('data-assinatura', assinatura);
+    box.innerHTML = '<div class="cpn-fila-avisos-cab">' + ICONE_WHATS_FILA + '<b>Avisos da fila para mandar no WhatsApp</b><span class="cpn-fila-cont">' + pend.length + '</span></div>' +
+      pend.map(function(p, i){
+        return '<div class="cpn-fila-aviso">' +
+          '<span class="cpn-fila-pos' + (p.pos === 1 ? ' primeiro' : '') + '">' + p.pos + 'º</span>' +
+          '<div class="cpn-fila-aviso-info"><b>#' + p.c.numero + ' · ' + cpnFilaEsc(p.c.solicitante || 'Sem nome') + '</b>' +
+            '<span>' + cpnFilaEsc(p.tipo) + (p.c.setor ? ' · ' + cpnFilaEsc(p.c.setor) : '') + '</span>' +
+            '<span class="cpn-fila-msg" title="' + cpnFilaEsc(p.msg) + '">“' + cpnFilaEsc(p.msg) + '”</span></div>' +
+          '<div class="cpn-fila-aviso-acoes">' +
+            (p.tel
+              ? '<button type="button" class="cpn-fila-btn-whats" data-fila-i="' + i + '">' + ICONE_WHATS_FILA + 'Enviar no WhatsApp</button>'
+              : '<span class="cpn-fila-sem-tel">Sem WhatsApp cadastrado</span>') +
+            '<button type="button" class="cpn-fila-btn-dispensar" data-fila-i="' + i + '" title="Tirar da lista sem mandar">' + (p.tel ? 'Já avisei' : 'Dispensar') + '</button>' +
+          '</div></div>';
+      }).join('');
+    box.hidden = false;
+    box.__pendentes = pend;
+  }
+  window.cpnFilaAtualizar = cpnFilaAtualizar;
+  (function(){
+    var box = document.getElementById('cpn-fila-avisos');
+    if(box) box.addEventListener('click', function(e){
+      var b = e.target.closest('[data-fila-i]'); if(!b || !box.__pendentes) return;
+      var p = box.__pendentes[parseInt(b.getAttribute('data-fila-i'), 10)]; if(!p) return;
+      if(b.classList.contains('cpn-fila-btn-whats')){
+        window.open('https://wa.me/' + p.tel + '?text=' + encodeURIComponent(p.msg), '_blank', 'noopener');
+      }
+      cpnFilaMarcarAvisado(p.c, p.pos);
+    });
+    // cartões redesenhados (troca de aba, filtro, tempo real) recebem a etiqueta de novo
+    var alvo = document.getElementById('tela-painel');
+    var t = null;
+    if(alvo) new MutationObserver(function(muts){
+      for(var i = 0; i < muts.length; i++){
+        var n = muts[i].target;
+        if(n && n.closest && n.closest('#cpn-fila-avisos, .cpn-fila-chip')) continue;
+        clearTimeout(t); t = setTimeout(cpnFilaAtualizar, 120); return;
+      }
+    }).observe(alvo, { childList:true, subtree:true });
+  })();
+
   function cpnAplicarRealtime(){
     var fila = cpnFilaRealtime;
     cpnFilaRealtime = {};
@@ -16360,6 +16535,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       try{ window.csslUltimosChamados = ultimosChamados; }catch(e){}
       relAtualizarSeVisivel();
     }
+    try{ cpnFilaAtualizar(); }catch(e){}
     if(adiou){
       clearTimeout(cpnTimerRealtime);
       cpnTimerRealtime = setTimeout(cpnAplicarRealtime, 1500);
