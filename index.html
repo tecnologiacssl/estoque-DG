@@ -4724,6 +4724,13 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
 .cpn-fila-modo button{width:auto;margin:0;background:transparent;border:0;border-radius:6px;color:var(--cinza-claro);font:600 11.5px/1 inherit;padding:6px 9px;cursor:pointer;white-space:nowrap}
 .cpn-fila-modo button.ativo{background:rgba(37,211,102,.2);color:#fff}
 @media (max-width:760px){ .cpn-fila-avisos-cab{flex-wrap:wrap} .cpn-fila-modo{margin-left:0} }
+
+/* REMOVIDO (a pedido): card "Fazer Solicitação" — pedidos de material agora
+   são feitos em Abrir Chamado → categoria "Solicitação de Material". As
+   solicitações antigas continuam aparecendo no Painel e no Meu Histórico. */
+#card-solicitacao{display:none !important}
+
+#grupo-tipo-chamado[data-cat="Solicitação de Material"] .sistema-acesso-txt{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2}
 </style>
 </head>
 <body>
@@ -5317,6 +5324,7 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
               <option value="">Selecione</option>
               <option>Sysart</option><option>Impressora</option><option>Rede / Internet</option>
               <option>Computador</option><option>Windows</option>
+              <option>Solicitação de Material</option>
               <option>Outro</option>
             </select></div>
             <div class="ch-dica" id="ch-dica-categoria" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></svg><div><b id="ch-dica-titulo"></b><ul id="ch-dica-lista"></ul></div></div>
@@ -10577,7 +10585,6 @@ var URL_ESTOQUE = "https://tecnologiacssl.github.io/estoque-DG/";
 // sistema hoje é afetado até o admin configurar algo pela tela.
 var CARDS_PERMISSIVEIS = [
   { key:'chamado', label:'Abrir Chamado' },
-  { key:'solicitacao', label:'Fazer Solicitação' },
   { key:'historico', label:'Meu Histórico' },
   { key:'estoque', label:'Estoque' },
   { key:'wifi', label:'Wi-Fi' },
@@ -10832,7 +10839,8 @@ function chamadoNaCategoria(c, filtro){
 var TIPOS_POR_CATEGORIA = {
   'Sysart': [ { v:'Acesso / Senha', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg>' }, { v:'Erro', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>' } ],
   'Rede / Internet': [ { v:'Wi-Fi', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>' }, { v:'PC', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>' }, { v:'Ambas', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3M12 12V8"/></svg>' } ],
-  'Computador': [ { v:'Monitor', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>' }, { v:'Mouse / Teclado', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>' }, { v:'PC', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M10 6h4M10 10h4M12 17h.01"/></svg>' }, { v:'Outro', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>' } ]
+  'Computador': [ { v:'Monitor', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>' }, { v:'Mouse / Teclado', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>' }, { v:'PC', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M10 6h4M10 10h4M12 17h.01"/></svg>' }, { v:'Outro', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>' } ],
+  'Solicitação de Material': [ { v:'Mouse', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M12 7v4"/></svg>' }, { v:'Teclado', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>' }, { v:'Toner de impressora', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>' }, { v:'Impressora', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>' }, { v:'Impressora de etiqueta', ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M7 7h.01"/></svg>' } ]
 };
 var grupoTipoChamado = document.getElementById('grupo-tipo-chamado');
 var opcoesTipoChamado = document.getElementById('ch-tipo-opcoes');
@@ -10852,6 +10860,8 @@ function renderTiposChamado(){
   var tipos = TIPOS_POR_CATEGORIA[cat];
   if(!tipos){ grupoTipoChamado.hidden = true; grupoTipoChamado.removeAttribute('data-cat'); opcoesTipoChamado.innerHTML = ''; return; }
   grupoTipoChamado.hidden = false;
+  var rotTipo = document.getElementById('label-tipo-chamado');
+  if(rotTipo) rotTipo.textContent = cat === 'Solicitação de Material' ? 'Qual material você precisa?' : 'Tipo do problema';
   if(grupoTipoChamado.getAttribute('data-cat') === cat) return;
   grupoTipoChamado.setAttribute('data-cat', cat);
   opcoesTipoChamado.innerHTML = tipos.map(function(t, i){
@@ -10867,7 +10877,9 @@ function atualizarDescricaoChamado(){
   var opcional = modoSysartAcesso();
   inputDescricaoChamado.required = !opcional;
   if(descOpcionalEl) descOpcionalEl.hidden = !opcional;
-  inputDescricaoChamado.placeholder = opcional ? 'Se quiser, conte algo a mais (ex.: o usuário está bloqueado, precisa de acesso a outro setor...)' : PLACEHOLDER_DESC_PADRAO;
+  var ehMaterial = !!selectCategoriaChamado && selectCategoriaChamado.value === 'Solicitação de Material';
+  inputDescricaoChamado.placeholder = opcional ? 'Se quiser, conte algo a mais (ex.: o usuário está bloqueado, precisa de acesso a outro setor...)'
+    : (ehMaterial ? 'Conte o que você precisa: quantidade, para qual computador ou impressora, se é troca de um que estragou...' : PLACEHOLDER_DESC_PADRAO);
 }
 function atualizarCamposSistemaAcesso(){
   var grupoVisivel = !!grupoAcessoSenha && grupoAcessoSenha.style.display !== 'none';
@@ -12292,7 +12304,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // descrição como "Tipo: ...\n\n" pelo formulário de Abrir chamado.
   var RX_TIPO_CHAMADO = /^Tipo: ([^\n]*)\n\n([\s\S]*)$/;
   function cpnDadosTipo(c){
-    if(!c || !c.descricao || (c.categoria !== 'Sysart' && c.categoria !== 'Computador' && c.categoria !== 'Rede / Internet')) return null;
+    if(!c || !c.descricao || (c.categoria !== 'Sysart' && c.categoria !== 'Computador' && c.categoria !== 'Rede / Internet' && c.categoria !== 'Solicitação de Material')) return null;
     var m = RX_TIPO_CHAMADO.exec(c.descricao);
     return m ? { tipo: m[1], resto: m[2] } : null;
   }
@@ -17608,7 +17620,7 @@ formSolicitacao.addEventListener('submit', async function(e){
 
   // ADIÇÃO: " · Tipo" (Sysart / Computador) pra mostrar junto da categoria
   function histTipoDe(c){
-    if(c.categoria !== 'Sysart' && c.categoria !== 'Computador' && c.categoria !== 'Rede / Internet') return '';
+    if(c.categoria !== 'Sysart' && c.categoria !== 'Computador' && c.categoria !== 'Rede / Internet' && c.categoria !== 'Solicitação de Material') return '';
     var t = String(c.descricao || '').replace(/^Agendado para: [^\n]*\n\n/, '');
     var m = /^Tipo: ([^\n]*)\n\n/.exec(t);
     return m ? ' · ' + m[1] : '';
@@ -17627,7 +17639,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     }
     // ADIÇÃO: "Tipo: ..." de Sysart / Computador
     var tipoHist = '';
-    if(c.categoria === 'Sysart' || c.categoria === 'Computador' || c.categoria === 'Rede / Internet'){
+    if(c.categoria === 'Sysart' || c.categoria === 'Computador' || c.categoria === 'Rede / Internet' || c.categoria === 'Solicitação de Material'){
       var mTipo = /^Tipo: ([^\n]*)\n\n([\s\S]*)$/.exec(texto);
       if(mTipo){ tipoHist = mTipo[1]; texto = mTipo[2]; }
     }
@@ -18203,6 +18215,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     'Computador': ['Qual computador (etiqueta/patrimônio, se tiver)', 'O que acontece: não liga, lento, travando...', 'Se apareceu alguma mensagem de erro'],
     'Acesso / Senha': ['Qual sistema ou aplicativo', 'Se é senha nova, bloqueio ou se esqueceu', 'Se for SysArt, preencha os dados logo abaixo'],
     'Windows': ['O que aparece na tela (um print ajuda muito)', 'Se começou depois de alguma atualização', 'Se já tentou reiniciar o computador'],
+    'Solicitação de Material': ['Quantas unidades você precisa', 'Para qual computador ou impressora (etiqueta ou onde fica)', 'Se é para trocar um que estragou ou se é um novo'],
     'Outro': ['O que está acontecendo e desde quando', 'Onde: setor, sala ou equipamento', 'Se tiver mensagem de erro, mande um print']
   };
   function atualizarDica(){
