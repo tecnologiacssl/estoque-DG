@@ -443,6 +443,10 @@ select option{background:#101014;color:#fff}
    ficar sempre fixos na tela, não importa a rolagem. */
 /* ---------- PORTAL ---------- */
 #tela-portal{display:none;padding-top:36px;animation:fadeSlideIn .35s cubic-bezier(.2,.8,.2,1)}
+/* CORREÇÃO: Agenda e Sugestões começam escondidas desde o primeiro instante
+   (a regra delas fica no fim do arquivo; durante o carregamento elas
+   apareciam por um momento e o topo ficava com "Início › Sugestões"). */
+#tela-agenda,#tela-sugestoes{display:none}
 .topo-portal{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;flex-wrap:wrap;gap:10px}
 .topo-portal .quem{font-size:14px;color:var(--cinza-claro)}
 .topo-portal .quem b{color:#fff}
@@ -18144,6 +18148,8 @@ formSolicitacao.addEventListener('submit', async function(e){
 
   var obs = new MutationObserver(atualizarTudo);
   obs.observe(document.body, { attributes:true, attributeFilter:['class'] });
+  // CORREÇÃO: confere de novo quando a página termina de carregar
+  window.addEventListener('load', function(){ atualizarTrilha(); });
   Object.keys(TELAS_TOPO).concat(['tela-portal','tela-login']).forEach(function(id){
     var t = el(id);
     if(t) obs.observe(t, { attributes:true, attributeFilter:['style','class'] });
