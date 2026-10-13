@@ -4774,6 +4774,11 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
 .festa-faixa-x:hover{background:rgba(255,255,255,.08);color:#fff}
 #festa-efeito{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9000}
 @media (prefers-reduced-motion:reduce){.festa-enfeite.pisca{animation:none}.festa-faixa{animation:none}}
+
+/* Agenda: arrastar compromisso com o mouse */
+#tela-agenda .agenda-ev.editavel{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}
+.agenda-ev-fantasma{position:fixed;left:0;top:0;z-index:100000;pointer-events:none;opacity:.95;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:grabbing;will-change:transform}
+html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-select:none !important;-webkit-user-select:none !important}
 </style>
 </head>
 <body>
@@ -25905,7 +25910,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       var chips = itensDoDia.slice(0, chipsMax).map(function(e){
         var hora = agHorario(e);
         return '<div class="agenda-ev ag-c-' + agTipoClasse(e) + (agEditavel(e) ? ' editavel' : '') + '" data-id="' + agEsc(e.id) + '"' +
-          (agEditavel(e) ? ' draggable="true"' : '') + ' title="' + agEsc((hora ? hora + ' · ' : '') + (e.titulo || '')) + '">' +
+' title="' + agEsc((hora ? hora + ' · ' : '') + (e.titulo || '')) + '">' +
           (hora ? '<b>' + hora + '</b>' : '') + '<span>' + agEsc(e.titulo || '') + '</span></div>';
       }).join('');
       var mais = itensDoDia.length > chipsMax ? '<span class="agenda-dia-mais">+' + (itensDoDia.length - chipsMax) + ' mais</span>' : '';
@@ -25923,6 +25928,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     agendaGradeEl.querySelectorAll('.agenda-dia').forEach(function(cel){
       var dataIso = cel.getAttribute('data-data');
       cel.addEventListener('click', function(ev){
+        if(Date.now() - agendaSoltouEm < 400) return; // acabou de soltar um compromisso arrastado
         var chip = ev.target.closest('.agenda-ev');
         if(agCelular()){
           agendaDiaCel = dataIso;
@@ -25969,18 +25975,11 @@ formSolicitacao.addEventListener('submit', async function(e){
         setTimeout(agendaAplicarMovPendente, 250); // garantia, se o fim do arrastar não avisar
       });
     });
+    // CORREÇÃO: arrastar feito pelo próprio portal (segue o mouse), em vez
+    // do arrastar nativo do Windows — no app de computador o nativo travava
+    // um instante antes de soltar. Funciona igual no app e no navegador.
     agendaGradeEl.querySelectorAll('.agenda-ev.editavel').forEach(function(chip){
-      chip.addEventListener('dragstart', function(ev){
-        agendaArrastandoId = chip.getAttribute('data-id');
-        chip.classList.add('arrastando');
-        try{ ev.dataTransfer.setData('text/plain', agendaArrastandoId); ev.dataTransfer.effectAllowed = 'move'; }catch(e){}
-      });
-      chip.addEventListener('dragend', function(){
-        chip.classList.remove('arrastando');
-        agendaArrastandoId = null;
-        agendaGradeEl.querySelectorAll('.drop-alvo').forEach(function(x){ x.classList.remove('drop-alvo'); });
-        setTimeout(agendaAplicarMovPendente, 0);
-      });
+      chip.addEventListener('pointerdown', function(ev){ agendaIniciarArrasto(ev, chip); });
     });
 
     agendaRenderListaDia();
@@ -25989,6 +25988,63 @@ formSolicitacao.addEventListener('submit', async function(e){
   }
 
   var agendaArrastandoId = null;
+  var agendaSoltouEm = 0;
+  function agendaIniciarArrasto(ev, chip){
+    if(ev.button !== 0 || ev.pointerType === 'touch' || agCelular()) return;
+    var id = chip.getAttribute('data-id');
+    var celOrigem = chip.closest('.agenda-dia');
+    var x0 = ev.clientX, y0 = ev.clientY, arrastando = false, fantasma = null, alvo = null, offX = 0, offY = 0;
+    function iniciar(){
+      arrastando = true;
+      var r = chip.getBoundingClientRect();
+      offX = x0 - r.left; offY = y0 - r.top;
+      fantasma = chip.cloneNode(true);
+      fantasma.classList.add('agenda-ev-fantasma');
+      fantasma.style.width = r.width + 'px';
+      document.body.appendChild(fantasma);
+      chip.classList.add('arrastando');
+      document.documentElement.classList.add('agenda-arrastando');
+      try{ window.getSelection().removeAllRanges(); }catch(e){}
+    }
+    function marcar(cel){
+      if(cel === alvo) return;
+      if(alvo) alvo.classList.remove('drop-alvo');
+      alvo = cel;
+      if(alvo && alvo !== celOrigem) alvo.classList.add('drop-alvo');
+    }
+    function mover(e){
+      if(!arrastando){
+        if(Math.abs(e.clientX - x0) + Math.abs(e.clientY - y0) < 6) return;
+        iniciar();
+      }
+      e.preventDefault();
+      fantasma.style.transform = 'translate(' + (e.clientX - offX) + 'px,' + (e.clientY - offY) + 'px)';
+      var el = document.elementFromPoint(e.clientX, e.clientY);
+      marcar(el && el.closest ? el.closest('#tela-agenda .agenda-dia') : null);
+    }
+    function terminar(e, cancelar){
+      window.removeEventListener('pointermove', mover);
+      window.removeEventListener('pointerup', soltar);
+      window.removeEventListener('pointercancel', cancelarEv);
+      window.removeEventListener('keydown', teclado, true);
+      if(!arrastando) return;
+      agendaSoltouEm = Date.now();
+      if(fantasma) fantasma.remove();
+      chip.classList.remove('arrastando');
+      document.documentElement.classList.remove('agenda-arrastando');
+      var destino = alvo; marcar(null);
+      if(cancelar || !destino || destino === celOrigem) return;
+      var novaData = destino.getAttribute('data-data');
+      if(novaData) agendaMoverEvento(id, novaData);
+    }
+    function soltar(e){ terminar(e, false); }
+    function cancelarEv(e){ terminar(e, true); }
+    function teclado(e){ if(e.key === 'Escape' && arrastando){ e.preventDefault(); terminar(e, true); } }
+    window.addEventListener('pointermove', mover);
+    window.addEventListener('pointerup', soltar);
+    window.addEventListener('pointercancel', cancelarEv);
+    window.addEventListener('keydown', teclado, true);
+  }
   var agendaMovPendente = null;
   function agendaAplicarMovPendente(){
     if(!agendaMovPendente) return;
