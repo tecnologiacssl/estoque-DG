@@ -4741,6 +4741,39 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
 #form-chamado .zap-erro{display:none;margin:6px 0 0;font-size:12.5px;font-weight:600;color:#fca5a5}
 #form-chamado .zap-obrig .zap-erro.ver{display:block}
 #form-chamado .zap-obrig.zap-invalido .ch-ctrl input{border-color:#ef4444 !important;box-shadow:0 0 0 3px rgba(239,68,68,.18) !important}
+
+/* App Chat Interno: saída automática por inatividade */
+#chat-inativo-modal{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;background:rgba(5,5,15,.72);backdrop-filter:blur(3px)}
+#chat-inativo-modal[hidden]{display:none}
+#chat-inativo-modal .ci-caixa{width:min(420px,calc(100vw - 32px));background:#15151f;border:1px solid rgba(125,123,255,.3);border-radius:16px;padding:24px 24px 20px;box-shadow:0 20px 60px rgba(0,0,0,.5);text-align:center;color:#e8e8f2}
+#chat-inativo-modal h3{margin:6px 0 6px;font-size:19px}
+#chat-inativo-modal p{margin:0 0 18px;color:#a9a9c2;font-size:14px;line-height:1.5}
+#chat-inativo-modal .ci-tempo{font-size:34px;font-weight:800;color:#fcd34d;font-variant-numeric:tabular-nums}
+#chat-inativo-modal .ci-botoes{display:flex;gap:10px}
+#chat-inativo-modal button{flex:1;height:42px;border-radius:10px;font:700 14px inherit;cursor:pointer;border:1px solid rgba(255,255,255,.14);background:transparent;color:#e8e8f2;margin:0}
+#chat-inativo-modal button.ci-ficar{background:#0601fe;border-color:#0601fe;color:#fff}
+#chat-inativo-aviso{margin:0 0 14px;padding:12px 14px;border-radius:12px;border:1px solid rgba(245,158,11,.35);background:rgba(245,158,11,.1);color:#fcd34d;font-size:13.5px;font-weight:600;line-height:1.45}
+#chat-inativo-aviso[hidden]{display:none}
+
+/* ===== Decoração de datas festivas (tela de entrada e Início) ===== */
+.hero-inicio > .festa-enfeite,.login-side > .festa-enfeite,
+.hero-inicio > .festa-brilho,.login-side > .festa-brilho{position:absolute;z-index:0;pointer-events:none}
+.festa-enfeite{left:0;right:0;top:0;height:40px;background-repeat:repeat-x;background-size:auto 40px;background-position:0 0;opacity:.95}
+.festa-enfeite.pisca{animation:festaPisca 2.4s ease-in-out infinite}
+@keyframes festaPisca{50%{filter:brightness(1.45) saturate(1.25)}}
+.festa-brilho{inset:0}
+.hero-inicio.festa-on{padding-top:54px}
+.login-side.festa-on{padding-top:76px}
+.festa-faixa{display:flex;align-items:center;gap:12px;margin:0 0 16px;padding:10px 10px 10px 12px;border-radius:12px;border:1px solid var(--festa-borda);background:var(--festa-fundo);max-width:640px;animation:festaEntra .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes festaEntra{from{opacity:0;transform:translateY(-6px)}}
+.festa-faixa-ic{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:19px;line-height:1;background:var(--festa-fundo-forte)}
+.festa-faixa-ic svg{width:20px;height:20px}
+.festa-faixa-txt{min-width:0;flex:1;font-size:13.5px;line-height:1.4;color:var(--texto-2,#c9c9d6)}
+.festa-faixa-txt b{display:block;color:#fff;font-size:14.5px}
+.festa-faixa-x{flex:none;width:30px;height:30px;margin:0;padding:0;border-radius:8px;border:0;background:transparent;color:#9a9ab0;font-size:16px;line-height:1;cursor:pointer}
+.festa-faixa-x:hover{background:rgba(255,255,255,.08);color:#fff}
+#festa-efeito{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9000}
+@media (prefers-reduced-motion:reduce){.festa-enfeite.pisca{animation:none}.festa-faixa{animation:none}}
 </style>
 </head>
 <body>
@@ -28552,6 +28585,367 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   }).observe(tela, { attributes: true, attributeFilter: ['style'] });
   window.csslConferirWhatsObrigatorio = conferir;
   conferir();
+})();
+</script>
+
+<!-- ============================================================
+     ADIÇÃO: só no app Chat Interno — sai da conta sozinho depois de
+     1h30 sem uso. 1 minuto antes aparece "Você ainda está aí?".
+     Conta como uso: mexer o mouse, clicar, digitar ou rolar com a
+     janela aberta. Com a janela escondida perto do relógio, conta
+     como sem uso. Não sai durante uma ligação.
+     ============================================================ -->
+<script>
+(function(){
+  if(!window.CSSL_APP_CHAT || !window.csslDesktop) return;   // só no app de computador do Chat
+  var LIMITE = 90 * 60 * 1000;      // 1h30
+  var AVISO = 60 * 1000;            // aviso 1 minuto antes
+  var CHAVE = 'cssl_chat_ultimo_uso';
+  var ultimo = Date.now();
+  var timerAviso = null;
+
+  function ler(){ try{ var v = Number(localStorage.getItem(CHAVE)); return v > 0 ? v : 0; }catch(e){ return 0; } }
+  function gravar(t){ try{ localStorage.setItem(CHAVE, String(t)); }catch(e){} }
+  function logado(){
+    var tl = document.getElementById('tela-login');
+    return !!(typeof emailLogado !== 'undefined' && emailLogado) && !(tl && getComputedStyle(tl).display !== 'none');
+  }
+  function emLigacao(){
+    var a = document.getElementById('chamadaAtivaBar'), r = document.getElementById('chamadaRecebendoOverlay');
+    return !!((a && !a.hidden && getComputedStyle(a).display !== 'none') || (r && !r.hidden && getComputedStyle(r).display !== 'none'));
+  }
+
+  // ---- aviso ----
+  var modal = document.createElement('div');
+  modal.id = 'chat-inativo-modal'; modal.hidden = true;
+  modal.setAttribute('role', 'alertdialog'); modal.setAttribute('aria-modal', 'true');
+  modal.innerHTML = '<div class="ci-caixa"><div class="ci-tempo" id="ci-tempo">60</div><h3>Você ainda está aí?</h3>' +
+    '<p>O Chat Interno está sem uso há 1h30. Por segurança, ele vai sair da sua conta.</p>' +
+    '<div class="ci-botoes"><button type="button" class="ci-sair">Sair agora</button><button type="button" class="ci-ficar">Continuar conectado</button></div></div>';
+  document.body.appendChild(modal);
+  var elTempo = modal.querySelector('#ci-tempo');
+
+  function fecharAviso(){ modal.hidden = true; clearInterval(timerAviso); timerAviso = null; }
+  function abrirAviso(){
+    if(!modal.hidden) return;
+    modal.hidden = false;
+    try{ if(window.csslDesktop.mostrar) window.csslDesktop.mostrar(); }catch(e){}
+    var fim = ultimo + LIMITE;
+    function tic(){
+      var falta = Math.max(0, Math.ceil((fim - Date.now()) / 1000));
+      elTempo.textContent = falta;
+      if(falta <= 0) desconectar();
+    }
+    tic(); timerAviso = setInterval(tic, 500);
+    var b = modal.querySelector('.ci-ficar'); if(b) b.focus();
+  }
+
+  // ---- saída ----
+  var aviso = null;
+  function mostrarAvisoLogin(){
+    var form = document.getElementById('form-login');
+    if(!form || !form.parentElement) return;
+    if(!aviso){
+      aviso = document.createElement('div');
+      aviso.id = 'chat-inativo-aviso';
+      aviso.textContent = 'Você saiu da conta porque o Chat Interno ficou 1h30 sem uso. Entre de novo com o seu e-mail.';
+      form.parentElement.insertBefore(aviso, form.parentElement.firstChild);
+    }
+    aviso.hidden = false;
+  }
+  function desconectar(){
+    fecharAviso();
+    if(!logado()) return;
+    var b = document.getElementById('btn-sair');
+    if(b) b.click();
+    gravar(Date.now());
+    mostrarAvisoLogin();
+  }
+
+  // ---- uso ----
+  var ultimoGravado = 0;
+  function usou(){
+    if(inicioVencido) return;            // abriu com a sessão vencida: espera a conferência inicial
+    ultimo = Date.now();
+    if(ultimo - ultimoGravado > 15000){ ultimoGravado = ultimo; gravar(ultimo); }
+  }
+  ['mousedown', 'mousemove', 'keydown', 'wheel', 'touchstart'].forEach(function(ev){
+    window.addEventListener(ev, function(e){
+      if(!modal.hidden && !(e.target && e.target.closest && e.target.closest('#chat-inativo-modal'))) return; // com o aviso aberto, só os botões contam
+      if(modal.hidden) usou();
+    }, { passive: true, capture: true });
+  });
+  modal.querySelector('.ci-ficar').addEventListener('click', function(){ fecharAviso(); usou(); });
+  modal.querySelector('.ci-sair').addEventListener('click', desconectar);
+
+  // ---- conferência ----
+  function conferir(){
+    if(!logado()){ fecharAviso(); return; }
+    if(aviso) aviso.hidden = true;
+    if(emLigacao()){ usou(); return; }
+    var parado = Date.now() - ultimo;
+    if(parado >= LIMITE) desconectar();
+    else if(parado >= LIMITE - AVISO) abrirAviso();
+  }
+
+  // ao abrir o app: se o último uso foi há mais de 1h30 (ex.: computador
+  // desligado de um dia pro outro), sai da conta; senão continua de onde estava
+  var salvo = ler();
+  if(salvo){ ultimo = salvo; } else { gravar(ultimo); }
+  var inicioVencido = !!salvo && (Date.now() - salvo >= LIMITE);
+  var antesEntrar = window.entrarNoPortal;
+  window.entrarNoPortal = function(){
+    // login feito agora conta como uso (a não ser na restauração automática da sessão, conferida abaixo)
+    if(document.readyState === 'complete' && window.__ciCarregou) usou();
+    if(aviso) aviso.hidden = true;
+    return antesEntrar ? antesEntrar.apply(this, arguments) : undefined;
+  };
+  window.addEventListener('load', function(){ setTimeout(function(){ window.__ciCarregou = true; conferir(); inicioVencido = false; }, 1500); });
+  setInterval(conferir, 15000);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) setTimeout(conferir, 300); });
+  window.csslChatInatividade = { conferir: conferir, ultimoUso: function(){ return ultimo; }, _definirUltimo: function(t){ ultimo = t; gravar(t); } };
+})();
+</script>
+
+<!-- ============================================================
+     ADIÇÃO: decoração de datas festivas — só na tela de entrada e no
+     Início. Festas: enfeite no topo, faixa com mensagem e um efeito
+     caindo por alguns segundos ao abrir. Campanhas de saúde (meses
+     coloridos): laço e faixa, sem efeito. Dias comemorativos: enfeite,
+     faixa e efeito no próprio dia. O × da faixa esconde a decoração
+     daquela data só para quem clicou (fica salvo neste aparelho).
+     Para ver um tema fora da data: ?festa=natal (ou pascoa, junina...)
+     ou ?festa=2026-12-24 para simular um dia.
+     ============================================================ -->
+<script>
+(function(){
+  // ---------- desenhos do topo (SVG repetido na horizontal) ----------
+  function svg(w, corpo){ return 'url("data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="40" viewBox="0 0 ' + w + ' 40">' + corpo + '</svg>') + '")'; }
+  function varal(w, sag){ return '<path d="M0 4 Q' + (w / 2) + ' ' + (4 + sag * 2) + ' ' + w + ' 4" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.2"/>'; }
+  function yVaral(x, w, sag){ var t = x / w; return 4 + sag * 2 * 2 * t * (1 - t); }
+  var ENFEITES = {
+    luzes: function(){
+      var cores = ['#ef4444', '#facc15', '#22c55e', '#60a5fa'], c = '<path d="M0 6 Q25 18 50 6 Q75 18 100 6 Q125 18 150 6 Q175 18 200 6" fill="none" stroke="#1f5130" stroke-width="2"/>';
+      [25, 75, 125, 175].forEach(function(x, i){ c += '<rect x="' + (x - 2.5) + '" y="11" width="5" height="5" rx="1" fill="#1f5130"/><ellipse cx="' + x + '" cy="22" rx="5" ry="7.5" fill="' + cores[i] + '"/><ellipse cx="' + (x - 1.6) + '" cy="19.5" rx="1.4" ry="2.4" fill="#fff" opacity=".55"/>'; });
+      return svg(200, c);
+    },
+    bandeiras: function(cores){
+      var w = 168, sag = 5, c = varal(w, sag);
+      [8, 50, 92, 134].forEach(function(x, i){ var y1 = yVaral(x, w, sag), y2 = yVaral(x + 26, w, sag), m = (y1 + y2) / 2; c += '<path d="M' + x + ' ' + y1 + ' L' + (x + 26) + ' ' + y2 + ' L' + (x + 13) + ' ' + (m + 22) + ' Z" fill="' + cores[i % cores.length] + '"/>'; });
+      return svg(w, c);
+    },
+    estrelas: function(){
+      function est(x, y, r, cor){ return '<path d="M' + x + ' ' + (y - r) + ' Q' + x + ' ' + y + ' ' + (x + r) + ' ' + y + ' Q' + x + ' ' + y + ' ' + x + ' ' + (y + r) + ' Q' + x + ' ' + y + ' ' + (x - r) + ' ' + y + ' Q' + x + ' ' + y + ' ' + x + ' ' + (y - r) + ' Z" fill="' + cor + '"/>'; }
+      return svg(140, est(14, 12, 7, '#facc15') + est(46, 26, 4, '#fff') + est(70, 10, 5, '#fde68a') + est(98, 24, 8, '#facc15') + est(124, 9, 3.5, '#fff') + '<circle cx="34" cy="8" r="1.4" fill="#fde68a"/><circle cx="86" cy="32" r="1.2" fill="#fff"/><circle cx="114" cy="34" r="1.4" fill="#facc15"/>');
+    },
+    serpentinas: function(){
+      return svg(180, '<path d="M0 10 C15 0 30 20 45 10 S75 0 90 10 S120 20 135 10 S165 0 180 10" fill="none" stroke="#a855f7" stroke-width="3"/>' +
+        '<path d="M0 22 C15 32 30 12 45 22 S75 32 90 22 S120 12 135 22 S165 32 180 22" fill="none" stroke="#facc15" stroke-width="2.5"/>' +
+        '<circle cx="20" cy="33" r="2.5" fill="#22c55e"/><circle cx="66" cy="4" r="2.5" fill="#ef4444"/><circle cx="112" cy="34" r="2.5" fill="#3b82f6"/><circle cx="158" cy="5" r="2.5" fill="#ec4899"/><rect x="88" y="30" width="4" height="7" rx="1" fill="#f97316" transform="rotate(30 90 33)"/>');
+    },
+    ovos: function(){
+      var w = 160, sag = 5, c = varal(w, sag), cores = ['#f9a8d4', '#a5f3fc', '#fde68a', '#c4b5fd'];
+      [20, 60, 100, 140].forEach(function(x, i){ var y = yVaral(x, w, sag); c += '<line x1="' + x + '" y1="' + y + '" x2="' + x + '" y2="' + (y + 6) + '" stroke="rgba(255,255,255,.35)"/><ellipse cx="' + x + '" cy="' + (y + 16) + '" rx="7" ry="9.5" fill="' + cores[i] + '"/><path d="M' + (x - 6.5) + ' ' + (y + 15) + ' l3 -2.5 l3 2.5 l3 -2.5 l3 2.5 l1.5 -1.2" fill="none" stroke="#fff" stroke-width="1.3" opacity=".8"/>'; });
+      return svg(w, c);
+    },
+    flores: function(cores){
+      var c = '';
+      [[18, 14, 0], [58, 24, 1], [98, 12, 2], [138, 22, 0]].forEach(function(f){ var x = f[0], y = f[1], cor = cores[f[2] % cores.length]; for(var k = 0; k < 5; k++){ var a = k * 72 * Math.PI / 180; c += '<circle cx="' + (x + Math.cos(a) * 5).toFixed(1) + '" cy="' + (y + Math.sin(a) * 5).toFixed(1) + '" r="4" fill="' + cor + '"/>'; } c += '<circle cx="' + x + '" cy="' + y + '" r="2.8" fill="#fde68a"/>'; });
+      return svg(160, c);
+    },
+    coracoes: function(cores){
+      var w = 160, sag = 4, c = varal(w, sag);
+      [20, 60, 100, 140].forEach(function(x, i){ var y = yVaral(x, w, sag) + 8, s = 0.75; c += '<path transform="translate(' + (x - 9 * s) + ' ' + y + ') scale(' + s + ')" d="M9 16 C-3 8 0 0 5 0 C7.5 0 9 2 9 3.5 C9 2 10.5 0 13 0 C18 0 21 8 9 16 Z" fill="' + cores[i % cores.length] + '"/>'; });
+      return svg(w, c);
+    },
+    confete: function(cores){
+      var c = '', pts = [[10, 8], [30, 26], [52, 12], [74, 30], [96, 6], [118, 22], [140, 10], [160, 32], [178, 16]];
+      pts.forEach(function(p, i){ var cor = cores[i % cores.length]; c += i % 2 ? '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.6" fill="' + cor + '"/>' : '<rect x="' + p[0] + '" y="' + p[1] + '" width="4" height="8" rx="1" fill="' + cor + '" transform="rotate(' + (i * 37 % 90 - 45) + ' ' + p[0] + ' ' + p[1] + ')"/>'; });
+      return svg(190, c);
+    },
+    lacos: function(cor){
+      var laco = function(x, y, sc, op){ return '<path transform="translate(' + x + ' ' + y + ') scale(' + sc + ')" opacity="' + op + '" fill="' + cor + '" d="M12 2c-2.2 0-4 1.8-4 4 0 1.6.9 3.2 2 4.9L5 20l2.5 1.5L12 14l4.5 7.5L19 20l-5-9.1c1.1-1.7 2-3.3 2-4.9 0-2.2-1.8-4-4-4zm0 2c1.1 0 2 .9 2 2 0 1-.6 2.2-2 4.3C10.6 8.2 10 7 10 6c0-1.1.9-2 2-2z"/>'; };
+      return svg(200, laco(10, 6, 1.1, .9) + laco(110, 10, .8, .5));
+    }
+  };
+  var LACO_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-2.2 0-4 1.8-4 4 0 1.6.9 3.2 2 4.9L5 20l2.5 1.5L12 14l4.5 7.5L19 20l-5-9.1c1.1-1.7 2-3.3 2-4.9 0-2.2-1.8-4-4-4zm0 2c1.1 0 2 .9 2 2 0 1-.6 2.2-2 4.3C10.6 8.2 10 7 10 6c0-1.1.9-2 2-2z"/></svg>';
+
+  // ---------- temas ----------
+  var T = {
+    natal:        { cor:'#ef4444', icone:'🎄', titulo:'Feliz Natal!', texto:'A equipe de TI deseja boas festas a todos.', enfeite:function(){ return ENFEITES.luzes(); }, pisca:true, efeito:'neve' },
+    anonovo:      { cor:'#facc15', icone:'✨', titulo:'Feliz Ano Novo!', texto:'Que {ano} venha com muita saúde e paz.', enfeite:function(){ return ENFEITES.estrelas(); }, pisca:true, efeito:'dourado' },
+    carnaval:     { cor:'#a855f7', icone:'🎭', titulo:'Bom Carnaval!', texto:'Aproveite com alegria e cuidado.', enfeite:function(){ return ENFEITES.serpentinas(); }, efeito:'confete', cores:['#a855f7', '#facc15', '#22c55e', '#ef4444', '#3b82f6', '#ec4899', '#f97316'] },
+    pascoa:       { cor:'#f9a8d4', icone:'🐣', titulo:'Feliz Páscoa!', texto:'Que seja um tempo de renovação e esperança.', enfeite:function(){ return ENFEITES.ovos(); }, efeito:'ovos' },
+    junina:       { cor:'#f59e0b', icone:'🌽', titulo:'Arraiá da CSSL!', texto:'Bom São João pra todo mundo!', enfeite:function(){ return ENFEITES.bandeiras(['#ef4444', '#facc15', '#3b82f6', '#22c55e']); }, efeito:'bandeirinhas', cores:['#ef4444', '#facc15', '#3b82f6', '#22c55e', '#f97316'] },
+    janeirobranco:{ cor:'#e2e8f0', laco:true, titulo:'Janeiro Branco', texto:'Mês de cuidar da saúde mental. Converse, peça ajuda e cuide de você.', enfeite:function(){ return ENFEITES.lacos('#e2e8f0'); } },
+    setembroamarelo:{ cor:'#facc15', laco:true, titulo:'Setembro Amarelo', texto:'Falar é a melhor solução. Se precisar conversar, o CVV atende 24h pelo 188, de graça.', enfeite:function(){ return ENFEITES.lacos('#facc15'); } },
+    outubrorosa:  { cor:'#ec4899', laco:true, titulo:'Outubro Rosa', texto:'Mês de conscientização sobre o câncer de mama. Prevenção salva vidas.', enfeite:function(){ return ENFEITES.lacos('#ec4899'); } },
+    novembroazul: { cor:'#3b82f6', laco:true, titulo:'Novembro Azul', texto:'Mês de cuidar da saúde do homem. Faça seus exames.', enfeite:function(){ return ENFEITES.lacos('#3b82f6'); } },
+    mulher:       { cor:'#c084fc', icone:'💐', titulo:'Feliz Dia da Mulher!', texto:'Nossa homenagem a todas as mulheres da Casa de Saúde.', enfeite:function(){ return ENFEITES.flores(['#c084fc', '#f472b6', '#f9a8d4']); }, efeito:'petalas', cores:['#c084fc', '#f472b6', '#f9a8d4'] },
+    maes:         { cor:'#f472b6', icone:'💐', titulo:'Feliz Dia das Mães!', texto:'Nosso carinho a todas as mães.', enfeite:function(){ return ENFEITES.coracoes(['#f472b6', '#fb7185', '#f9a8d4']); }, efeito:'coracoes', cores:['#f472b6', '#fb7185', '#f9a8d4'] },
+    enfermagem:   { cor:'#2dd4bf', icone:'🩺', titulo:'Dia da Enfermagem', texto:'Obrigado a toda a equipe de enfermagem pelo cuidado de cada dia.', enfeite:function(){ return ENFEITES.coracoes(['#2dd4bf', '#5eead4', '#f472b6']); }, efeito:'coracoes', cores:['#2dd4bf', '#5eead4', '#f472b6'] },
+    pais:         { cor:'#60a5fa', icone:'💙', titulo:'Feliz Dia dos Pais!', texto:'Nossa homenagem a todos os pais.', enfeite:function(){ return ENFEITES.confete(['#60a5fa', '#93c5fd', '#facc15']); }, efeito:'confete', cores:['#60a5fa', '#93c5fd', '#facc15', '#ffffff'] },
+    medico:       { cor:'#34d399', icone:'🩺', titulo:'Dia do Médico', texto:'Obrigado aos médicos pela dedicação de todos os dias.', enfeite:function(){ return ENFEITES.confete(['#34d399', '#60a5fa', '#ffffff']); }, efeito:'confete', cores:['#34d399', '#60a5fa', '#ffffff', '#a7f3d0'] },
+    independencia:{ cor:'#22c55e', icone:'🎉', titulo:'7 de Setembro', texto:'Dia da Independência do Brasil.', enfeite:function(){ return ENFEITES.bandeiras(['#22c55e', '#facc15', '#2563eb', '#ffffff']); }, efeito:'confete', cores:['#22c55e', '#facc15', '#2563eb', '#ffffff'] },
+    muriae:       { cor:'#f59e0b', icone:'🎉', titulo:'Parabéns, Muriaé!', texto:'Hoje é aniversário de emancipação da nossa cidade.', enfeite:function(){ return ENFEITES.confete(['#f59e0b', '#60a5fa', '#ffffff', '#22c55e']); }, efeito:'confete', cores:['#f59e0b', '#60a5fa', '#ffffff', '#22c55e'] }
+  };
+
+  // ---------- qual tema vale em cada dia ----------
+  function pascoa(ano){
+    var a = ano % 19, b = Math.floor(ano / 100), c = ano % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+    var h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+    return new Date(ano, Math.floor((h + l - 7 * m + 114) / 31) - 1, ((h + l - 7 * m + 114) % 31) + 1);
+  }
+  function segundoDomingo(ano, mes){ var d = new Date(ano, mes, 1); var primeiro = (7 - d.getDay()) % 7 + 1; return primeiro + 7; }
+  function zero(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function temaDoDia(data){
+    var d = zero(data), y = d.getFullYear(), m = d.getMonth() + 1, dia = d.getDate();
+    // 1) dias comemorativos
+    if(m === 3 && dia === 8) return 'mulher';
+    if(m === 5 && dia === segundoDomingo(y, 4)) return 'maes';
+    if(m === 5 && dia === 12) return 'enfermagem';
+    if(m === 8 && dia === segundoDomingo(y, 7)) return 'pais';
+    if(m === 9 && dia === 6) return 'muriae';
+    if(m === 9 && dia === 7) return 'independencia';
+    if(m === 10 && dia === 18) return 'medico';
+    // 2) festas
+    if((m === 12 && dia >= 30) || (m === 1 && dia <= 2)) return 'anonovo';
+    if(m === 12) return 'natal';
+    var p = pascoa(y), dias = Math.round((d - p) / 86400000);
+    if(dias >= -50 && dias <= -46) return 'carnaval';
+    if(dias >= -7 && dias <= 1) return 'pascoa';
+    if(m === 6) return 'junina';
+    // 3) campanhas de saúde (o mês todo)
+    if(m === 1) return 'janeirobranco';
+    if(m === 9) return 'setembroamarelo';
+    if(m === 10) return 'outubrorosa';
+    if(m === 11) return 'novembroazul';
+    return null;
+  }
+
+  // simulação pelo endereço: ?festa=natal ou ?festa=2026-12-24
+  var hoje = new Date(), forcado = null;
+  try{
+    var q = (location.search.match(/[?&]festa=([^&]+)/) || [])[1];
+    if(q){ q = decodeURIComponent(q); if(/^\d{4}-\d{2}-\d{2}$/.test(q)){ var pz = q.split('-'); hoje = new Date(+pz[0], +pz[1] - 1, +pz[2], 12); } else if(T[q]) forcado = q; }
+  }catch(e){}
+
+  var atual = null, id = null;
+  function chaveOff(){ var y = hoje.getFullYear(); if(id === 'anonovo' && hoje.getMonth() === 0) y--; return 'cssl_festa_off_' + id + '_' + y; }
+  function desligado(){ if(forcado) return false; try{ return localStorage.getItem(chaveOff()) === '1'; }catch(e){ return false; } }
+
+  function rgba(hex, a){ var n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')'; }
+
+  // ---------- montar / tirar ----------
+  function limpar(){
+    document.querySelectorAll('.festa-enfeite,.festa-brilho,.festa-faixa').forEach(function(e){ e.remove(); });
+    document.querySelectorAll('.festa-on').forEach(function(e){ e.classList.remove('festa-on'); });
+    pararEfeito();
+  }
+  function enfeitar(alvo, comFaixa){
+    if(!alvo || alvo.querySelector(':scope > .festa-enfeite')) return;
+    alvo.classList.add('festa-on');
+    var brilho = document.createElement('div');
+    brilho.className = 'festa-brilho';
+    brilho.style.background = 'radial-gradient(520px 240px at 85% 0,' + rgba(atual.cor, .16) + ',transparent 70%)';
+    alvo.insertBefore(brilho, alvo.firstChild);
+    var enf = document.createElement('div');
+    enf.className = 'festa-enfeite' + (atual.pisca ? ' pisca' : '');
+    enf.style.backgroundImage = atual.enfeite();
+    alvo.insertBefore(enf, alvo.firstChild);
+    if(!comFaixa) return;
+    var txt = alvo.querySelector('.hero-txt') || alvo;
+    var f = document.createElement('div');
+    f.className = 'festa-faixa';
+    f.style.setProperty('--festa-borda', rgba(atual.cor, .38));
+    f.style.setProperty('--festa-fundo', rgba(atual.cor, .09));
+    f.style.setProperty('--festa-fundo-forte', rgba(atual.cor, .18));
+    var ano = hoje.getMonth() === 11 ? hoje.getFullYear() + 1 : hoje.getFullYear();
+    f.innerHTML = '<span class="festa-faixa-ic" style="color:' + atual.cor + '">' + (atual.laco ? LACO_SVG : atual.icone) + '</span>' +
+      '<span class="festa-faixa-txt"><b></b><span></span></span>' +
+      '<button type="button" class="festa-faixa-x" title="Esconder a decoração desta data" aria-label="Esconder a decoração desta data">✕</button>';
+    f.querySelector('b').textContent = atual.titulo;
+    f.querySelector('.festa-faixa-txt > span').textContent = atual.texto.replace('{ano}', ano);
+    f.querySelector('.festa-faixa-x').addEventListener('click', function(){
+      try{ localStorage.setItem(chaveOff(), '1'); }catch(e){}
+      limpar();
+    });
+    txt.insertBefore(f, txt.firstChild);
+  }
+
+  // ---------- efeito caindo (alguns segundos) ----------
+  var efeitoRodou = {}, raf = null, cv = null;
+  function pararEfeito(){ if(raf) cancelAnimationFrame(raf); raf = null; if(cv){ cv.remove(); cv = null; } }
+  function efeito(onde){
+    if(!atual.efeito || efeitoRodou[onde]) return;
+    efeitoRodou[onde] = true;
+    try{ if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return; }catch(e){}
+    pararEfeito();
+    cv = document.createElement('canvas'); cv.id = 'festa-efeito'; document.body.appendChild(cv);
+    var ctx = cv.getContext('2d'), dpr = Math.min(window.devicePixelRatio || 1, 2), W, H;
+    function medir(){ W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    medir();
+    var tipo = atual.efeito, cores = atual.cores || ['#ffffff'];
+    if(tipo === 'neve') cores = ['#ffffff'];
+    if(tipo === 'dourado') cores = ['#facc15', '#fde68a', '#ffffff', '#f59e0b'];
+    if(tipo === 'ovos') cores = ['#f9a8d4', '#a5f3fc', '#fde68a', '#c4b5fd', '#bbf7d0'];
+    var total = W < 700 ? 45 : 90, parts = [], inicio = performance.now(), DURA = 6500;
+    function nova(t){
+      var r = tipo === 'neve' ? 1.5 + Math.random() * 3 : 4 + Math.random() * 4;
+      return { x: Math.random() * W, y: -20 - Math.random() * 60, r: r, vy: (tipo === 'neve' ? 0.6 : 1.1) + Math.random() * 1.4, vx: (Math.random() - .5) * .6,
+        a: Math.random() * Math.PI * 2, va: (Math.random() - .5) * .12, fase: Math.random() * 6.28, cor: cores[Math.floor(Math.random() * cores.length)] };
+    }
+    function desenhar(p){
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.cor;
+      if(tipo === 'neve'){ ctx.globalAlpha = .85; ctx.beginPath(); ctx.arc(0, 0, p.r, 0, 6.29); ctx.fill(); }
+      else if(tipo === 'ovos'){ ctx.beginPath(); ctx.ellipse(0, 0, p.r * .8, p.r * 1.1, 0, 0, 6.29); ctx.fill(); }
+      else if(tipo === 'petalas'){ ctx.globalAlpha = .9; ctx.beginPath(); ctx.ellipse(0, 0, p.r * .55, p.r * 1.1, 0, 0, 6.29); ctx.fill(); }
+      else if(tipo === 'coracoes'){ var s = p.r / 8; ctx.scale(s, s); ctx.beginPath(); ctx.moveTo(0, 6); ctx.bezierCurveTo(-12, -2, -6, -10, 0, -4); ctx.bezierCurveTo(6, -10, 12, -2, 0, 6); ctx.fill(); }
+      else if(tipo === 'bandeirinhas'){ ctx.beginPath(); ctx.moveTo(-p.r, -p.r * .7); ctx.lineTo(p.r, -p.r * .7); ctx.lineTo(0, p.r * 1.1); ctx.closePath(); ctx.fill(); }
+      else if(tipo === 'dourado' && p.r > 6.5){ var r2 = p.r; ctx.beginPath(); ctx.moveTo(0, -r2); ctx.quadraticCurveTo(0, 0, r2, 0); ctx.quadraticCurveTo(0, 0, 0, r2); ctx.quadraticCurveTo(0, 0, -r2, 0); ctx.quadraticCurveTo(0, 0, 0, -r2); ctx.fill(); }
+      else { ctx.fillRect(-p.r * .45, -p.r * .8, p.r * .9, p.r * 1.6); }
+      ctx.restore();
+    }
+    function passo(t){
+      var dec = t - inicio;
+      if(dec < DURA && parts.length < total && Math.random() < .6) parts.push(nova(t));
+      ctx.clearRect(0, 0, W, H);
+      var fade = dec > DURA ? Math.max(0, 1 - (dec - DURA) / 2500) : 1;
+      ctx.globalAlpha = fade;
+      parts = parts.filter(function(p){
+        p.y += p.vy; p.x += p.vx + Math.sin(t / 700 + p.fase) * (tipo === 'neve' ? .35 : .6); p.a += p.va;
+        if(p.y > H + 20){ if(dec < DURA) Object.assign(p, nova(t)); else return false; }
+        ctx.globalAlpha = fade; desenhar(p); return true;
+      });
+      if(fade <= 0 || (dec > DURA && !parts.length)){ pararEfeito(); return; }
+      raf = requestAnimationFrame(passo);
+    }
+    window.addEventListener('resize', medir);
+    raf = requestAnimationFrame(passo);
+  }
+
+  // ---------- aplicar conforme a tela visível ----------
+  function visivel(el){ return !!el && getComputedStyle(el).display !== 'none' && el.offsetParent !== null; }
+  function aplicar(){
+    var novoId = forcado || temaDoDia(hoje);
+    if(novoId !== id){ limpar(); id = novoId; atual = id ? T[id] : null; efeitoRodou = {}; }
+    if(!atual || desligado()){ if(atual) limpar(); return; }
+    var login = document.getElementById('tela-login'), portal = document.getElementById('tela-portal');
+    var lado = login && login.querySelector('.login-side'), hero = document.getElementById('hero-inicio');
+    enfeitar(lado, false);
+    enfeitar(hero, true);
+    if(visivel(login)) efeito('login');
+    else if(visivel(portal) && visivel(hero)) efeito('inicio');
+  }
+  window.csslFestas = { aplicar: aplicar, temaDoDia: temaDoDia, temas: Object.keys(T) };
+  ['tela-login', 'tela-portal'].forEach(function(idTela){
+    var el = document.getElementById(idTela);
+    if(el) new MutationObserver(function(){ setTimeout(aplicar, 60); }).observe(el, { attributes: true, attributeFilter: ['style', 'class'] });
+  });
+  window.addEventListener('load', function(){ setTimeout(aplicar, 400); });
+  window.addEventListener('cssl:novo-dia', function(){ if(!/[?&]festa=\d/.test(location.search)) hoje = new Date(); aplicar(); });
+  setInterval(function(){ if(!forcado && !/[?&]festa=\d/.test(location.search)){ var n = new Date(); if(n.getDate() !== hoje.getDate()){ hoje = n; aplicar(); } } }, 60000);
+  aplicar();
 })();
 </script>
 </body>
