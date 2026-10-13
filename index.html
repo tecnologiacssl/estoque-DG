@@ -4735,6 +4735,12 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
 #card-solicitacao{display:none !important}
 
 #grupo-tipo-chamado[data-cat="Solicitação de Material"] .sistema-acesso-txt{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2}
+
+/* WhatsApp obrigatório para quem nunca informou */
+.ch-tag.laranja{background:rgba(245,158,11,.14);color:#fcd34d;border-color:rgba(245,158,11,.35)}
+#form-chamado .zap-erro{display:none;margin:6px 0 0;font-size:12.5px;font-weight:600;color:#fca5a5}
+#form-chamado .zap-obrig .zap-erro.ver{display:block}
+#form-chamado .zap-obrig.zap-invalido .ch-ctrl input{border-color:#ef4444 !important;box-shadow:0 0 0 3px rgba(239,68,68,.18) !important}
 </style>
 </head>
 <body>
@@ -28430,6 +28436,122 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
       if(!input.files || !input.files.length){ dt = new DataTransfer(); render(); }
     }, 0);
   }).observe(modal, { attributes:true, attributeFilter:['class','style'] });
+})();
+</script>
+
+<!-- ============================================================
+     ADIÇÃO: WhatsApp obrigatório no "Abrir chamado" para quem nunca
+     informou. Se o número já está lembrado neste aparelho ou já foi
+     enviado em algum chamado anterior desta pessoa, o campo vem
+     preenchido e continua opcional. Senão, fica obrigatório.
+     ============================================================ -->
+<script>
+(function(){
+  var form = document.getElementById('form-chamado');
+  var tela = document.getElementById('tela-chamado');
+  var inp = document.getElementById('input-whatsapp-numero');
+  if(!form || !tela || !inp) return;
+  var sel = form.querySelector('select[name="whatsapp_ddi"]');
+  var campo = inp.closest('.ch-campo');
+  var secao = inp.closest('.ch-secao');
+  var sub = secao ? secao.querySelector('.ch-secao-sub') : null;
+  var label = form.querySelector('label[for="input-whatsapp-numero"]');
+  var tagLembrado = document.getElementById('ch-tag-whatsapp');
+  var hint = campo ? campo.querySelector('.campo-hint') : null;
+  var HINT_PADRAO = hint ? hint.textContent : '';
+  var CHAVE = 'cssl_chamado_whatsapp';
+
+  var tagObrig = document.createElement('span');
+  tagObrig.className = 'ch-tag laranja'; tagObrig.textContent = 'Obrigatório'; tagObrig.hidden = true;
+  if(label) label.appendChild(tagObrig);
+  var erro = document.createElement('p');
+  erro.className = 'zap-erro';
+  if(hint) hint.insertAdjacentElement('afterend', erro); else if(campo) campo.appendChild(erro);
+
+  var jaTem = {};          // email -> true quando já informou alguma vez
+  var conferindo = null;
+
+  function email(){ return (typeof emailLogado !== 'undefined' && emailLogado ? String(emailLogado) : '').toLowerCase(); }
+  function noAparelho(){ try{ var z = JSON.parse(localStorage.getItem(CHAVE) || 'null'); return !!(z && z.numero); }catch(e){ return false; } }
+  function digitos(){ return inp.value.replace(/\D/g, '').length; }
+
+  function mensagemErro(){
+    if(!inp.required) return '';
+    var n = digitos();
+    if(!n) return 'Informe o seu WhatsApp. Na primeira vez é obrigatório, depois o portal lembra.';
+    var br = !sel || sel.value === '+55';
+    if(br ? (n < 10 || n > 11) : (n < 7 || n > 15)) return 'Número incompleto. Digite com o DDD, por exemplo (32) 98888-7777.';
+    return '';
+  }
+  function validar(mostrar){
+    var m = mensagemErro();
+    inp.setCustomValidity(m);
+    if(mostrar || !m){
+      erro.textContent = m;
+      erro.classList.toggle('ver', !!m);
+      if(campo) campo.classList.toggle('zap-invalido', !!m);
+    }
+    return !m;
+  }
+
+  function aplicar(obrigatorio){
+    inp.required = obrigatorio;
+    tagObrig.hidden = !obrigatorio;
+    if(campo) campo.classList.toggle('zap-obrig', obrigatorio);
+    if(sub) sub.textContent = obrigatorio ? '· o WhatsApp é obrigatório na primeira vez' : '· opcional';
+    if(hint) hint.textContent = obrigatorio ? 'A TI usa este número para falar com você e avisar quando o seu chamado for aceito.' : HINT_PADRAO;
+    if(!obrigatorio){ erro.classList.remove('ver'); if(campo) campo.classList.remove('zap-invalido'); }
+    validar(false);
+  }
+
+  function separar(w){
+    var m = /^\s*(\+\d{1,3})\s*(.*)$/.exec(w || '');
+    return m ? { ddi: m[1], numero: m[2].trim() } : { ddi: '+55', numero: String(w || '').trim() };
+  }
+
+  async function conferir(){
+    var e = email();
+    if(!e) return;
+    if(jaTem[e] || noAparelho()){ jaTem[e] = true; aplicar(false); return; }
+    aplicar(true);                         // até provar que já informou antes
+    if(typeof db === 'undefined' || !db || conferindo === e) return;
+    conferindo = e;
+    try{
+      var r = await db.from('chamados').select('whatsapp')
+        .eq('email_solicitante', e).not('whatsapp', 'is', null)
+        .order('numero', { ascending: false }).limit(1);
+      var w = r && r.data && r.data[0] && r.data[0].whatsapp;
+      if(w && String(w).replace(/\D/g, '').length >= 8){
+        jaTem[e] = true;
+        var z = separar(w);
+        try{ localStorage.setItem(CHAVE, JSON.stringify(z)); }catch(_){}
+        if(!inp.value.trim()){
+          inp.value = z.numero;
+          if(sel && z.ddi && [].some.call(sel.options, function(o){ return o.value === z.ddi; })) sel.value = z.ddi;
+          if(tagLembrado){ tagLembrado.textContent = 'Do seu último chamado'; tagLembrado.hidden = false; }
+        }
+        if(email() === e) aplicar(false);
+      }
+    }catch(err){ /* sem resposta: continua obrigatório */ }
+    finally{ conferindo = null; }
+  }
+
+  inp.addEventListener('input', function(){ validar(erro.classList.contains('ver')); });
+  inp.addEventListener('blur', function(){ if(inp.value.trim()) validar(true); });
+  if(sel) sel.addEventListener('change', function(){ validar(erro.classList.contains('ver')); });
+  inp.addEventListener('invalid', function(){
+    validar(true);
+    if(campo && campo.scrollIntoView) campo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  form.addEventListener('reset', function(){ setTimeout(function(){
+    if(tagLembrado && tagLembrado.textContent !== 'Lembrado deste aparelho' && !inp.value.trim()) tagLembrado.textContent = 'Lembrado deste aparelho';
+    conferir();
+  }, 30); });
+  new MutationObserver(function(){
+    if(getComputedStyle(tela).display !== 'none') conferir();
+  }).observe(tela, { attributes: true, attributeFilter: ['style'] });
+  window.csslConferirWhatsObrigatorio = conferir;
+  conferir();
 })();
 </script>
 </body>
