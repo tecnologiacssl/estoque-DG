@@ -4764,7 +4764,7 @@ html.app-desktop #kb-gaveta-fundo{top:64px}
 .festa-brilho{inset:0}
 .hero-inicio.festa-on{padding-top:54px}
 .login-side.festa-on{padding-top:76px}
-.festa-faixa{display:flex;align-items:center;gap:12px;margin:0 0 16px;padding:10px 10px 10px 12px;border-radius:12px;border:1px solid var(--festa-borda);background:var(--festa-fundo);max-width:640px;animation:festaEntra .5s cubic-bezier(.2,.8,.2,1) both}
+.festa-faixa{display:flex;align-items:center;gap:12px;margin:0 0 16px;padding:10px 16px 10px 12px;border-radius:12px;border:1px solid var(--festa-borda);background:var(--festa-fundo);max-width:640px;animation:festaEntra .5s cubic-bezier(.2,.8,.2,1) both}
 @keyframes festaEntra{from{opacity:0;transform:translateY(-6px)}}
 .festa-faixa-ic{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:19px;line-height:1;background:var(--festa-fundo-forte)}
 .festa-faixa-ic svg{width:20px;height:20px}
@@ -25950,7 +25950,23 @@ formSolicitacao.addEventListener('submit', async function(e){
         cel.classList.remove('drop-alvo');
         var id = agendaArrastandoId;
         agendaArrastandoId = null;
-        if(id) agendaMoverEvento(id, dataIso);
+        if(!id) return;
+        // CORREÇÃO (travada ao arrastar): o calendário não é redesenhado no
+        // meio do arrastar — apagar o compromisso que está sendo arrastado
+        // fazia o navegador "segurar" a soltura por um instante. Aqui ele
+        // só aparece no dia novo na hora; o resto é feito logo depois que o
+        // arrastar termina (agendaAplicarMovPendente).
+        var original = agendaGradeEl.querySelector('.agenda-ev[data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+        var lista = cel.querySelector('.agenda-dia-chips');
+        if(original && lista && original.closest('.agenda-dia') !== cel){
+          var copia = original.cloneNode(true);
+          copia.classList.remove('arrastando');
+          copia.removeAttribute('draggable');
+          lista.appendChild(copia);
+          original.style.visibility = 'hidden';
+        }
+        agendaMovPendente = { id: id, data: dataIso };
+        setTimeout(agendaAplicarMovPendente, 250); // garantia, se o fim do arrastar não avisar
       });
     });
     agendaGradeEl.querySelectorAll('.agenda-ev.editavel').forEach(function(chip){
@@ -25963,6 +25979,7 @@ formSolicitacao.addEventListener('submit', async function(e){
         chip.classList.remove('arrastando');
         agendaArrastandoId = null;
         agendaGradeEl.querySelectorAll('.drop-alvo').forEach(function(x){ x.classList.remove('drop-alvo'); });
+        setTimeout(agendaAplicarMovPendente, 0);
       });
     });
 
@@ -25972,6 +25989,12 @@ formSolicitacao.addEventListener('submit', async function(e){
   }
 
   var agendaArrastandoId = null;
+  var agendaMovPendente = null;
+  function agendaAplicarMovPendente(){
+    if(!agendaMovPendente) return;
+    var m = agendaMovPendente; agendaMovPendente = null;
+    agendaMoverEvento(m.id, m.data);
+  }
   async function agendaMoverEvento(id, novaData){
     var evento = agendaEventos.find(function(e){ return String(e.id) === String(id); });
     if(!evento || evento.data === novaData) return;
@@ -28712,8 +28735,7 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
      Início. Festas: enfeite no topo, faixa com mensagem e um efeito
      caindo por alguns segundos ao abrir. Campanhas de saúde (meses
      coloridos): laço e faixa, sem efeito. Dias comemorativos: enfeite,
-     faixa e efeito no próprio dia. O × da faixa esconde a decoração
-     daquela data só para quem clicou (fica salvo neste aparelho).
+     faixa e efeito no próprio dia.
      Para ver um tema fora da data: ?festa=natal (ou pascoa, junina...)
      ou ?festa=2026-12-24 para simular um dia.
      ============================================================ -->
@@ -28831,8 +28853,6 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   }catch(e){}
 
   var atual = null, id = null;
-  function chaveOff(){ var y = hoje.getFullYear(); if(id === 'anonovo' && hoje.getMonth() === 0) y--; return 'cssl_festa_off_' + id + '_' + y; }
-  function desligado(){ if(forcado) return false; try{ return localStorage.getItem(chaveOff()) === '1'; }catch(e){ return false; } }
 
   function rgba(hex, a){ var n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')'; }
 
@@ -28862,14 +28882,9 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
     f.style.setProperty('--festa-fundo-forte', rgba(atual.cor, .18));
     var ano = hoje.getMonth() === 11 ? hoje.getFullYear() + 1 : hoje.getFullYear();
     f.innerHTML = '<span class="festa-faixa-ic" style="color:' + atual.cor + '">' + (atual.laco ? LACO_SVG : atual.icone) + '</span>' +
-      '<span class="festa-faixa-txt"><b></b><span></span></span>' +
-      '<button type="button" class="festa-faixa-x" title="Esconder a decoração desta data" aria-label="Esconder a decoração desta data">✕</button>';
+      '<span class="festa-faixa-txt"><b></b><span></span></span>';
     f.querySelector('b').textContent = atual.titulo;
     f.querySelector('.festa-faixa-txt > span').textContent = atual.texto.replace('{ano}', ano);
-    f.querySelector('.festa-faixa-x').addEventListener('click', function(){
-      try{ localStorage.setItem(chaveOff(), '1'); }catch(e){}
-      limpar();
-    });
     txt.insertBefore(f, txt.firstChild);
   }
 
@@ -28929,7 +28944,7 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   function aplicar(){
     var novoId = forcado || temaDoDia(hoje);
     if(novoId !== id){ limpar(); id = novoId; atual = id ? T[id] : null; efeitoRodou = {}; }
-    if(!atual || desligado()){ if(atual) limpar(); return; }
+    if(!atual) return;
     var login = document.getElementById('tela-login'), portal = document.getElementById('tela-portal');
     var lado = login && login.querySelector('.login-side'), hero = document.getElementById('hero-inicio');
     enfeitar(lado, false);
