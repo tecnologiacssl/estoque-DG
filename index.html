@@ -4829,6 +4829,38 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
   .agf-salvar kbd{display:none}
   .agf-acoes .agf-espaco{display:none}
 }
+
+/* ===== Início: "Agenda de hoje" ===== */
+.hero-inicio.com-evento{grid-template-columns:minmax(0,1fr) 360px}
+.hero-evento{gap:12px}
+.hh-lista{display:flex;flex-direction:column;gap:4px}
+.hh-item{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;cursor:pointer;transition:background .15s ease;min-width:0}
+.hh-item:hover,.hh-prox:hover{background:rgba(255,255,255,.05)}
+.hh-item.destaque{background:color-mix(in srgb,var(--cor) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cor) 35%,transparent)}
+.hh-item.passou{opacity:.45}
+.hh-item.passou .hh-txt b{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.35)}
+.hh-hora{flex:none;width:44px;font-size:12.5px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+.hh-hora.dia{font-size:10.5px;font-weight:700;color:var(--texto-2);line-height:1.15}
+.hh-barra{flex:none;width:3px;align-self:stretch;min-height:28px;border-radius:2px;background:var(--cor)}
+.hh-txt{min-width:0;flex:1;display:flex;flex-direction:column;gap:1px}
+.hh-txt b{font-size:13.5px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hh-txt small{font-size:11.5px;color:var(--texto-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hh-sit{flex:none;font-size:11px;font-weight:800;padding:3px 8px;border-radius:99px;white-space:nowrap}
+.hh-sit.agora{display:inline-flex;align-items:center;gap:5px;background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.35)}
+.hh-sit.agora i{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:hhPulso 1.6s ease-in-out infinite}
+@keyframes hhPulso{50%{opacity:.3;transform:scale(.7)}}
+.hh-sit.breve{background:rgba(125,123,255,.14);color:#c9c8ff;border:1px solid rgba(125,123,255,.3)}
+.hh-sit.feito{color:#86efac;padding:3px 4px;font-size:13px}
+.hh-mais{align-self:flex-start;margin:0;width:auto;padding:3px 8px;border:0;background:transparent;color:var(--azul-claro,#a3a2ff);font:700 12px/1.4 inherit;cursor:pointer;border-radius:6px}
+.hh-mais:hover{background:rgba(125,123,255,.1)}
+.hero-inicio .hero-evento .hh-fim{margin:2px 0 0 8px;font-size:12.5px;color:#86efac;font-weight:600}
+.hh-prox-rot{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--texto-3,#8b8b99);margin:8px 0 -4px 8px}
+.hh-prox{display:flex;align-items:center;gap:12px;padding:6px 8px;border-radius:10px;cursor:pointer;min-width:0}
+.hh-prox-dia{flex:none;width:44px;border-radius:9px;overflow:hidden;text-align:center;border:1px solid color-mix(in srgb,var(--cor) 45%,transparent)}
+.hh-prox-dia small{display:block;font-size:9.5px;font-weight:800;padding:2px 0;background:var(--cor);color:#111}
+.hh-prox-dia b{display:block;font-size:18px;line-height:1.35;color:#fff}
+@media (prefers-reduced-motion:reduce){.hh-sit.agora i{animation:none}}
+@media (max-width:900px){.hero-inicio.com-evento{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -5049,7 +5081,7 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
       </div>
       <div id="agenda-home-bloco" class="hero-evento" hidden>
         <div class="hero-evento-topo">
-          <span class="hero-evento-rotulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Próximo evento</span>
+          <span class="hero-evento-rotulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span id="agenda-home-rotulo">Agenda de hoje</span></span>
           <button type="button" class="hero-evento-link" id="agenda-home-ver-todos">Ver agenda →</button>
         </div>
         <div id="agenda-home-lista"></div>
@@ -25909,65 +25941,116 @@ formSolicitacao.addEventListener('submit', async function(e){
       agendaMarcarHeroComEvento(false);
       return;
     }
-    var hoje = new Date();
-    var hojeIso = agendaChaveData(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-    // ADIÇÃO: mistura os eventos cadastrados com os feriados nacionais e de
-    // Muriaé/MG dos próximos ~4 meses, os chamados agendados e as
-    // manutenções de PC, pra o "Próximo evento" também avisar do que vem
-    // por aí nesses outros módulos, não só do que foi cadastrado manualmente
-    // aqui na Agenda.
-    // ALTERADO: mostra só o próximo item (antes mostrava até 5), a pedido
-    // do usuário — não precisa lotar a Início de feriados futuros.
-    var proximos = agendaEventos
-      .concat(agendaProximosFeriados(120))
-      .concat(agendaChamadosAgendados)
-      .concat(agendaManutencoesPc)
-      .filter(function(e){ return e.data >= hojeIso; })
-      .sort(function(a,b){
-        if(a.data !== b.data) return a.data < b.data ? -1 : 1;
-        return (a.hora_inicio || '').localeCompare(b.hora_inicio || '');
-      })
-      .slice(0, 1);
+    // ALTERADO (redesign): "Agenda de hoje" — os compromissos do dia, o
+    // próximo em destaque com "em 25 min" / "Agora", os que já passaram
+    // apagados. Sem nada hoje, mostra o próximo compromisso dos outros dias.
+    var agora = new Date();
+    var hojeIso = agendaChaveData(agora.getFullYear(), agora.getMonth(), agora.getDate());
+    var minAgora = agora.getHours() * 60 + agora.getMinutes();
+    var escHero = function(v){ return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+    var CORES_TIPO_HERO = { manutencao:'#f5c26b', visita:'#7d7bff', reuniao:'#a78bfa', treinamento:'#f472b6', outro:'#94a3b8', feriado:'#ef4444', chamado:'#2dd4bf', manutencao_pc:'#fb923c' };
+    var MESES_CURTOS_HERO = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    var SEMANA_HERO = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+    function hm(h){ if(!h) return null; var p = String(h).split(':'); return (+p[0]) * 60 + (+p[1] || 0); }
+    function hhmm(h){ return h ? String(h).slice(0, 5) : ''; }
+    function ordenar(a, b){
+      if(a.data !== b.data) return a.data < b.data ? -1 : 1;
+      var x = hm(a.hora_inicio), y = hm(b.hora_inicio);
+      if(x == null && y == null) return 0; if(x == null) return -1; if(y == null) return 1;   // dia todo primeiro
+      return x - y;
+    }
+    var todos = agendaEventos.concat(agendaProximosFeriados(120)).concat(agendaChamadosAgendados).concat(agendaManutencoesPc);
+    var deHoje = todos.filter(function(e){ return e.data === hojeIso; }).sort(ordenar);
+    // situação de cada um: passou / agora / depois
+    deHoje.forEach(function(e){
+      var ini = hm(e.hora_inicio), fim = hm(e.hora_fim);
+      if(ini == null){ e._sit = 'dia'; return; }
+      if(fim == null || fim <= ini) fim = ini + 60;
+      e._sit = minAgora >= fim ? 'passou' : (minAgora >= ini ? 'agora' : 'depois');
+      e._falta = ini - minAgora;
+    });
+    var proximoHoje = deHoje.filter(function(e){ return e._sit === 'agora' || e._sit === 'depois'; })[0] || null;
+    var futuros = todos.filter(function(e){ return e.data > hojeIso; }).sort(ordenar);
+    var proximoOutroDia = proximoHoje ? null : futuros[0] || null;
 
-    if(!proximos.length){
+    if(!deHoje.length && !proximoOutroDia){
       agendaHomeBlocoEl.hidden = true;
       agendaMarcarHeroComEvento(false);
       return;
     }
     agendaHomeBlocoEl.hidden = false;
     agendaMarcarHeroComEvento(true);
-    // ALTERADO (redesign da Início): "calendarinho" com mês/dia na cor do
-    // tipo + etiquetas de tipo, quanto falta, horário e setor.
-    var MESES_CURTOS_HERO = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
-    var CORES_TIPO_HERO = { manutencao:'#f5c26b', visita:'#7d7bff', reuniao:'#a78bfa', treinamento:'#f472b6', outro:'#94a3b8', feriado:'#ef4444', chamado:'#2dd4bf', manutencao_pc:'#fb923c' };
-    var escHero = function(v){ return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
-    agendaHomeListaEl.innerHTML = proximos.map(function(e){
-      var tipoInfo = TIPOS_AGENDA[e.tipo] || TIPOS_AGENDA.outro;
-      var cor = CORES_TIPO_HERO[e.tipo] || CORES_TIPO_HERO.outro;
-      var partes = String(e.data).split('-');
-      var dataEvento = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]));
-      var hojeZero = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-      var dias = Math.round((dataEvento - hojeZero) / DIAS_MS);
-      var falta = dias <= 0 ? 'Hoje' : (dias === 1 ? 'Amanhã' : 'em ' + dias + ' dias');
-      var horario = e.hora_inicio ? (e.hora_inicio + (e.hora_fim ? ' – ' + e.hora_fim : '')) : '';
-      var chips = '<span class="hero-evento-chip tipo" style="--cor:' + cor + '">' + tipoInfo.emoji + ' ' + escHero(tipoInfo.label) + '</span>' +
-        '<span class="hero-evento-chip">' + falta + '</span>' +
-        (horario ? '<span class="hero-evento-chip">' + escHero(horario) + '</span>' : '') +
-        (e.setor ? '<span class="hero-evento-chip">' + escHero(e.setor) + '</span>' : '');
-      return '<div class="hero-evento-item" data-data="' + escHero(e.data) + '" title="Abrir este dia na Agenda">' +
-        '<div class="hero-evento-dia" style="--cor:' + cor + '"><span class="mes">' + MESES_CURTOS_HERO[dataEvento.getMonth()] + '</span><span class="num">' + dataEvento.getDate() + '</span></div>' +
-        '<div class="hero-evento-info">' +
-          '<div class="hero-evento-titulo">' + escHero(e.titulo || '') + '</div>' +
-          '<div class="hero-evento-meta">' + chips + '</div>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-    agendaHomeListaEl.querySelectorAll('.hero-evento-item').forEach(function(item){
-      item.addEventListener('click', function(){
-        agendaAbrirModalDia(item.getAttribute('data-data'));
-      });
+    var rot = document.getElementById('agenda-home-rotulo');
+    if(rot) rot.textContent = deHoje.length ? 'Hoje · ' + SEMANA_HERO[agora.getDay()] + ', ' + agora.getDate() + ' ' + MESES_CURTOS_HERO[agora.getMonth()].toLowerCase() : 'Próximo compromisso';
+
+    function situacao(e){
+      if(e._sit === 'agora') return '<span class="hh-sit agora"><i></i>Agora</span>';
+      if(e._sit === 'depois'){
+        var f = e._falta;
+        if(f <= 180) return '<span class="hh-sit breve">em ' + (f < 60 ? f + ' min' : Math.floor(f / 60) + 'h' + (f % 60 ? String(f % 60).padStart(2, '0') : '')) + '</span>';
+        return '';
+      }
+      if(e._sit === 'passou') return '<span class="hh-sit feito">✓</span>';
+      return '';
+    }
+    var html = '';
+    if(deHoje.length){
+      var MAX = 4, visiveis = deHoje;
+      if(deHoje.length > MAX){
+        // primeiro esconde os que já passaram (do mais antigo pro mais novo),
+        // depois os do fim do dia
+        visiveis = deHoje.slice();
+        var sobra = visiveis.length - MAX;
+        visiveis = visiveis.filter(function(e){ if(sobra > 0 && e._sit === 'passou'){ sobra--; return false; } return true; }).slice(0, MAX);
+      }
+      html += '<div class="hh-lista">' + visiveis.map(function(e){
+        var cor = CORES_TIPO_HERO[e.tipo] || CORES_TIPO_HERO.outro;
+        var info = TIPOS_AGENDA[e.tipo] || TIPOS_AGENDA.outro;
+        var classe = 'hh-item' + (e === proximoHoje ? ' destaque' : '') + (e._sit === 'passou' ? ' passou' : '');
+        var hora = e.hora_inicio ? hhmm(e.hora_inicio) : 'Dia todo';
+        var sub = info.emoji + ' ' + info.label + (e.hora_fim ? ' · até ' + hhmm(e.hora_fim) : '') + (e.setor ? ' · ' + e.setor : '');
+        return '<div class="' + classe + '" style="--cor:' + cor + '" data-id="' + escHero(e.id) + '" data-data="' + escHero(e.data) + '" tabindex="0" role="button">' +
+          '<span class="hh-hora' + (e.hora_inicio ? '' : ' dia') + '">' + hora + '</span>' +
+          '<span class="hh-barra"></span>' +
+          '<span class="hh-txt"><b>' + escHero(e.titulo || '') + '</b><small>' + escHero(sub) + '</small></span>' +
+          situacao(e) +
+        '</div>';
+      }).join('') + '</div>';
+      var escondidos = deHoje.length - (deHoje.length > 4 ? 4 : deHoje.length);
+      if(escondidos > 0) html += '<button type="button" class="hh-mais" data-data="' + hojeIso + '">+' + escondidos + ' ' + (escondidos === 1 ? 'outro' : 'outros') + ' hoje</button>';
+      if(!proximoHoje){
+        var proxF = futuros[0];
+        html += '<p class="hh-fim">Tudo feito por hoje.' + (proxF ? '' : '') + '</p>';
+        if(proxF) proximoOutroDia = proxF;
+      }
+    }
+    if(proximoOutroDia){
+      var e = proximoOutroDia, cor = CORES_TIPO_HERO[e.tipo] || CORES_TIPO_HERO.outro, info = TIPOS_AGENDA[e.tipo] || TIPOS_AGENDA.outro;
+      var pz = String(e.data).split('-'), d = new Date(+pz[0], +pz[1] - 1, +pz[2]);
+      var dias = Math.round((d - new Date(agora.getFullYear(), agora.getMonth(), agora.getDate())) / DIAS_MS);
+      var quando = dias === 1 ? 'Amanhã' : (dias < 7 ? SEMANA_HERO[d.getDay()].replace(/^./, function(c){ return c.toUpperCase(); }) : 'Em ' + dias + ' dias');
+      html += (deHoje.length ? '<div class="hh-prox-rot">Próximo</div>' : '') +
+        '<div class="hh-prox" style="--cor:' + cor + '" data-id="' + escHero(e.id) + '" data-data="' + escHero(e.data) + '" tabindex="0" role="button">' +
+          '<span class="hh-prox-dia"><small>' + MESES_CURTOS_HERO[d.getMonth()] + '</small><b>' + d.getDate() + '</b></span>' +
+          '<span class="hh-txt"><b>' + escHero(e.titulo || '') + '</b><small>' + escHero(info.emoji + ' ' + info.label + ' · ' + quando + (e.hora_inicio ? ' ' + hhmm(e.hora_inicio) : '')) + '</small></span>' +
+        '</div>';
+    }
+    agendaHomeListaEl.innerHTML = html;
+    function abrir(el){
+      var id = el.getAttribute('data-id'), data = el.getAttribute('data-data');
+      var ev = agendaEventos.find(function(x){ return String(x.id) === String(id); });
+      if(ev && agEditavel(ev)) agendaAbrirModalForm(ev);
+      else agendaAbrirModalDia(data);
+    }
+    agendaHomeListaEl.querySelectorAll('.hh-item,.hh-prox').forEach(function(el){
+      el.addEventListener('click', function(){ abrir(el); });
+      el.addEventListener('keydown', function(ev){ if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); abrir(el); } });
     });
+    var mais = agendaHomeListaEl.querySelector('.hh-mais');
+    if(mais) mais.addEventListener('click', function(){ agendaAbrirModalDia(mais.getAttribute('data-data')); });
   }
+  // atualiza o "em X min" / "Agora" a cada minuto
+  setInterval(function(){ if(agendaHomeBlocoEl && !agendaHomeBlocoEl.hidden && !document.hidden) agendaRenderBlocoHome(); }, 60000);
 
   // ADIÇÃO: o hero da Início só vira duas colunas quando há evento pra mostrar.
   function agendaMarcarHeroComEvento(sim){
