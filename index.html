@@ -29455,5 +29455,104 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   aplicar();
 })();
 </script>
+
+<!-- ============================================================
+     ADIÇÃO: botão "voltar" do celular (e do navegador). Em vez de sair
+     do portal, ele fecha o que estiver por cima, nesta ordem:
+     janela aberta (formulário, resumo, painel lateral...) → conversa do
+     chat no celular → tela atual (volta para o Início). Só no Início é
+     que o voltar sai do portal, como em qualquer app.
+     ============================================================ -->
+<script>
+(function(){
+  if(window.csslDesktop) return;               // apps de computador não têm botão voltar
+  if(!window.history || !history.pushState) return;
+
+  var MODAIS = [
+    '.pc-modal-overlay.aberto', '#ch-modal-resumo', '#sl-modal-resumo', '#chatModalNovaConversa', '#catProdutoModal', '#qrModal',
+    '#modal-editar-icone', '#modal-perfil-acesso', '#modal-permissoes-usuario', '.chat-info-grupo.aberto', '#sugDrawer',
+    '#kb-gaveta-fundo.aberto', '.ios-guia-overlay.aberto'
+  ];
+  function visivel(el){
+    if(!el || el.hidden) return false;
+    var cs = getComputedStyle(el);
+    return cs.display !== 'none' && cs.visibility !== 'hidden' && el.getClientRects().length > 0;
+  }
+  function modaisAbertos(){
+    var lista = [];
+    MODAIS.forEach(function(sel){ document.querySelectorAll(sel).forEach(function(el){ if(visivel(el) && lista.indexOf(el) === -1) lista.push(el); }); });
+    // sugestões: só conta quando o painel está aberto de fato
+    lista = lista.filter(function(el){ return el.id !== 'sugDrawer' || el.classList.contains('aberto'); });
+    return lista;
+  }
+  function telaAtual(){
+    var main = document.getElementById('mainArea');
+    if(!main) return null;
+    var telas = main.querySelectorAll(':scope > [id^="tela-"]');
+    for(var i = 0; i < telas.length; i++){
+      var t = telas[i];
+      if(t.id === 'tela-portal' || t.id === 'tela-login') continue;
+      if(t.id === 'tela-chat' && window.CSSL_APP_CHAT) continue; // no modo "só chat" o chat é o início
+      if(visivel(t)) return t;
+    }
+    return null;
+  }
+  function conversaChatNoCelular(){
+    var col = document.getElementById('chatListaCol'), tc = document.getElementById('tela-chat');
+    return !!(col && tc && visivel(tc) && col.classList.contains('chat-lista-oculta') && window.matchMedia && matchMedia('(max-width: 760px)').matches);
+  }
+  function camadas(){
+    return (telaAtual() ? 1 : 0) + (conversaChatNoCelular() ? 1 : 0) + modaisAbertos().length;
+  }
+
+  // ---- fechar a camada de cima ----
+  function fecharModal(el){
+    var bt = null, cand = el.querySelectorAll('.pc-modal-fechar, [id$="Fechar"], [id$="-fechar"], [id$="fechar"], [class*="fechar"], [aria-label^="Fechar"], [id$="-cancelar"], [id$="Cancelar"], #ch-resumo-editar, #sl-resumo-editar');
+    for(var i = 0; i < cand.length; i++){ if(visivel(cand[i]) && cand[i].tagName === 'BUTTON'){ bt = cand[i]; break; } }
+    if(!bt && el.id === 'kb-gaveta-fundo'){ el.click(); return; }
+    if(bt){ bt.click(); return; }
+    // último recurso: Esc e depois esconder
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    setTimeout(function(){ if(visivel(el)){ el.classList.remove('aberto'); if(el.id) el.hidden = true; } }, 50);
+  }
+  function fecharCamadaDeCima(){
+    var m = modaisAbertos();
+    if(m.length){ fecharModal(m[m.length - 1]); return true; }
+    if(conversaChatNoCelular()){ var v = document.getElementById('chatBtnVoltarLista'); if(v){ v.click(); return true; } }
+    var t = telaAtual();
+    if(t){
+      var b = t.querySelector('.btn-voltar-portal');
+      if(b && visivel(b)){ b.click(); return true; }
+      var ini = document.getElementById('navTrilhaInicio');
+      if(ini){ ini.click(); return true; }
+    }
+    return false;
+  }
+
+  // ---- manter o histórico do navegador igual às camadas abertas ----
+  var empilhadas = 0, ignorar = 0, agendado = false;
+  function sincronizar(){
+    agendado = false;
+    var alvo = camadas();
+    if(alvo > empilhadas){
+      while(empilhadas < alvo){ empilhadas++; history.pushState({ cssl: empilhadas }, ''); }
+    } else if(alvo < empilhadas){
+      // fechou pelo próprio portal (botão Voltar, X...) → tira as entradas que sobraram
+      var n = empilhadas - alvo; empilhadas = alvo; ignorar++;
+      history.go(-n);
+    }
+  }
+  function agendar(){ if(!agendado){ agendado = true; requestAnimationFrame(sincronizar); } }
+  window.addEventListener('popstate', function(){
+    if(ignorar > 0){ ignorar--; return; }
+    // a pessoa apertou "voltar"
+    if(empilhadas > 0) empilhadas--;
+    fecharCamadaDeCima();
+    setTimeout(agendar, 80);
+  });
+  new MutationObserver(agendar).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
+  window.addEventListener('load', function(){ setTimeout(agendar, 500); });
+})();
+</script>
 </body>
 </html>
