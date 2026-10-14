@@ -22378,8 +22378,13 @@ formSolicitacao.addEventListener('submit', async function(e){
 
       chatRenderMensagens(msgs || [], true);
 
+      // CORREÇÃO: usa a hora da última mensagem (hora do servidor) quando ela
+      // for mais nova que o relógio deste computador — com o relógio atrasado,
+      // mensagens já vistas continuavam contando como não lidas.
+      var lidaEm = Date.now();
+      (msgs || []).forEach(function(m){ var t = new Date(m.criado_em).getTime() + 1; if(t > lidaEm) lidaEm = t; });
       await db.from('chat_grupo_leituras').upsert(
-        { setor: setor, usuario_id: chatMeuId, lida_em: new Date().toISOString() },
+        { setor: setor, usuario_id: chatMeuId, lida_em: new Date(lidaEm).toISOString() },
         { onConflict: 'setor,usuario_id' }
       );
       var item = chatGruposCache.filter(function(g){ return g.setor === setor; })[0];
@@ -23179,12 +23184,64 @@ formSolicitacao.addEventListener('submit', async function(e){
     chatAtualizarBadgeSidebar();
   }
 
+  // CORREÇÃO: reconta as não lidas direto do banco — ao voltar para a janela,
+  // a cada 1 minuto e quando algo é lido em outro aparelho/app. Assim o número
+  // do ícone do chat não fica "preso" depois que a mensagem já foi vista.
+  var chatRecontagemTimer = null, chatRecontagemEm = 0, chatRecontando = false;
+  function chatAgendarRecontagem(espera){
+    clearTimeout(chatRecontagemTimer);
+    chatRecontagemTimer = setTimeout(chatRecontarNaoLidas, espera || 0);
+  }
+  async function chatRecontarNaoLidas(){
+    if(!db || !chatMeuId || chatRecontando) return;
+    chatRecontando = true; chatRecontagemEm = Date.now();
+    try{
+      await chatCarregarConversas();
+      await chatCarregarGrupos();
+      // o que está aberto e visível na tela conta como lido
+      if(chatJanelaEmFoco()){
+        if(chatTipoAtivo === 'direta' && chatConversaAtivaId){
+          var c = chatConversasCache.filter(function(x){ return String(x.id) === String(chatConversaAtivaId); })[0];
+          if(c && c.naoLidas > 0){
+            c.naoLidas = 0;
+            db.from('chat_mensagens').update({ lida:true }).eq('conversa_id', chatConversaAtivaId).eq('lida', false).neq('remetente_id', chatMeuId);
+            chatAvisarLido(chatConversaAtivaId);
+          }
+        } else if(chatTipoAtivo === 'grupo' && chatGrupoAtivoSetor){
+          var g = chatGruposCache.filter(function(x){ return x.setor === chatGrupoAtivoSetor; })[0];
+          if(g && g.naoLidas > 0){
+            g.naoLidas = 0;
+            var ult = g.ultimaMensagemEm ? new Date(g.ultimaMensagemEm).getTime() + 1 : 0;
+            db.from('chat_grupo_leituras').upsert({ setor: chatGrupoAtivoSetor, usuario_id: chatMeuId, lida_em: new Date(Math.max(Date.now(), ult)).toISOString() }, { onConflict: 'setor,usuario_id' });
+          }
+        }
+      }
+      chatRenderListaConversas(elBuscaInput.value);
+      chatAtualizarBadgeSidebar();
+    }catch(err){ console.warn('Chat: falha ao recontar não lidas.', err); }
+    finally{ chatRecontando = false; }
+  }
+  function chatRecontarSePreciso(){
+    if(document.hidden || !chatMeuId) return;
+    if(Date.now() - chatRecontagemEm < 10000) return; // no máximo a cada 10 s
+    chatAgendarRecontagem(300);
+  }
+  window.addEventListener('focus', chatRecontarSePreciso);
+  document.addEventListener('visibilitychange', chatRecontarSePreciso);
+  setInterval(function(){ if(chatMeuId && !document.hidden) chatAgendarRecontagem(0); }, 120000);
+
   function chatIniciarRealtime(){
     chatIniciarPresenca(); // REDESIGN: online / digitando / lida
     if(!db || chatRealtimeChannel || !chatMeuId) return;
     chatRealtimeChannel = db.channel('chat-realtime-' + chatMeuId)
       .on('postgres_changes', { event:'INSERT', schema:'public', table:'chat_mensagens' }, function(payload){
         chatTratarNovaMensagem(payload.new);
+      })
+      // CORREÇÃO: mensagem marcada como lida em outro lugar (app do Chat,
+      // celular, outra aba) — reconta as não lidas para o número do ícone
+      .on('postgres_changes', { event:'UPDATE', schema:'public', table:'chat_mensagens' }, function(payload){
+        var m = payload && payload.new;
+        if(m && m.lida && String(m.remetente_id) !== String(chatMeuId)) chatAgendarRecontagem(1200);
       })
       // ADIÇÃO: tempo real para mensagens de grupo
       .on('postgres_changes', { event:'INSERT', schema:'public', table:'chat_grupo_mensagens' }, function(payload){
