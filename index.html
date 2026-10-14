@@ -4861,6 +4861,67 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 .hh-prox-dia b{display:block;font-size:18px;line-height:1.35;color:#fff}
 @media (prefers-reduced-motion:reduce){.hh-sit.agora i{animation:none}}
 @media (max-width:900px){.hero-inicio.com-evento{grid-template-columns:1fr}}
+
+/* ===== Foto de perfil ===== */
+#foto-perfil-modal .fp-caixa{width:min(440px,100%)}
+.fp-abas{display:flex;gap:4px;padding:4px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--borda,rgba(255,255,255,.08));margin:6px 0 16px}
+.fp-aba{flex:1;margin:0;width:auto;height:34px;border:0;border-radius:9px;background:transparent;color:#a1a1aa;font:700 13px inherit;cursor:pointer}
+.fp-aba.ativa{background:#0601fe;color:#fff}
+.fp-palco{position:relative;width:260px;height:260px;margin:0 auto;border-radius:16px;overflow:hidden;background:#0c0c10;touch-action:none;user-select:none;-webkit-user-select:none}
+.fp-palco img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;cursor:grab;will-change:transform}
+.fp-palco img:active{cursor:grabbing}
+.fp-mascara{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at center,transparent 129px,rgba(0,0,0,.6) 130px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.fp-mascara::after{content:'';position:absolute;left:1px;top:1px;right:1px;bottom:1px;border-radius:50%;border:2px solid rgba(255,255,255,.75)}
+.fp-vazio{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#8b8b99;font-size:12.5px}
+.fp-vazio[hidden]{display:none}
+.fp-atual{width:120px;height:120px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#1c1c22;color:#c9c8ff;font-size:40px;font-weight:800}
+.fp-atual img{width:100%;height:100%;object-fit:cover}
+.fp-zoom{display:flex;align-items:center;gap:10px;width:260px;margin:14px auto 0;color:#8b8b99}
+.fp-zoom[hidden]{display:none}
+.fp-zoom svg{width:18px;height:18px;flex:none}
+.fp-zoom input{flex:1;margin:0;accent-color:#7d7bff}
+.fp-dica{text-align:center;font-size:12px;color:#8b8b99;margin:8px 0 0}
+.fp-dica[hidden]{display:none}
+.fp-botoes{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.fp-escolher{display:inline-flex;align-items:center;justify-content:center;width:auto;margin:0;cursor:pointer}
+.fp-camera{display:none}
+@media (pointer:coarse){.fp-camera{display:inline-flex}}
+.fp-icones{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:10px;max-height:300px;overflow:auto;padding:2px}
+.fp-icones button{margin:0;width:auto;aspect-ratio:1;padding:6px;border-radius:50%;border:2px solid transparent;background:#1c1c22;cursor:pointer}
+.fp-icones button img{width:100%;height:100%;border-radius:50%;display:block}
+.fp-icones button.sel{border-color:#7d7bff;box-shadow:0 0 0 3px rgba(125,123,255,.25)}
+
+/* foto do menu clicável para trocar */
+.nav-avatar-trocar{position:relative;flex:none;margin:0;padding:0;width:auto;border:0;background:none;cursor:pointer;border-radius:12px}
+.nav-avatar-trocar .nav-avatar-cam{position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:50%;background:#0601fe;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #15151b}
+.nav-avatar-trocar .nav-avatar-cam svg{width:11px;height:11px}
+.nav-avatar-trocar:hover .nav-avatar{filter:brightness(.8)}
+.nav-avatar-trocar:focus-visible{outline:2px solid #7d7bff;outline-offset:2px}
+
+/* Criar sua conta: bloco "Sua foto de perfil" */
+.fp-cad-bloco{display:flex;align-items:center;gap:16px;padding:14px;margin:4px 0 14px;border-radius:14px;border:1px dashed rgba(125,123,255,.45);background:rgba(125,123,255,.06)}
+.fp-cad-bloco.com-foto{border-style:solid;border-color:rgba(125,123,255,.35)}
+.fp-cad-avatar{position:relative;flex:none;width:76px;height:76px;margin:0;padding:0;border:0;border-radius:50%;background:none;cursor:pointer}
+.fp-cad-img{width:76px;height:76px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#1c1c22;color:#a3a2ff;box-shadow:0 0 0 2px rgba(125,123,255,.5)}
+.fp-cad-img img{width:100%;height:100%;object-fit:cover;display:block}
+.fp-cad-img svg{width:30px;height:30px}
+.fp-cad-badge{position:absolute;right:-2px;bottom:-2px;width:26px;height:26px;border-radius:50%;background:#0601fe;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #0e0e11}
+.fp-cad-badge svg{width:13px;height:13px}
+.fp-cad-avatar:hover .fp-cad-img{filter:brightness(.85)}
+.fp-cad-txt{min-width:0;display:flex;flex-direction:column;gap:3px}
+.fp-cad-txt b{font-size:14px;color:#fff}
+.fp-cad-txt small{font-size:12px;color:#a1a1aa;line-height:1.35}
+.fp-cad-acoes{display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap}
+.fp-cad-btn{display:inline-flex;align-items:center;gap:7px;width:auto;margin:0;height:34px;padding:0 14px;border-radius:10px;border:0;background:#0601fe;color:#fff;font:700 13px inherit;cursor:pointer}
+.fp-cad-btn svg{width:15px;height:15px}
+.fp-cad-btn:hover{filter:brightness(1.12)}
+.fp-cad-remover{width:auto;margin:0;height:34px;padding:0 10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#c4c4cf;font:600 12.5px inherit;cursor:pointer}
+.fp-cad-remover[hidden]{display:none}
+#form-criar .fp-cad-ou{font-size:12px;color:#a1a1aa}
+/* avatar grande da ligação com foto */
+.chamada-avatar-xl{overflow:hidden}
+.chamada-avatar-xl img,.chamada-avatar-grande img,.chamada-ativa-avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
+.fp-abas[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -4930,10 +4991,11 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
       </button>
       <div class="nav-menu" id="navMenuUsuario" role="menu" hidden>
         <div class="nav-menu-cab">
-          <span class="nav-avatar grande" id="navMenuAvatar"></span>
+          <button type="button" class="nav-avatar-trocar" id="navMenuAvatarBtn" title="Trocar foto de perfil" aria-label="Trocar foto de perfil"><span class="nav-avatar grande" id="navMenuAvatar"></span><span class="nav-avatar-cam" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span></button>
           <div class="nav-menu-cab-txt"><b id="navMenuNome"></b><small id="navMenuEmail"></small><span class="nav-menu-tag" id="navMenuTag" hidden></span></div>
         </div>
         <button type="button" class="nav-menu-item" id="navMenuHistorico" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg><span>Meu histórico</span></button>
+        <button type="button" class="nav-menu-item" id="navMenuFoto" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Foto de perfil</span></button>
         <div class="nav-menu-reais" id="navMenuItensReais"></div>
       </div>
     </div>
@@ -11291,7 +11353,25 @@ formCriar.addEventListener('submit', async function(e){
     // não existir (foi apagado ou renomeado), o cadastro segue normal, só
     // sem nenhuma tela liberada a mais; um admin pode aplicar um perfil a
     // qualquer momento em Gerenciar usuários.
-    var dadosCadastro = { nome: nome, email: emailNormalizado, icone_perfil: iconePerfilSelecionado, setor: setor || null, medico: medicoCriarSelecionado };
+    // ADIÇÃO: foto de perfil escolhida no cadastro — envia antes de gravar.
+    // Se o envio falhar, a conta é criada com o primeiro ícone e a pessoa
+    // pode trocar depois em "Foto de perfil".
+    var iconeCadastro = iconePerfilSelecionado;
+    if(iconeCadastro === '__foto__'){
+      iconeCadastro = ICONES_PERFIL[0].id;
+      var blobFotoCad = window.__csslFotoCadastroBlob;
+      if(blobFotoCad){
+        try{
+          var caminhoFotoCad = 'perfis/novo-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
+          var upFotoCad = await db.storage.from('anexos').upload(caminhoFotoCad, blobFotoCad, { contentType: 'image/jpeg', upsert: true });
+          if(!(upFotoCad && upFotoCad.error)){
+            var pubFotoCad = db.storage.from('anexos').getPublicUrl(caminhoFotoCad);
+            if(pubFotoCad && pubFotoCad.data && pubFotoCad.data.publicUrl) iconeCadastro = pubFotoCad.data.publicUrl;
+          }
+        }catch(errFoto){ console.warn('Cadastro: não foi possível enviar a foto de perfil.', errFoto); }
+      }
+    }
+    var dadosCadastro = { nome: nome, email: emailNormalizado, icone_perfil: iconeCadastro, setor: setor || null, medico: medicoCriarSelecionado };
     // ALTERADO: agora aplica um perfil de acesso pros dois lados da pergunta —
     // "MEDICO" pra quem responde Sim, "NAO ADMINS" pra quem responde Não —
     // e não só pra quem é médico. Se o perfil não existir, segue sem quebrar.
@@ -15453,6 +15533,7 @@ formSolicitacao.addEventListener('submit', async function(e){
 
   // ADIÇÃO: retorna a URL (data URI) do ícone de perfil pelo id salvo em icone_perfil
   function iconeSrcPorId(id){
+    if(id && /^(https?:|data:image)/.test(id)) return id; // foto de perfil
     if(!id || typeof ICONES_PERFIL === 'undefined') return null;
     var achado = ICONES_PERFIL.filter(function(ic){ return ic.id === id; })[0];
     return achado ? achado.src : null;
@@ -18267,6 +18348,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     return ((p[0] || '?')[0] + (p.length > 1 ? p[p.length - 1][0] : (p[0] || '?')[1] || '')).toUpperCase();
   }
   function srcIcone(id){
+    if(id && /^(https?:|data:image)/.test(id)) return id; // foto de perfil
     if(!id || typeof ICONES_PERFIL === 'undefined') return '';
     var ic = ICONES_PERFIL.filter(function(i){ return i.id === id; })[0];
     return ic ? ic.src : '';
@@ -21297,6 +21379,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     return CHAT_CORES_AVATAR[soma % CHAT_CORES_AVATAR.length];
   }
   function chatIconeSrcPorId(id){
+    if(id && /^(https?:|data:image)/.test(id)) return id; // foto de perfil
     if(!id || typeof ICONES_PERFIL === 'undefined') return null;
     var achado = ICONES_PERFIL.filter(function(ic){ return ic.id === id; })[0];
     return achado ? achado.src : null;
@@ -23215,6 +23298,13 @@ formSolicitacao.addEventListener('submit', async function(e){
     chatAtualizarPreviewGrupo(m.setor, chatPreviewAnexo(m), false, nomeAutor, m.criado_em);
     chatAtualizarBadgeSidebar();
   }
+
+  // ADIÇÃO: foto de perfil trocada agora → atualiza o que o chat já tem guardado
+  document.addEventListener('cssl:perfil-atualizado', function(e){
+    var d = e && e.detail; if(!d) return;
+    chatUsuariosCache.forEach(function(u){ if(String(u.id) === String(d.id)) u.icone_perfil = d.icone_perfil; });
+    if(String(chatMeuId) === String(d.id)) chatMeuIcone = d.icone_perfil;
+  });
 
   // CORREÇÃO: reconta as não lidas direto do banco — ao voltar para a janela,
   // a cada 1 minuto e quando algo é lido em outro aparelho/app. Assim o número
@@ -29552,6 +29642,315 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   });
   new MutationObserver(agendar).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
   window.addEventListener('load', function(){ setTimeout(agendar, 500); });
+})();
+</script>
+
+<!-- ADIÇÃO: foto de perfil (como no WhatsApp) -->
+<div class="pc-modal-overlay" id="foto-perfil-modal" role="dialog" aria-modal="true" aria-labelledby="fp-titulo">
+  <div class="pc-modal-box fp-caixa">
+    <button class="pc-modal-fechar" id="fp-fechar" type="button" aria-label="Fechar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <h3 class="pc-modal-titulo" id="fp-titulo">Foto de perfil</h3>
+    <p class="pc-modal-sub">Aparece no topo, no Chat Interno e para a equipe de TI.</p>
+    <div class="fp-abas" role="tablist">
+      <button type="button" class="fp-aba ativa" data-aba="foto" role="tab">Foto</button>
+      <button type="button" class="fp-aba" data-aba="icone" role="tab">Ícone</button>
+    </div>
+    <div class="fp-painel" id="fp-painel-foto">
+      <div class="fp-palco" id="fp-palco">
+        <img id="fp-img" alt="" draggable="false" hidden>
+        <div class="fp-vazio" id="fp-vazio"><span class="fp-atual" id="fp-atual"></span><small>Escolha uma foto para começar</small></div>
+        <div class="fp-mascara" aria-hidden="true"></div>
+      </div>
+      <div class="fp-zoom" id="fp-zoom-box" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M8 11h6"/></svg>
+        <input type="range" id="fp-zoom" min="1" max="3" step="0.01" value="1" aria-label="Aproximar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M11 8v6"/></svg>
+      </div>
+      <p class="fp-dica" id="fp-dica" hidden>Arraste a foto para ajustar e use a barra para aproximar.</p>
+      <div class="fp-botoes">
+        <label class="btn-secundario fp-escolher"><input type="file" id="fp-arquivo" accept="image/*" hidden>Escolher foto</label>
+        <label class="btn-secundario fp-escolher fp-camera"><input type="file" id="fp-camera" accept="image/*" capture="user" hidden>Tirar foto</label>
+      </div>
+    </div>
+    <div class="fp-painel" id="fp-painel-icone" hidden>
+      <div class="fp-icones" id="fp-icones"></div>
+    </div>
+    <p class="small" id="fp-erro" style="display:none;color:var(--vermelho);margin:10px 0 0"></p>
+    <div class="pc-modal-acoes">
+      <button type="button" class="btn-secundario" id="fp-cancelar">Cancelar</button>
+      <button type="button" class="btn-principal" id="fp-salvar" style="width:auto;margin:0" disabled>Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ADIÇÃO: foto de perfil. A foto é recortada em círculo aqui mesmo,
+   reduzida para 320x320 e guardada no armazenamento de arquivos (pasta
+   "perfis"). O endereço dela vai no mesmo campo do ícone de perfil
+   (usuarios.icone_perfil), então aparece em todo lugar que já mostrava o
+   ícone — sem mudar o banco. */
+(function(){
+  var modal = document.getElementById('foto-perfil-modal');
+  var abrirBtn = document.getElementById('navMenuFoto');
+  if(!modal || !abrirBtn) return;
+  function el(id){ return document.getElementById(id); }
+  var palco = el('fp-palco'), img = el('fp-img'), vazio = el('fp-vazio'), atualEl = el('fp-atual');
+  var zoom = el('fp-zoom'), zoomBox = el('fp-zoom-box'), dica = el('fp-dica'), erro = el('fp-erro'), salvar = el('fp-salvar');
+  var LADO = 260, SAIDA = 320;
+  var usuario = null, aba = 'foto', iconeEscolhido = null;
+  var nat = { w: 0, h: 0 }, base = 1, z = 1, pos = { x: 0, y: 0 }, temFoto = false;
+
+  function mostrarErro(t){ erro.textContent = t || ''; erro.style.display = t ? 'block' : 'none'; }
+  function ehFoto(v){ return !!v && /^(https?:|data:image)/.test(v); }
+  function iconeSrc(id){
+    if(ehFoto(id)) return id;
+    var ic = (typeof ICONES_PERFIL !== 'undefined' ? ICONES_PERFIL : []).filter(function(i){ return i.id === id; })[0];
+    return ic ? ic.src : '';
+  }
+  function iniciais(n){ var p = String(n || '?').trim().split(/\s+/); return ((p[0] || '?')[0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase(); }
+  function pintar(alvo, nome, valor){
+    if(!alvo) return;
+    var src = iconeSrc(valor);
+    alvo.innerHTML = '';
+    if(src){ var i = document.createElement('img'); i.src = src; i.alt = ''; alvo.appendChild(i); }
+    else alvo.textContent = iniciais(nome);
+  }
+
+  // ---- recorte ----
+  function limitar(){
+    var w = nat.w * base * z, h = nat.h * base * z;
+    pos.x = Math.min(0, Math.max(LADO - w, pos.x));
+    pos.y = Math.min(0, Math.max(LADO - h, pos.y));
+  }
+  function desenhar(){ limitar(); img.style.transform = 'translate(' + pos.x + 'px,' + pos.y + 'px) scale(' + (base * z) + ')'; }
+  function aplicarZoom(novo, cx, cy){
+    cx = cx == null ? LADO / 2 : cx; cy = cy == null ? LADO / 2 : cy;
+    var antes = base * z; z = Math.max(1, Math.min(3, novo)); var depois = base * z;
+    pos.x = cx - (cx - pos.x) * depois / antes; pos.y = cy - (cy - pos.y) * depois / antes;
+    zoom.value = z; desenhar();
+  }
+  function carregarArquivo(f){
+    mostrarErro('');
+    if(!f) return;
+    if(!/^image\//.test(f.type)){ mostrarErro('Escolha um arquivo de imagem (JPG ou PNG).'); return; }
+    if(f.size > 15 * 1048576){ mostrarErro('A foto é muito grande (máx. 15 MB).'); return; }
+    var url = URL.createObjectURL(f);
+    var tmp = new Image();
+    tmp.onload = function(){
+      nat = { w: tmp.naturalWidth, h: tmp.naturalHeight };
+      base = Math.max(LADO / nat.w, LADO / nat.h); z = 1; zoom.value = 1;
+      pos = { x: (LADO - nat.w * base) / 2, y: (LADO - nat.h * base) / 2 };
+      img.onload = null; img.src = url; img.hidden = false; vazio.hidden = true;
+      zoomBox.hidden = false; dica.hidden = false; temFoto = true; salvar.disabled = false;
+      desenhar();
+    };
+    tmp.onerror = function(){ mostrarErro('Não foi possível abrir essa imagem. Tente outra foto.'); };
+    tmp.src = url;
+  }
+  ['fp-arquivo', 'fp-camera'].forEach(function(id){ var inp = el(id); if(inp) inp.addEventListener('change', function(){ carregarArquivo(inp.files && inp.files[0]); inp.value = ''; }); });
+  zoom.addEventListener('input', function(){ aplicarZoom(parseFloat(zoom.value)); });
+  palco.addEventListener('wheel', function(e){ if(!temFoto) return; e.preventDefault(); var r = palco.getBoundingClientRect(); aplicarZoom(z * (e.deltaY < 0 ? 1.08 : 1 / 1.08), e.clientX - r.left, e.clientY - r.top); }, { passive: false });
+  // arrastar (mouse e dedo) + pinça para aproximar no celular
+  var toques = {}, ultimo = null, distInicial = 0, zInicial = 1;
+  palco.addEventListener('pointerdown', function(e){
+    if(!temFoto) return;
+    palco.setPointerCapture(e.pointerId);
+    toques[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var ids = Object.keys(toques);
+    if(ids.length === 2){ var a = toques[ids[0]], b = toques[ids[1]]; distInicial = Math.hypot(a.x - b.x, a.y - b.y); zInicial = z; }
+    ultimo = { x: e.clientX, y: e.clientY };
+  });
+  palco.addEventListener('pointermove', function(e){
+    if(!temFoto || !toques[e.pointerId]) return;
+    toques[e.pointerId] = { x: e.clientX, y: e.clientY };
+    var ids = Object.keys(toques);
+    if(ids.length >= 2){
+      var a = toques[ids[0]], b = toques[ids[1]], d = Math.hypot(a.x - b.x, a.y - b.y), r = palco.getBoundingClientRect();
+      if(distInicial) aplicarZoom(zInicial * d / distInicial, (a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top);
+      return;
+    }
+    pos.x += e.clientX - ultimo.x; pos.y += e.clientY - ultimo.y; ultimo = { x: e.clientX, y: e.clientY }; desenhar();
+  });
+  function soltar(e){ delete toques[e.pointerId]; var ids = Object.keys(toques); ultimo = ids.length ? toques[ids[0]] : null; if(ids.length < 2) distInicial = 0; }
+  palco.addEventListener('pointerup', soltar); palco.addEventListener('pointercancel', soltar);
+
+  function recortar(){
+    return new Promise(function(res, rej){
+      var c = document.createElement('canvas'); c.width = SAIDA; c.height = SAIDA;
+      var ctx = c.getContext('2d'), esc = base * z;
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, SAIDA, SAIDA);
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, -pos.x / esc, -pos.y / esc, LADO / esc, LADO / esc, 0, 0, SAIDA, SAIDA);
+      c.toBlob(function(b){ b ? res(b) : rej(new Error('falha ao gerar a imagem')); }, 'image/jpeg', 0.86);
+    });
+  }
+
+  // ---- abas ----
+  function trocarAba(qual){
+    aba = qual;
+    modal.querySelectorAll('.fp-aba').forEach(function(b){ b.classList.toggle('ativa', b.getAttribute('data-aba') === qual); });
+    el('fp-painel-foto').hidden = qual !== 'foto';
+    el('fp-painel-icone').hidden = qual !== 'icone';
+    salvar.disabled = qual === 'foto' ? !temFoto : !iconeEscolhido;
+    mostrarErro('');
+  }
+  modal.querySelectorAll('.fp-aba').forEach(function(b){ b.addEventListener('click', function(){ trocarAba(b.getAttribute('data-aba')); }); });
+  function montarIcones(){
+    var grade = el('fp-icones'), lista = typeof ICONES_PERFIL !== 'undefined' ? ICONES_PERFIL : [];
+    grade.innerHTML = lista.map(function(ic){ return '<button type="button" data-icone="' + ic.id + '" title="' + ic.label + '" aria-label="' + ic.label + '"' + (usuario && usuario.icone_perfil === ic.id ? ' class="sel"' : '') + '><img src="' + ic.src + '" alt=""></button>'; }).join('');
+    grade.querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click', function(){
+        grade.querySelectorAll('button').forEach(function(x){ x.classList.remove('sel'); });
+        b.classList.add('sel'); iconeEscolhido = b.getAttribute('data-icone'); salvar.disabled = false;
+      });
+    });
+  }
+
+  // ---- abrir / fechar ----
+  var modoCadastro = null; // função que recebe a foto, quando aberto pelo "Criar sua conta"
+  var subEl = modal.querySelector('.pc-modal-sub'), abasEl = modal.querySelector('.fp-abas');
+  var SUB_PADRAO = subEl ? subEl.textContent : '';
+  function prepararModo(){
+    if(abasEl) abasEl.hidden = !!modoCadastro;
+    if(subEl) subEl.textContent = modoCadastro ? 'Ajuste a foto no círculo. Ela vai para o seu perfil quando você criar a conta.' : SUB_PADRAO;
+    salvar.textContent = modoCadastro ? 'Usar esta foto' : 'Salvar';
+  }
+  window.csslFotoPerfilEscolher = function(aoEscolher){
+    modoCadastro = aoEscolher;
+    mostrarErro(''); temFoto = false; iconeEscolhido = null; usuario = null;
+    img.hidden = true; img.removeAttribute('src'); vazio.hidden = false; zoomBox.hidden = true; dica.hidden = true; salvar.disabled = true;
+    var nomeCad = document.getElementById('nome-criar');
+    pintar(atualEl, nomeCad && nomeCad.value.trim() ? nomeCad.value : '?', null);
+    prepararModo(); trocarAba('foto');
+    modal.classList.add('aberto');
+  };
+  async function abrir(){
+    modoCadastro = null; prepararModo();
+    mostrarErro(''); temFoto = false; iconeEscolhido = null;
+    img.hidden = true; img.removeAttribute('src'); vazio.hidden = false; zoomBox.hidden = true; dica.hidden = true; salvar.disabled = true;
+    var email = (typeof emailLogado !== 'undefined' && emailLogado) ? String(emailLogado).toLowerCase() : '';
+    usuario = null;
+    try{ var r = await db.from('usuarios').select('id,nome,email,icone_perfil').eq('email', email).maybeSingle(); usuario = r && r.data; }catch(e){}
+    pintar(atualEl, usuario ? usuario.nome : (typeof nomeLogado !== 'undefined' ? nomeLogado : ''), usuario && usuario.icone_perfil);
+    montarIcones();
+    trocarAba('foto');
+    modal.classList.add('aberto');
+    if(!usuario) mostrarErro('Não foi possível carregar o seu cadastro agora. Tente de novo em instantes.');
+  }
+  function fechar(){ modal.classList.remove('aberto'); modoCadastro = null; }
+  abrirBtn.addEventListener('click', abrir);
+  var avatarBtn = document.getElementById('navMenuAvatarBtn');
+  if(avatarBtn) avatarBtn.addEventListener('click', function(){ abrir(); });
+  el('fp-fechar').addEventListener('click', fechar);
+  el('fp-cancelar').addEventListener('click', fechar);
+  modal.addEventListener('click', function(e){ if(e.target === modal) fechar(); });
+
+  // ---- salvar ----
+  salvar.addEventListener('click', async function(){
+    if(modoCadastro){
+      try{
+        var blobCad = await recortar();
+        var url = URL.createObjectURL(blobCad);
+        var cb = modoCadastro; fechar(); cb(blobCad, url);
+      }catch(e){ mostrarErro('Não foi possível preparar a foto. Tente outra.'); }
+      return;
+    }
+    if(!usuario){ mostrarErro('Não foi possível carregar o seu cadastro agora.'); return; }
+    salvar.disabled = true; var textoAntes = salvar.textContent; salvar.textContent = 'Salvando...'; mostrarErro('');
+    try{
+      var valor;
+      if(aba === 'foto'){
+        var blob = await recortar();
+        var caminho = 'perfis/' + usuario.id + '-' + Date.now() + '.jpg';
+        var up = await db.storage.from('anexos').upload(caminho, blob, { contentType: 'image/jpeg', upsert: true });
+        if(up && up.error) throw up.error;
+        var pub = db.storage.from('anexos').getPublicUrl(caminho);
+        valor = pub && pub.data && pub.data.publicUrl;
+        if(!valor) throw new Error('não foi possível obter o endereço da foto');
+      } else valor = iconeEscolhido;
+      var r = await db.from('usuarios').update({ icone_perfil: valor }).eq('id', usuario.id);
+      if(r && r.error) throw r.error;
+      usuario.icone_perfil = valor;
+      pintar(el('navAvatar'), usuario.nome, valor);
+      pintar(el('navMenuAvatar'), usuario.nome, valor);
+      try{ document.dispatchEvent(new CustomEvent('cssl:perfil-atualizado', { detail: { id: usuario.id, icone_perfil: valor } })); }catch(e){}
+      fechar();
+    }catch(err){
+      mostrarErro('Não foi possível salvar (' + (err && err.message ? err.message : 'erro') + ').');
+    }finally{
+      salvar.textContent = textoAntes; salvar.disabled = false;
+    }
+  });
+})();
+</script>
+
+<script>
+/* ADIÇÃO: no "Criar sua conta", um bloco destacado "Sua foto de perfil"
+   acima dos ícones — a foto grande mostra o que está escolhido e o botão
+   "Adicionar minha foto" abre a tela de recorte. Escolher um ícone depois
+   troca a foto pelo ícone. */
+(function(){
+  var grade = document.getElementById('icone-perfil-grid');
+  var form = document.getElementById('form-criar');
+  if(!grade || !form) return;
+  var rot = grade.previousElementSibling;
+  var CAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>';
+  var bloco = document.createElement('div');
+  bloco.className = 'fp-cad-bloco';
+  bloco.innerHTML =
+    '<button type="button" class="fp-cad-avatar" id="fp-cad-avatar" aria-label="Adicionar minha foto"><span class="fp-cad-img" id="fp-cad-img"></span><i class="fp-cad-badge">' + CAM + '</i></button>' +
+    '<div class="fp-cad-txt"><b>Sua foto de perfil</b><small>Ajuda os colegas a te reconhecerem no Chat Interno.</small>' +
+      '<div class="fp-cad-acoes"><button type="button" class="fp-cad-btn" id="fp-cad-btn">' + CAM + '<span>Adicionar minha foto</span></button>' +
+      '<button type="button" class="fp-cad-remover" id="fp-cad-remover" hidden>Remover</button></div></div>';
+  if(rot && rot.tagName === 'LABEL'){
+    rot.parentNode.insertBefore(bloco, rot);
+    rot.textContent = 'Ou escolha um ícone';
+    rot.classList.add('fp-cad-ou');
+  } else grade.parentNode.insertBefore(bloco, grade);
+  var imgBox = bloco.querySelector('#fp-cad-img'), btn = bloco.querySelector('#fp-cad-btn'), btnTxt = btn.querySelector('span'), remover = bloco.querySelector('#fp-cad-remover');
+  var urlAtual = null;
+
+  function iconeSelecionado(){
+    var sel = grade.querySelector('.icone-perfil-opcao.selecionada img');
+    return sel ? sel.getAttribute('src') : '';
+  }
+  function mostrar(){
+    var foto = !!window.__csslFotoCadastroBlob;
+    var src = foto ? urlAtual : iconeSelecionado();
+    imgBox.innerHTML = src ? '<img src="' + src + '" alt="">' : CAM;
+    bloco.classList.toggle('com-foto', foto);
+    btnTxt.textContent = foto ? 'Trocar foto' : 'Adicionar minha foto';
+    remover.hidden = !foto;
+  }
+  function tirarFoto(){
+    window.__csslFotoCadastroBlob = null;
+    if(urlAtual){ try{ URL.revokeObjectURL(urlAtual); }catch(e){} urlAtual = null; }
+  }
+  function escolher(){
+    if(typeof window.csslFotoPerfilEscolher !== 'function') return;
+    window.csslFotoPerfilEscolher(function(blob, url){
+      tirarFoto();
+      window.__csslFotoCadastroBlob = blob; urlAtual = url;
+      grade.querySelectorAll('.icone-perfil-opcao').forEach(function(b){ b.classList.remove('selecionada'); });
+      try{ iconePerfilSelecionado = '__foto__'; }catch(e){}
+      mostrar();
+    });
+  }
+  btn.addEventListener('click', escolher);
+  bloco.querySelector('#fp-cad-avatar').addEventListener('click', escolher);
+  remover.addEventListener('click', function(){
+    tirarFoto();
+    var primeiro = grade.querySelector('.icone-perfil-opcao');
+    if(primeiro) primeiro.click(); // volta para o primeiro ícone
+    mostrar();
+  });
+  // escolheu um ícone: a foto sai e a foto grande mostra o ícone
+  grade.addEventListener('click', function(e){
+    if(!e.target.closest('.icone-perfil-opcao')) return;
+    tirarFoto(); setTimeout(mostrar, 0);
+  });
+  form.addEventListener('reset', function(){ setTimeout(function(){ tirarFoto(); mostrar(); }, 0); });
+  mostrar();
 })();
 </script>
 </body>
