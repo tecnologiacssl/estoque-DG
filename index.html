@@ -4941,6 +4941,68 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 .pgc-chip[disabled]{opacity:.45;cursor:default}
 .pgc-resumo{margin-top:12px;padding:9px 12px;border-radius:10px;background:rgba(125,123,255,.08);border:1px solid rgba(125,123,255,.25);color:#c9c8ff;font-size:12.5px;line-height:1.45}
 .pgc-resumo b{color:#fff}
+
+/* ===== Permissões: redesign ===== */
+#modal-permissoes-usuario .pc-modal-box{display:flex;flex-direction:column;max-height:calc(100vh - 72px);padding-bottom:0}
+@media (max-width:640px){#modal-permissoes-usuario .pc-modal-box{max-height:100vh;height:100vh}}
+#modal-permissoes-usuario #permissoes-usuario-corpo{flex:1;min-height:0;overflow:auto;margin:0 -26px;padding:0 26px 8px}
+#modal-permissoes-usuario .pc-modal-acoes{flex:none;position:static;margin:0 -26px;padding:14px 26px 20px;background:linear-gradient(180deg,rgba(13,14,22,.92),rgba(10,12,19,.99));border-top:1px solid rgba(255,255,255,.07)}
+#modal-permissoes-usuario #erro-permissoes-usuario{margin:8px 0 0}
+.perm-situacao{display:flex;align-items:center;gap:8px;margin:2px 0 14px;padding:8px 12px;border-radius:10px;font-size:12.5px;line-height:1.4;border:1px solid}
+.perm-situacao[hidden]{display:none}
+.perm-situacao::before{content:'';width:8px;height:8px;border-radius:50%;flex:none;background:currentColor}
+.perm-situacao.ok{color:#86efac;background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.3)}
+.perm-situacao.alerta{color:#fcd34d;background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.35)}
+.perm-situacao.perso{color:#c9c8ff;background:rgba(125,123,255,.08);border-color:rgba(125,123,255,.3)}
+.perm-situacao.padrao{color:#a1a1aa;background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.1)}
+.perm-situacao b{color:#fff}
+.perm-abas{display:flex;gap:4px;padding:4px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);margin:4px 0 14px;position:sticky;top:0;z-index:2;backdrop-filter:blur(8px)}
+.perm-abas[hidden]{display:none}
+.perm-aba{flex:1;margin:0;width:auto;height:36px;border:0;border-radius:9px;background:transparent;color:#a1a1aa;font:700 13px inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.perm-aba.ativa{background:#0601fe;color:#fff}
+.perm-qt{min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#fff;color:#0601fe;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.perm-qt.cinza{background:rgba(255,255,255,.14);color:inherit}
+.perm-painel[hidden]{display:none}
+.perm-telas{display:flex;flex-direction:column;gap:14px}
+.perm-grupo-tit{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#71717a;margin:0 0 6px}
+.perm-item{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:11px;cursor:pointer;transition:background .15s}
+.perm-item:hover{background:rgba(255,255,255,.04)}
+.perm-ic{flex:none;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(125,123,255,.12);color:#a3a2ff}
+.perm-ic svg{width:17px;height:17px}
+.perm-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.perm-txt b{font-size:13.5px;color:#f4f4f5}
+.perm-txt small{font-size:12px;color:#8b8b99;line-height:1.35}
+.perm-aviso{display:none;font-style:normal;font-size:11.5px;color:#fcd34d;font-weight:600}
+.perm-item.sem-base .perm-aviso{display:block}
+.perm-item.sem-base{opacity:.7}
+.perm-chave{appearance:none;-webkit-appearance:none;flex:none;width:40px;height:23px;margin:0;border-radius:99px;background:#3f3f46;position:relative;cursor:pointer;transition:background .18s}
+.perm-chave::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:transform .18s}
+.perm-chave:checked{background:#0601fe}
+.perm-chave:checked::after{transform:translateX(17px)}
+.perm-chave:focus-visible{outline:2px solid #7d7bff;outline-offset:2px}
+#perfil-acesso-checklist.perm-telas{display:flex !important;margin-bottom:6px}
+.pgc{margin:0;padding:0;border:0}
+.pgc-sem-chat{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.35);color:#fcd34d;font-size:12.5px;line-height:1.45}
+.pgc-sem-chat[hidden]{display:none}
+.pgc-sem-chat b{color:#fff}
+.pgc-escolhidos{margin:0 0 12px}
+.pgc-esc-tit{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#a3a2ff;margin:0 0 7px}
+.pgc-esc-chips{display:flex;flex-wrap:wrap;gap:7px}
+.pgc-esc{display:inline-flex;align-items:center;gap:7px;width:auto;margin:0;padding:6px 8px 6px 12px;border-radius:99px;border:1px solid #7d7bff;background:rgba(6,1,254,.22);color:#fff;font:600 12.5px/1.2 inherit;cursor:pointer}
+.pgc-esc i{font-style:normal;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.14);font-size:10px}
+.pgc-esc:hover i{background:#ef4444}
+.pgc-esc-vazio{font-size:12.5px;color:#8b8b99;padding:10px 12px;border-radius:10px;border:1px dashed rgba(255,255,255,.12)}
+.pgc-area{border-top:1px solid rgba(255,255,255,.06)}
+.pgc-area-cab{display:flex;align-items:center;gap:8px}
+.pgc-area-tog{flex:1;display:flex;align-items:center;gap:8px;width:auto;margin:0;padding:10px 2px;border:0;background:none;color:#d4d4dc;font:800 11.5px/1 inherit;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-align:left}
+.pgc-area-tog svg{width:14px;height:14px;transition:transform .15s;color:#71717a}
+.pgc-area.aberta .pgc-area-tog svg{transform:rotate(90deg)}
+.pgc-area-qt{margin-left:auto;font-size:11px;letter-spacing:0;text-transform:none;font-weight:700;color:#71717a}
+.pgc-area-qt.tem{color:#a3a2ff}
+.pgc-area-todos{width:auto;margin:0;padding:4px 9px;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#a1a1aa;font:700 11.5px inherit;cursor:pointer;white-space:nowrap}
+.pgc-area-todos:hover{color:#fff;border-color:rgba(125,123,255,.5)}
+.pgc-area .pgc-chips{display:none;padding:0 0 12px}
+.pgc-area.aberta .pgc-chips{display:flex}
 </style>
 </head>
 <body>
@@ -6286,6 +6348,7 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
         <button class="pc-modal-fechar" type="button" id="btn-fechar-permissoes-usuario"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
         <h3 class="pc-modal-titulo">Permissões de acesso</h3>
         <p class="pc-modal-sub" id="permissoes-usuario-label">—</p>
+        <div class="perm-situacao" id="perm-situacao" hidden></div>
         <div id="permissoes-usuario-aviso-admin" class="admin-aviso-info" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span>Este usuário é administrador e já tem acesso a tudo automaticamente — as permissões abaixo não se aplicam a ele.</span></div>
         <div id="permissoes-usuario-corpo">
           <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
@@ -6294,16 +6357,24 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
             </select>
             <button class="btn-secundario" id="permissoes-usuario-aplicar-perfil" style="width:auto;margin:0" type="button">Aplicar perfil</button>
           </div>
-          <p class="small" style="margin:0 0 10px">Ou personalize individualmente quais telas esse usuário pode acessar:</p>
-          <div id="permissoes-usuario-checklist" style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px"></div>
+          <div class="perm-abas" role="tablist">
+            <button type="button" class="perm-aba ativa" data-aba="telas" role="tab">Telas <span id="perm-qt-telas"></span></button>
+            <button type="button" class="perm-aba" data-aba="grupos" role="tab">Grupos do chat <span id="perm-qt-grupos"></span></button>
+          </div>
+          <div class="perm-painel" id="perm-painel-telas">
+          <div id="permissoes-usuario-checklist"></div>
+          </div>
+          <div class="perm-painel" id="perm-painel-grupos" hidden>
           <!-- ADIÇÃO: grupos do Chat Interno além do setor da pessoa -->
           <div class="pgc" id="pgc">
-            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Grupos do Chat Interno</h4>
+            <div class="pgc-sem-chat" id="pgc-sem-chat" hidden>A tela <b>Chat Interno</b> está desligada para essa pessoa (aba Telas). Os grupos marcados aqui só passam a valer quando ela for ligada.</div>
             <p id="pgc-texto">Marque outros grupos de setor em que a pessoa também pode <b>ler e mandar mensagens</b>.</p>
             <span class="pgc-proprio" id="pgc-proprio" hidden></span>
+            <div class="pgc-escolhidos" id="pgc-escolhidos"></div>
             <input type="text" class="pgc-busca" id="pgc-busca" placeholder="Buscar setor..." autocomplete="off">
             <div id="pgc-lista"></div>
             <div class="pgc-resumo" id="pgc-resumo"></div>
+          </div>
           </div>
         </div>
         <div class="msg-caixa erro" id="erro-permissoes-usuario"></div>
@@ -16094,14 +16165,51 @@ formSolicitacao.addEventListener('submit', async function(e){
   }
   function adminNovoId(){ return 'id_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); }
 
+  // REDESIGN: telas em grupos (Básico, Chat, Equipe de TI), cada uma com
+  // ícone, nome curto, frase explicando e uma chave liga/desliga. Continua
+  // usando <input type=checkbox data-card-key>, então lerChecklistCards e
+  // tudo que já lia o checklist segue funcionando igual.
+  var PERM_INFO = {
+    chamado:        { g:'basico', nome:'Abrir Chamado', desc:'Pedir ajuda à TI e solicitar material', ic:'<path d="M12 5v14M5 12h14"/>' },
+    historico:      { g:'basico', nome:'Meu Histórico', desc:'Ver os próprios chamados', ic:'<path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/>' },
+    chat:           { g:'chat', nome:'Chat Interno', desc:'Conversar com colegas e com o grupo do setor', ic:'<path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5z"/>' },
+    chat_admin:     { g:'chat', nome:'Chat — nível admin', desc:'Vê todos os grupos de setor e pode apagar conversas', ic:'<path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 20h16"/>', precisa:'chat' },
+    chat_auditoria: { g:'chat', nome:'Auditoria de Conversas', desc:'Lê (sem responder) as conversas diretas de qualquer pessoa', ic:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>' },
+    estoque:        { g:'ti', nome:'Estoque', desc:'Materiais, entradas e saídas', ic:'<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/>' },
+    computadores:   { g:'ti', nome:'Computadores', desc:'Cadastro, manutenções e etiquetas', ic:'<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>' },
+    wifi:           { g:'ti', nome:'Wi-Fi', desc:'Redes e senhas cadastradas', ic:'<path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/>' },
+    tv:             { g:'ti', nome:'TVs', desc:'TVs da casa e seus dados', ic:'<rect x="2" y="7" width="20" height="15" rx="2"/><path d="m17 2-5 5-5-5"/>' },
+    agenda:         { g:'ti', nome:'Agenda', desc:'Compromissos da equipe de TI', ic:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>' },
+    sugestoes:      { g:'ti', nome:'Sugestões recebidas', desc:'Ler e responder as sugestões enviadas', ic:'<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>' }
+  };
+  var PERM_GRUPOS = [['basico', 'Básico'], ['chat', 'Chat'], ['ti', 'Equipe de TI']];
   function montarChecklistCards(container, cardsAtuais){
     if(!container) return;
-    container.innerHTML = CARDS_PERMISSIVEIS.map(function(c){
-      var marcado = !!(cardsAtuais && cardsAtuais[c.key]);
-      return '<label style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:#e4e4e7;cursor:pointer">' +
-        '<input type="checkbox" data-card-key="' + c.key + '"' + (marcado ? ' checked' : '') + '> ' + adminEsc(c.label) +
+    container.classList.add('perm-telas');
+    var porGrupo = {};
+    CARDS_PERMISSIVEIS.forEach(function(c){
+      var info = PERM_INFO[c.key] || { g:'ti', nome:c.label, desc:'', ic:'<circle cx="12" cy="12" r="9"/>' };
+      (porGrupo[info.g] = porGrupo[info.g] || []).push({ c:c, info:info });
+    });
+    container.innerHTML = PERM_GRUPOS.filter(function(g){ return porGrupo[g[0]]; }).map(function(g){
+      return '<div class="perm-grupo"><div class="perm-grupo-tit">' + g[1] + '</div>' + porGrupo[g[0]].map(function(o){
+        var marcado = !!(cardsAtuais && cardsAtuais[o.c.key]);
+        return '<label class="perm-item"' + (o.info.precisa ? ' data-precisa="' + o.info.precisa + '"' : '') + '>' +
+          '<span class="perm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + o.info.ic + '</svg></span>' +
+          '<span class="perm-txt"><b>' + adminEsc(o.info.nome) + '</b><small>' + adminEsc(o.info.desc) + '</small><em class="perm-aviso">Precisa do Chat Interno ligado</em></span>' +
+          '<input type="checkbox" class="perm-chave" data-card-key="' + o.c.key + '"' + (marcado ? ' checked' : '') + '>' +
         '</label>';
+      }).join('') + '</div>';
     }).join('');
+    function dependencias(){
+      container.querySelectorAll('.perm-item[data-precisa]').forEach(function(it){
+        var dep = container.querySelector('input[data-card-key="' + it.getAttribute('data-precisa') + '"]');
+        it.classList.toggle('sem-base', !!dep && !dep.checked);
+      });
+    }
+    container.addEventListener('change', dependencias);
+    dependencias();
+    try{ container.dispatchEvent(new CustomEvent('cssl:checklist-montado', { bubbles: true })); }catch(e){}
   }
   function lerChecklistCards(container){
     var cards = {};
@@ -16311,6 +16419,8 @@ formSolicitacao.addEventListener('submit', async function(e){
     return c;
   }
   window.csslAdmComExtras = admComExtras;
+  window.csslPerfisAcesso = function(){ return perfisAcessoCarregados || []; };
+  window.csslChecklistIgualAoPerfil = function(c, p){ return checklistIgualAoPerfil(c, p); };
   function abrirModalPermissoesUsuario(u, ehAdmin){
     usuarioPermissoesEditando = u;
     if(window.csslGruposChatMontar) window.csslGruposChatMontar(u);
@@ -16332,6 +16442,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     var erro = document.getElementById('erro-permissoes-usuario');
     if(erro){ erro.className = 'msg-caixa erro'; erro.textContent = ''; erro.style.display = 'none'; }
     var modal = document.getElementById('modal-permissoes-usuario');
+    if(window.csslPermAoAbrir) window.csslPermAoAbrir(u, ehAdmin);
     if(modal) modal.classList.add('aberto');
   }
   function fecharModalPermissoesUsuario(){
@@ -30023,58 +30134,162 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
 </script>
 
 <script>
-/* ADIÇÃO: seção "Grupos do Chat Interno" da janela de Permissões. */
+/* ADIÇÃO (redesign): janela de Permissões — abas Telas | Grupos do chat,
+   selo da situação (perfil / personalizado), grupos escolhidos no topo,
+   áreas recolhíveis com "todos", aviso sem Chat Interno, rodapé fixo e
+   aviso de alterações não salvas. */
 (function(){
+  var modal = document.getElementById('modal-permissoes-usuario');
   var box = document.getElementById('pgc');
-  if(!box) return;
-  var lista = document.getElementById('pgc-lista'), busca = document.getElementById('pgc-busca');
-  var proprio = document.getElementById('pgc-proprio'), resumo = document.getElementById('pgc-resumo'), texto = document.getElementById('pgc-texto');
-  var u = null, marcados = [];
+  if(!modal || !box) return;
+  function el(id){ return document.getElementById(id); }
+  var lista = el('pgc-lista'), busca = el('pgc-busca'), escolhidos = el('pgc-escolhidos');
+  var proprio = el('pgc-proprio'), resumo = el('pgc-resumo'), texto = el('pgc-texto'), semChat = el('pgc-sem-chat');
+  var checklist = el('permissoes-usuario-checklist'), situacao = el('perm-situacao');
+  var u = null, marcados = [], abertas = {}, ehAdminAtual = false;
   function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
   function norm(v){ return String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
   function primeiroNome(){ return String((u && (u.nome || u.email)) || 'A pessoa').trim().split(/\s+/)[0]; }
   function setores(){
     var l = window.csslChatSetores ? window.csslChatSetores() : [];
-    // inclui algum setor marcado que não esteja mais na lista (não some sem querer)
     marcados.forEach(function(m){ if(l.indexOf(m) === -1) l.push(m); });
     return l;
   }
-  function render(){
-    var termo = norm(busca.value.trim()), grupos = {}, ordem = [];
+  function areas(){
+    var grupos = {}, ordem = [];
     setores().forEach(function(st){
-      if(termo && norm(st).indexOf(termo) === -1) return;
+      if(u && st === u.setor) return; // o setor da pessoa não entra na escolha
       var cat = window.csslChatCategoriaDoSetor ? window.csslChatCategoriaDoSetor(st) : null;
       var nomeCat = (cat && cat.label) || 'Outros';
       if(!grupos[nomeCat]){ grupos[nomeCat] = []; ordem.push(nomeCat); }
       grupos[nomeCat].push(st);
     });
-    lista.innerHTML = ordem.length ? ordem.map(function(c){
-      return '<div class="pgc-cat">' + esc(c) + '</div><div class="pgc-chips">' + grupos[c].map(function(st){
-        var dele = u && st === u.setor;
-        return '<button type="button" class="pgc-chip' + (dele || marcados.indexOf(st) !== -1 ? ' on' : '') + '" data-setor="' + esc(st) + '"' + (dele ? ' disabled title="Setor da pessoa"' : '') + '>' + esc(st) + '</button>';
-      }).join('') + '</div>';
-    }).join('') : '<p class="small" style="margin:8px 0 0">Nenhum setor encontrado.</p>';
-    var todos = (u && u.setor ? [u.setor] : []).concat(marcados);
-    resumo.innerHTML = marcados.length
-      ? esc(primeiroNome()) + ' vai ver ' + todos.length + (todos.length === 1 ? ' grupo' : ' grupos') + ' no chat: ' + todos.map(function(t, i){ return i === 0 && u && u.setor ? '<b>' + esc(t) + '</b>' : esc(t); }).join(', ') + '.'
-      : 'Nenhum grupo extra. ' + esc(primeiroNome()) + ' vê só o grupo do próprio setor' + (u && u.medico ? ' e o grupo Médicos.' : '.');
+    return { grupos: grupos, ordem: ordem };
   }
-  lista.addEventListener('click', function(e){
-    var b = e.target.closest('.pgc-chip'); if(!b || b.disabled) return;
-    var st = b.getAttribute('data-setor'), i = marcados.indexOf(st);
-    if(i === -1) marcados.push(st); else marcados.splice(i, 1);
-    render();
+
+  // ---------- grupos do chat ----------
+  function renderGrupos(){
+    var termo = norm(busca.value.trim()), a = areas();
+    escolhidos.innerHTML = marcados.length
+      ? '<div class="pgc-esc-tit">Liberados (' + marcados.length + ')</div><div class="pgc-esc-chips">' + marcados.map(function(st){ return '<button type="button" class="pgc-esc" data-tirar="' + esc(st) + '" title="Tirar ' + esc(st) + '">' + esc(st) + '<i>✕</i></button>'; }).join('') + '</div>'
+      : '<div class="pgc-esc-vazio">Nenhum grupo extra liberado ainda. Escolha abaixo.</div>';
+    var html = '';
+    a.ordem.forEach(function(nomeCat){
+      var itens = a.grupos[nomeCat].filter(function(st){ return !termo || norm(st).indexOf(termo) !== -1; });
+      if(!itens.length) return;
+      var qtd = a.grupos[nomeCat].filter(function(st){ return marcados.indexOf(st) !== -1; }).length;
+      var todos = qtd === a.grupos[nomeCat].length;
+      var aberta = !!termo || !!abertas[nomeCat];
+      html += '<div class="pgc-area' + (aberta ? ' aberta' : '') + '" data-area="' + esc(nomeCat) + '">' +
+        '<div class="pgc-area-cab"><button type="button" class="pgc-area-tog" data-tog="' + esc(nomeCat) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>' + esc(nomeCat) +
+        '<span class="pgc-area-qt' + (qtd ? ' tem' : '') + '">' + qtd + ' de ' + a.grupos[nomeCat].length + '</span></button>' +
+        '<button type="button" class="pgc-area-todos" data-todos="' + esc(nomeCat) + '">' + (todos ? 'Desmarcar todos' : 'Marcar todos') + '</button></div>' +
+        '<div class="pgc-chips">' + itens.map(function(st){
+          return '<button type="button" class="pgc-chip' + (marcados.indexOf(st) !== -1 ? ' on' : '') + '" data-setor="' + esc(st) + '">' + esc(st) + '</button>';
+        }).join('') + '</div></div>';
+    });
+    lista.innerHTML = html || '<p class="small" style="margin:8px 0 0">Nenhum setor encontrado.</p>';
+    var todosG = (u && u.setor ? [u.setor] : []).concat(marcados);
+    resumo.innerHTML = marcados.length
+      ? esc(primeiroNome()) + ' vai ver ' + todosG.length + (todosG.length === 1 ? ' grupo' : ' grupos') + ' no chat: ' + todosG.map(function(t, i){ return i === 0 && u && u.setor ? '<b>' + esc(t) + '</b>' : esc(t); }).join(', ') + '.'
+      : esc(primeiroNome()) + ' vê só o grupo do próprio setor' + (u && u.medico ? ' e o grupo Médicos.' : '.');
+    var qt = el('perm-qt-grupos'); if(qt){ qt.textContent = marcados.length ? marcados.length : ''; qt.className = marcados.length ? 'perm-qt' : ''; }
+    atualizarSemChat(); atualizarSituacao();
+  }
+  box.addEventListener('click', function(e){
+    var t = e.target.closest('[data-tirar],[data-tog],[data-todos],.pgc-chip');
+    if(!t) return;
+    if(t.hasAttribute('data-tirar')){ var i = marcados.indexOf(t.getAttribute('data-tirar')); if(i !== -1) marcados.splice(i, 1); }
+    else if(t.hasAttribute('data-tog')){ var n = t.getAttribute('data-tog'); abertas[n] = !abertas[n]; }
+    else if(t.hasAttribute('data-todos')){
+      var cat = t.getAttribute('data-todos'), da = areas().grupos[cat] || [];
+      var todos = da.every(function(st){ return marcados.indexOf(st) !== -1; });
+      da.forEach(function(st){ var k = marcados.indexOf(st); if(todos && k !== -1) marcados.splice(k, 1); if(!todos && k === -1) marcados.push(st); });
+      abertas[cat] = true;
+    } else {
+      var st = t.getAttribute('data-setor'), k2 = marcados.indexOf(st);
+      if(k2 === -1) marcados.push(st); else marcados.splice(k2, 1);
+    }
+    renderGrupos();
   });
-  busca.addEventListener('input', render);
+  busca.addEventListener('input', renderGrupos);
+
+  // ---------- telas: contador e aviso sem chat ----------
+  function cardsAtuais(){
+    var c = {};
+    checklist.querySelectorAll('input[data-card-key]').forEach(function(i){ c[i.getAttribute('data-card-key')] = !!i.checked; });
+    return c;
+  }
+  function atualizarSemChat(){
+    var chat = checklist.querySelector('input[data-card-key="chat"]');
+    semChat.hidden = !(chat && !chat.checked);
+  }
+  function atualizarQtTelas(){
+    var c = cardsAtuais(), n = Object.keys(c).filter(function(k){ return c[k]; }).length;
+    var qt = el('perm-qt-telas'); if(qt){ qt.textContent = n; qt.className = 'perm-qt cinza'; }
+  }
+  checklist.addEventListener('change', function(){ atualizarQtTelas(); atualizarSemChat(); atualizarSituacao(); });
+  checklist.addEventListener('cssl:checklist-montado', function(){ atualizarQtTelas(); atualizarSemChat(); atualizarSituacao(); });
+
+  // ---------- selo da situação ----------
+  function perfilDaPessoa(){
+    if(!u || !u.perfil_id) return null;
+    return (window.csslPerfisAcesso ? window.csslPerfisAcesso() : []).filter(function(p){ return String(p.id) === String(u.perfil_id); })[0] || null;
+  }
+  function atualizarSituacao(){
+    if(!situacao) return;
+    if(!u || ehAdminAtual){ situacao.hidden = true; return; }
+    var pf = perfilDaPessoa(), html, cls;
+    if(pf){
+      var igual = window.csslChecklistIgualAoPerfil ? window.csslChecklistIgualAoPerfil(cardsAtuais(), pf.cards) : true;
+      if(igual){ cls = 'ok'; html = 'Seguindo o perfil <b>' + esc(pf.nome) + '</b>'; }
+      else { cls = 'alerta'; html = 'Telas diferentes do perfil <b>' + esc(pf.nome) + '</b>: ao salvar, a pessoa passa a ser <b>Personalizado</b>'; }
+    } else if(u.permissoes && Object.keys(u.permissoes).filter(function(k){ return k !== 'chat_setores'; }).length){
+      cls = 'perso'; html = '<b>Personalizado</b> · não segue nenhum perfil';
+    } else { cls = 'padrao'; html = 'Padrão do sistema · nenhum perfil aplicado'; }
+    situacao.className = 'perm-situacao ' + cls; situacao.innerHTML = html; situacao.hidden = false;
+  }
+
+  // ---------- abas ----------
+  function trocarAba(qual){
+    modal.querySelectorAll('.perm-aba').forEach(function(b){ b.classList.toggle('ativa', b.getAttribute('data-aba') === qual); });
+    el('perm-painel-telas').hidden = qual !== 'telas';
+    el('perm-painel-grupos').hidden = qual !== 'grupos';
+  }
+  modal.querySelectorAll('.perm-aba').forEach(function(b){ b.addEventListener('click', function(){ trocarAba(b.getAttribute('data-aba')); }); });
+
+  // ---------- alterações não salvas ----------
+  var foto = null;
+  function estado(){ return JSON.stringify([cardsAtuais(), marcados.slice().sort()]); }
+  function tirarFoto(){ foto = estado(); }
+  function mudou(){ return foto !== null && estado() !== foto; }
+  function guardar(e){
+    if(!modal.classList.contains('aberto') || !mudou()) return;
+    if(!confirm('Você alterou as permissões e não salvou. Fechar mesmo assim?')){ e.preventDefault(); e.stopImmediatePropagation(); }
+  }
+  ['btn-fechar-permissoes-usuario', 'btn-cancelar-permissoes-usuario'].forEach(function(id){ var b = el(id); if(b) b.addEventListener('click', guardar, true); });
+  modal.addEventListener('click', function(e){ if(e.target === modal) guardar(e); }, true);
+  // salvou ou aplicou perfil: o que está na tela passa a ser o "salvo"
+  var btnAplicar = el('permissoes-usuario-aplicar-perfil');
+  if(btnAplicar) btnAplicar.addEventListener('click', function(){ setTimeout(function(){ if(!btnAplicar.disabled) tirarFoto(); renderGrupos(); }, 900); });
+
+  // ---------- ao abrir ----------
   window.csslGruposChatMontar = function(usuario){
     u = usuario;
     var p = u && u.permissoes;
     marcados = (p && Array.isArray(p.chat_setores)) ? p.chat_setores.filter(function(x){ return x && x !== u.setor; }) : [];
-    busca.value = '';
+    abertas = {}; busca.value = '';
     proprio.hidden = !(u && u.setor);
     if(u && u.setor) proprio.textContent = '✓ ' + u.setor + ' · setor da pessoa (sempre)';
-    texto.innerHTML = esc(primeiroNome()) + ' já participa do grupo do próprio setor. Marque outros grupos de setor em que ' + esc(primeiroNome()) + ' também pode <b>ler e mandar mensagens</b>.';
-    render();
+    texto.innerHTML = esc(primeiroNome()) + ' já participa do grupo do próprio setor. Libere outros grupos de setor em que ' + esc(primeiroNome()) + ' também pode <b>ler e mandar mensagens</b>.';
+  };
+  window.csslPermAoAbrir = function(usuario, ehAdmin){
+    ehAdminAtual = !!ehAdmin;
+    modal.querySelector('.perm-abas').hidden = !!ehAdmin;
+    trocarAba('telas');
+    renderGrupos(); atualizarQtTelas();
+    tirarFoto();
+    var corpo = el('permissoes-usuario-corpo'); if(corpo) corpo.scrollTop = 0;
   };
   window.csslGruposChatLer = function(){ return marcados.slice(); };
 })();
