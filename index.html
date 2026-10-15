@@ -4922,6 +4922,25 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 .chamada-avatar-xl{overflow:hidden}
 .chamada-avatar-xl img,.chamada-avatar-grande img,.chamada-ativa-avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
 .fp-abas[hidden]{display:none}
+
+/* Permissões: grupos do Chat Interno */
+.pgc{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
+.pgc h4{margin:0 0 4px;font-size:14.5px;color:#fff;display:flex;align-items:center;gap:8px}
+.pgc h4 svg{width:17px;height:17px;color:#a3a2ff}
+.pgc > p{margin:0 0 12px;font-size:12.5px;color:#a1a1aa;line-height:1.45}
+.pgc > p b{color:#e4e4e7}
+.pgc-proprio{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:#86efac;font-size:12px;font-weight:700;margin-bottom:12px}
+.pgc-proprio[hidden]{display:none}
+.pgc-busca{width:100%;box-sizing:border-box;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(161,161,170,.16);color:#fff;font-size:13px;margin:0 0 6px}
+.pgc-cat{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#71717a;margin:10px 0 7px}
+.pgc-chips{display:flex;flex-wrap:wrap;gap:7px}
+.pgc-chip{display:inline-flex;align-items:center;gap:6px;width:auto;margin:0;padding:6px 11px;border-radius:99px;border:1px solid rgba(161,161,170,.2);background:rgba(255,255,255,.03);color:#c4c4cf;font:600 12.5px/1.2 inherit;cursor:pointer}
+.pgc-chip:hover{border-color:rgba(125,123,255,.55);color:#fff}
+.pgc-chip.on{background:rgba(6,1,254,.22);border-color:#7d7bff;color:#fff}
+.pgc-chip.on::before{content:'✓';font-weight:900;color:#a3a2ff}
+.pgc-chip[disabled]{opacity:.45;cursor:default}
+.pgc-resumo{margin-top:12px;padding:9px 12px;border-radius:10px;background:rgba(125,123,255,.08);border:1px solid rgba(125,123,255,.25);color:#c9c8ff;font-size:12.5px;line-height:1.45}
+.pgc-resumo b{color:#fff}
 </style>
 </head>
 <body>
@@ -6277,6 +6296,15 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
           </div>
           <p class="small" style="margin:0 0 10px">Ou personalize individualmente quais telas esse usuário pode acessar:</p>
           <div id="permissoes-usuario-checklist" style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px"></div>
+          <!-- ADIÇÃO: grupos do Chat Interno além do setor da pessoa -->
+          <div class="pgc" id="pgc">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Grupos do Chat Interno</h4>
+            <p id="pgc-texto">Marque outros grupos de setor em que a pessoa também pode <b>ler e mandar mensagens</b>.</p>
+            <span class="pgc-proprio" id="pgc-proprio" hidden></span>
+            <input type="text" class="pgc-busca" id="pgc-busca" placeholder="Buscar setor..." autocomplete="off">
+            <div id="pgc-lista"></div>
+            <div class="pgc-resumo" id="pgc-resumo"></div>
+          </div>
         </div>
         <div class="msg-caixa erro" id="erro-permissoes-usuario"></div>
         <div class="pc-modal-acoes">
@@ -15985,7 +16013,16 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(!confirm(frase)) return;
     try{
       var idsReais = alvos.map(function(u){ return u.id; });
-      var { error } = await db.from('usuarios').update(patch).in('id', idsReais);
+      var error = null;
+      if(tipo === 'perfil'){
+        var resps = await Promise.all(alvos.map(function(u){
+          return db.from('usuarios').update({ permissoes: admComExtras(patch.permissoes, admExtrasChat(u)), perfil_id: patch.perfil_id }).eq('id', u.id);
+        }));
+        resps.forEach(function(r){ if(r && r.error && !error) error = r.error; });
+      } else {
+        var rMassa = await db.from('usuarios').update(patch).in('id', idsReais);
+        error = rMassa && rMassa.error;
+      }
       if(error) throw error;
       admSel = {};
       await carregarUsuarios();
@@ -16220,7 +16257,15 @@ formSolicitacao.addEventListener('submit', async function(e){
         // desvincula ao salvar um ajuste manual). Perfil novo (idEditado nulo)
         // não tem ninguém vinculado ainda, então não há o que propagar.
         if(idEditado){
-          var respPropaga = await db.from('usuarios').update({ permissoes: cards }).eq('perfil_id', idEditado);
+          var respPropaga = { error: null };
+          try{
+            var rVinc = await db.from('usuarios').select('id,permissoes').eq('perfil_id', idEditado);
+            if(rVinc.error) throw rVinc.error;
+            var rs = await Promise.all((rVinc.data || []).map(function(u){
+              return db.from('usuarios').update({ permissoes: admComExtras(cards, admExtrasChat(u)) }).eq('id', u.id);
+            }));
+            rs.forEach(function(r){ if(r && r.error && !respPropaga.error) respPropaga.error = r.error; });
+          }catch(errProp){ respPropaga.error = errProp; }
           if(respPropaga.error){
             console.error('Perfil salvo, mas falhou ao propagar pros usuários vinculados:', respPropaga.error);
           }
@@ -16255,8 +16300,20 @@ formSolicitacao.addEventListener('submit', async function(e){
   // personalizado em usuarios.permissoes), pra ficar claro pro admin o que a
   // pessoa realmente vê hoje. Admins de verdade só veem um aviso (já têm
   // acesso a tudo automaticamente, independente dessa configuração).
+  // ADIÇÃO: "Grupos do Chat Interno" liberados além do setor da pessoa —
+  // ficam em permissoes.chat_setores e são preservados em toda gravação de
+  // permissões (aplicar perfil, salvar, perfil editado, ações em massa).
+  function admExtrasChat(u){ var p = u && u.permissoes; return (p && Array.isArray(p.chat_setores)) ? p.chat_setores.slice() : []; }
+  function admComExtras(cards, extras){
+    var c = Object.assign({}, cards || {});
+    delete c.chat_setores;
+    if(extras && extras.length) c.chat_setores = extras.slice();
+    return c;
+  }
+  window.csslAdmComExtras = admComExtras;
   function abrirModalPermissoesUsuario(u, ehAdmin){
     usuarioPermissoesEditando = u;
+    if(window.csslGruposChatMontar) window.csslGruposChatMontar(u);
     var label = document.getElementById('permissoes-usuario-label');
     if(label) label.textContent = (u.nome || u.email) + ' — ' + u.email;
     var avisoAdmin = document.getElementById('permissoes-usuario-aviso-admin');
@@ -16310,9 +16367,10 @@ formSolicitacao.addEventListener('submit', async function(e){
         // ADIÇÃO: "aplicar perfil" copia (snapshot) o conjunto de cards do
         // perfil pra permissão individual do usuário NESTE momento — editar
         // o perfil depois não muda retroativamente quem já recebeu ele.
-        var { error } = await db.from('usuarios').update({ permissoes: perfil.cards, perfil_id: perfil.id }).eq('id', usuarioPermissoesEditando.id);
+        var permPerfil = admComExtras(perfil.cards, admExtrasChat(usuarioPermissoesEditando));
+        var { error } = await db.from('usuarios').update({ permissoes: permPerfil, perfil_id: perfil.id }).eq('id', usuarioPermissoesEditando.id);
         if(error) throw error;
-        usuarioPermissoesEditando.permissoes = perfil.cards;
+        usuarioPermissoesEditando.permissoes = permPerfil;
         usuarioPermissoesEditando.perfil_id = perfil.id;
         montarChecklistCards(document.getElementById('permissoes-usuario-checklist'), perfil.cards);
         // ADIÇÃO: avisa que o perfil já foi aplicado e salvo (não precisa clicar em Salvar)
@@ -16332,6 +16390,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     btnSalvarPermissoesUsuario.addEventListener('click', async function(){
       if(!usuarioPermissoesEditando){ fecharModalPermissoesUsuario(); return; }
       var cards = lerChecklistCards(document.getElementById('permissoes-usuario-checklist'));
+      var extrasChat = window.csslGruposChatLer ? window.csslGruposChatLer() : admExtrasChat(usuarioPermissoesEditando);
       btnSalvarPermissoesUsuario.disabled = true;
       try{
         // ALTERADO: agora que editar um perfil propaga automaticamente pra
@@ -16349,9 +16408,10 @@ formSolicitacao.addEventListener('submit', async function(e){
           ? perfisAcessoCarregados.filter(function(pf){ return String(pf.id) === String(usuarioPermissoesEditando.perfil_id); })[0]
           : null;
         var manterPerfilId = (perfilAtual && checklistIgualAoPerfil(cards, perfilAtual.cards)) ? perfilAtual.id : null;
-        var { error } = await db.from('usuarios').update({ permissoes: cards, perfil_id: manterPerfilId }).eq('id', usuarioPermissoesEditando.id);
+        var permSalvar = admComExtras(cards, extrasChat);
+        var { error } = await db.from('usuarios').update({ permissoes: permSalvar, perfil_id: manterPerfilId }).eq('id', usuarioPermissoesEditando.id);
         if(error) throw error;
-        usuarioPermissoesEditando.permissoes = cards;
+        usuarioPermissoesEditando.permissoes = permSalvar;
         usuarioPermissoesEditando.perfil_id = manterPerfilId;
         fecharModalPermissoesUsuario();
         carregarUsuarios(); // ADIÇÃO: atualiza a coluna "Permissão" (ajuste manual desvincula do perfil)
@@ -21297,6 +21357,8 @@ formSolicitacao.addEventListener('submit', async function(e){
     { chave:'outros', label:'Outros', icone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z" /><rect x="3" y="14" width="7" height="7" rx="1" /><circle cx="17.5" cy="17.5" r="3.5" /></svg>', setores:['Outro'] }
   ];
   var CHAT_CATEGORIA_PADRAO = CHAT_CATEGORIAS[CHAT_CATEGORIAS.length - 1]; // "Outros" — fallback
+  window.csslChatSetores = function(){ return CHAT_SETORES.filter(function(n){ return n && n !== 'Outro'; }); };
+  window.csslChatCategoriaDoSetor = function(setor){ return chatCategoriaDoSetor(setor); };
   function chatCategoriaDoSetor(setor){
     for(var i = 0; i < CHAT_CATEGORIAS.length; i++){
       if(CHAT_CATEGORIAS[i].setores.indexOf(setor) !== -1) return CHAT_CATEGORIAS[i];
@@ -21350,8 +21412,14 @@ formSolicitacao.addEventListener('submit', async function(e){
 
   // ADIÇÃO: quais setores (grupos) o usuário logado deve ver — admin vê
   // todos os grupos, os demais só o próprio.
+  // ADIÇÃO: grupos de outros setores liberados pelo admin para esta pessoa
+  // (Gerenciar usuários → Permissões → "Grupos do Chat Interno"), guardados
+  // em usuarios.permissoes.chat_setores.
+  var chatMeusSetoresExtras = [];
+  function chatExtrasDe(u){ var p = u && u.permissoes; return (p && Array.isArray(p.chat_setores)) ? p.chat_setores : []; }
   function chatSetoresVisiveis(){
     var lista = chatSouAdmin() ? CHAT_SETORES.slice() : (chatMeuSetor ? [chatMeuSetor] : []);
+    if(!chatSouAdmin()) chatMeusSetoresExtras.forEach(function(x){ if(x && lista.indexOf(x) === -1) lista.push(x); });
     // ADIÇÃO: grupo "Médicos" — some pra quem não é médico nem admin, e não
     // depende do setor da pessoa (um médico da UTI e um da Pediatria caem
     // no mesmo grupo).
@@ -21476,7 +21544,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(setor === CHAT_GRUPO_MEDICOS){
       return chatUsuariosCache.filter(function(u){ return u.medico && String(u.id) !== String(chatMeuId); });
     }
-    return chatUsuariosCache.filter(function(u){ return u.setor === setor && String(u.id) !== String(chatMeuId); });
+    return chatUsuariosCache.filter(function(u){ return (u.setor === setor || chatExtrasDe(u).indexOf(setor) !== -1) && String(u.id) !== String(chatMeuId); });
   }
   // apelido (minúsculo) -> { id, nome, slug }
   function chatMapaMencoesGrupo(setor){
@@ -21807,8 +21875,8 @@ formSolicitacao.addEventListener('submit', async function(e){
   async function chatDescobrirMeuUsuario(){
     if(chatMeuId || !db || !emailLogado) return chatMeuId;
     try{
-      var { data } = await db.from('usuarios').select('id,nome,icone_perfil,setor,medico').eq('email', emailLogado.toLowerCase()).maybeSingle();
-      if(data){ chatMeuId = data.id; chatMeuNome = data.nome; chatMeuIcone = data.icone_perfil; chatMeuSetor = data.setor || null; chatMeuMedico = !!data.medico; }
+      var { data } = await db.from('usuarios').select('id,nome,icone_perfil,setor,medico,permissoes').eq('email', emailLogado.toLowerCase()).maybeSingle();
+      if(data){ chatMeuId = data.id; chatMeuNome = data.nome; chatMeuIcone = data.icone_perfil; chatMeuSetor = data.setor || null; chatMeuMedico = !!data.medico; chatMeusSetoresExtras = chatExtrasDe(data).slice(); }
     }catch(err){ console.warn('Chat: falha ao identificar o usuário logado.', err); }
     return chatMeuId;
   }
@@ -21818,7 +21886,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     try{
       // ALTERADO: agora também busca "setor" — precisa pra montar a lista de
       // quem pode ser @mencionado num grupo (ver chatMembrosDoGrupo).
-      var { data, error } = await db.from('usuarios').select('id,nome,email,icone_perfil,setor,admin,medico').order('nome', { ascending:true });
+      var { data, error } = await db.from('usuarios').select('id,nome,email,icone_perfil,setor,admin,medico,permissoes').order('nome', { ascending:true });
       if(error){ console.warn('Chat: erro ao carregar usuários.', error); return; }
       chatUsuariosCache = data || [];
     }catch(err){ console.warn('Chat: falha ao carregar usuários.', err); }
@@ -22555,7 +22623,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   function chatInfoMembros(setor){
     var lista = setor === CHAT_GRUPO_MEDICOS
       ? chatUsuariosCache.filter(function(u){ return !!u.medico; })
-      : chatUsuariosCache.filter(function(u){ return u.setor === setor; });
+      : chatUsuariosCache.filter(function(u){ return u.setor === setor || chatExtrasDe(u).indexOf(setor) !== -1; });
     lista.sort(function(a, b){
       var ea = String(a.id) === String(chatMeuId), eb = String(b.id) === String(chatMeuId);
       if(ea !== eb) return ea ? -1 : 1;
@@ -23393,7 +23461,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(chatGravador) chatPararGravacaoAudio(true); // ADIÇÃO: cancela gravação de voz pendente, se tinha
     if(chatRealtimeChannel){ try{ db.removeChannel(chatRealtimeChannel); }catch(e){} chatRealtimeChannel = null; }
     chatEncerrarPresenca(); chatAbaLista = 'conversas'; chatFiltroTipo = 'todas'; // REDESIGN
-    chatMeuId = null; chatMeuNome = ''; chatMeuIcone = null; chatMeuSetor = null; chatMeuMedico = false;
+    chatMeuId = null; chatMeuNome = ''; chatMeuIcone = null; chatMeuSetor = null; chatMeuMedico = false; chatMeusSetoresExtras = [];
     chatConversaAtivaId = null;
     chatConversasCache = [];
     chatUsuariosCache = [];
@@ -29951,6 +30019,64 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   });
   form.addEventListener('reset', function(){ setTimeout(function(){ tirarFoto(); mostrar(); }, 0); });
   mostrar();
+})();
+</script>
+
+<script>
+/* ADIÇÃO: seção "Grupos do Chat Interno" da janela de Permissões. */
+(function(){
+  var box = document.getElementById('pgc');
+  if(!box) return;
+  var lista = document.getElementById('pgc-lista'), busca = document.getElementById('pgc-busca');
+  var proprio = document.getElementById('pgc-proprio'), resumo = document.getElementById('pgc-resumo'), texto = document.getElementById('pgc-texto');
+  var u = null, marcados = [];
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function norm(v){ return String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function primeiroNome(){ return String((u && (u.nome || u.email)) || 'A pessoa').trim().split(/\s+/)[0]; }
+  function setores(){
+    var l = window.csslChatSetores ? window.csslChatSetores() : [];
+    // inclui algum setor marcado que não esteja mais na lista (não some sem querer)
+    marcados.forEach(function(m){ if(l.indexOf(m) === -1) l.push(m); });
+    return l;
+  }
+  function render(){
+    var termo = norm(busca.value.trim()), grupos = {}, ordem = [];
+    setores().forEach(function(st){
+      if(termo && norm(st).indexOf(termo) === -1) return;
+      var cat = window.csslChatCategoriaDoSetor ? window.csslChatCategoriaDoSetor(st) : null;
+      var nomeCat = (cat && cat.label) || 'Outros';
+      if(!grupos[nomeCat]){ grupos[nomeCat] = []; ordem.push(nomeCat); }
+      grupos[nomeCat].push(st);
+    });
+    lista.innerHTML = ordem.length ? ordem.map(function(c){
+      return '<div class="pgc-cat">' + esc(c) + '</div><div class="pgc-chips">' + grupos[c].map(function(st){
+        var dele = u && st === u.setor;
+        return '<button type="button" class="pgc-chip' + (dele || marcados.indexOf(st) !== -1 ? ' on' : '') + '" data-setor="' + esc(st) + '"' + (dele ? ' disabled title="Setor da pessoa"' : '') + '>' + esc(st) + '</button>';
+      }).join('') + '</div>';
+    }).join('') : '<p class="small" style="margin:8px 0 0">Nenhum setor encontrado.</p>';
+    var todos = (u && u.setor ? [u.setor] : []).concat(marcados);
+    resumo.innerHTML = marcados.length
+      ? esc(primeiroNome()) + ' vai ver ' + todos.length + (todos.length === 1 ? ' grupo' : ' grupos') + ' no chat: ' + todos.map(function(t, i){ return i === 0 && u && u.setor ? '<b>' + esc(t) + '</b>' : esc(t); }).join(', ') + '.'
+      : 'Nenhum grupo extra. ' + esc(primeiroNome()) + ' vê só o grupo do próprio setor' + (u && u.medico ? ' e o grupo Médicos.' : '.');
+  }
+  lista.addEventListener('click', function(e){
+    var b = e.target.closest('.pgc-chip'); if(!b || b.disabled) return;
+    var st = b.getAttribute('data-setor'), i = marcados.indexOf(st);
+    if(i === -1) marcados.push(st); else marcados.splice(i, 1);
+    render();
+  });
+  busca.addEventListener('input', render);
+  window.csslGruposChatMontar = function(usuario){
+    u = usuario;
+    var p = u && u.permissoes;
+    marcados = (p && Array.isArray(p.chat_setores)) ? p.chat_setores.filter(function(x){ return x && x !== u.setor; }) : [];
+    busca.value = '';
+    proprio.hidden = !(u && u.setor);
+    if(u && u.setor) proprio.textContent = '✓ ' + u.setor + ' · setor da pessoa (sempre)';
+    texto.innerHTML = esc(primeiroNome()) + ' já participa do grupo do próprio setor. Marque outros grupos de setor em que ' + esc(primeiroNome()) + ' também pode <b>ler e mandar mensagens</b>.';
+    render();
+  };
+  window.csslGruposChatLer = function(){ return marcados.slice(); };
 })();
 </script>
 </body>
