@@ -19114,18 +19114,19 @@ formSolicitacao.addEventListener('submit', async function(e){
       // refletir isso.
       // ALTERADO (redesign da Início): conta cada status separado, pra faixa
       // do Painel mostrar Abertos / Em andamento / Aguardando, além do total.
+      // ALTERADO (economia de requisições): 2 consultas que trazem só o
+      // status dos pendentes, em vez de 6 contagens separadas.
       var STATUS_PAINEL = ['Aberto', 'Em andamento', 'Aguardando retorno'];
-      var consultas = [];
-      STATUS_PAINEL.forEach(function(st){
-        consultas.push(db.from('chamados').select('numero', { count:'exact', head:true }).eq('status', st));
-        consultas.push(db.from('solicitacoes').select('numero', { count:'exact', head:true }).eq('status', st));
+      var res = await Promise.all([
+        db.from('chamados').select('status').in('status', STATUS_PAINEL),
+        db.from('solicitacoes').select('status').in('status', STATUS_PAINEL)
+      ]);
+      var porStatus = STATUS_PAINEL.map(function(st){
+        var n = 0;
+        res.forEach(function(r){ if(!r.error) (r.data || []).forEach(function(x){ if(x.status === st) n++; }); });
+        return n;
       });
-      var res = await Promise.all(consultas);
-      var porStatus = STATUS_PAINEL.map(function(st, i){
-        var rc = res[i * 2], rs = res[i * 2 + 1];
-        return (rc.error ? 0 : (rc.count || 0)) + (rs.error ? 0 : (rs.count || 0));
-      });
-      var falhouChamados = res[0].error && res[2].error && res[4].error;
+      var falhouChamados = !!res[0].error;
       var count = porStatus[0] + porStatus[1] + porStatus[2];
       atualizarResumoPainel(falhouChamados ? null : porStatus);
       if(!falhouChamados && count){
@@ -19176,10 +19177,21 @@ formSolicitacao.addEventListener('submit', async function(e){
       if(window.CSSL_APP_CHAT) return;
       var login = document.getElementById('tela-login');
       if(login && login.offsetParent !== null) return; // ninguém logado
+      // ALTERADO (economia): só conta com a Início visível; o resto do tempo
+      // fica marcado para contar quando a Início voltar a aparecer
+      var portal = document.getElementById('tela-portal');
+      if(!portal || portal.offsetParent === null){ inicioPendente = true; return; }
+      if(Date.now() - ultimaContagemInicio < 20000){ inicioPendente = true; clearTimeout(timerPendenteInicio); timerPendenteInicio = setTimeout(recontarInicio, 20000 - (Date.now() - ultimaContagemInicio)); return; }
+      ultimaContagemInicio = Date.now(); inicioPendente = false;
       if(cardPainelObs && cardPainelObs.style.display !== 'none') atualizarChipPainel();
       atualizarChipChamado();
     }, 500);
   }
+  var ultimaContagemInicio = 0, inicioPendente = false, timerPendenteInicio = null;
+  (function(){
+    var portal = document.getElementById('tela-portal');
+    if(portal) new MutationObserver(function(){ if(inicioPendente && portal.offsetParent !== null) recontarInicio(); }).observe(portal, { attributes:true, attributeFilter:['style'] });
+  })();
   window.csslRecontarInicio = recontarInicio;
   document.addEventListener('cssl:chamados-mudaram', recontarInicio);
   document.addEventListener('visibilitychange', function(){
@@ -19187,7 +19199,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   });
   setInterval(function(){
     if(document.visibilityState === 'visible') recontarInicio();
-  }, 60 * 1000);
+  }, 5 * 60 * 1000); // ALTERADO (economia): o tempo real já atualiza na hora; isto é só garantia
 
   // ADIÇÃO: esconde o título de um grupo da Início (Atendimento, Gestão de
   // TI, Comunicação, Administração) quando nenhum card dele está visível —
@@ -23524,12 +23536,12 @@ formSolicitacao.addEventListener('submit', async function(e){
   }
   function chatRecontarSePreciso(){
     if(document.hidden || !chatMeuId) return;
-    if(Date.now() - chatRecontagemEm < 10000) return; // no máximo a cada 10 s
+    if(Date.now() - chatRecontagemEm < 60000) return; // no máximo a cada 1 min
     chatAgendarRecontagem(300);
   }
   window.addEventListener('focus', chatRecontarSePreciso);
   document.addEventListener('visibilitychange', chatRecontarSePreciso);
-  setInterval(function(){ if(chatMeuId && !document.hidden) chatAgendarRecontagem(0); }, 120000);
+  setInterval(function(){ if(chatMeuId && !document.hidden) chatAgendarRecontagem(0); }, 600000);
 
   function chatIniciarRealtime(){
     chatIniciarPresenca(); // REDESIGN: online / digitando / lida
@@ -27071,6 +27083,28 @@ formSolicitacao.addEventListener('submit', async function(e){
      sozinho, sem precisar sair e entrar de novo. */
   var agendaRealtimeChannel = null;
   var agendaRecarregarTimer = null;
+  // ALTERADO (economia de requisições): cada tabela recarrega só a sua parte
+  // (antes, qualquer chamado novo fazia todo mundo recarregar eventos,
+  // computadores e manutenções também).
+  var agendaPartesPendentes = {};
+  function agendaRecarregarParte(parte){
+    return function(){
+      agendaPartesPendentes[parte] = true;
+      clearTimeout(agendaRecarregarTimer);
+      agendaRecarregarTimer = setTimeout(async function(){
+        var partes = agendaPartesPendentes; agendaPartesPendentes = {};
+        if(cardAgenda && cardAgenda.style.display === 'none') return; // quem não vê a Agenda não precisa recarregar
+        var tarefas = [];
+        if(partes.eventos) tarefas.push(agendaCarregarEventos());
+        if(partes.chamados) tarefas.push(agendaCarregarChamadosAgendados());
+        if(partes.manutencoes) tarefas.push(agendaCarregarManutencoesPc());
+        await Promise.all(tarefas);
+        agendaRenderBlocoHome();
+        if(!telaAgendaEl || telaAgendaEl.style.display !== 'block') return;
+        agendaRenderGrade();
+      }, 1500);
+    };
+  }
   function agendaAgendarRecarregamento(){
     clearTimeout(agendaRecarregarTimer);
     agendaRecarregarTimer = setTimeout(async function(){
@@ -27091,10 +27125,10 @@ formSolicitacao.addEventListener('submit', async function(e){
     // manutenção de computador nova/editada/excluída) — mesmo debounce de
     // 400ms de agendaAgendarRecarregamento cobre os três agora.
     agendaRealtimeChannel = db.channel('agenda-realtime-sync')
-      .on('postgres_changes', { event:'*', schema:'public', table:'agenda_eventos' }, agendaAgendarRecarregamento)
-      .on('postgres_changes', { event:'*', schema:'public', table:'chamados' }, agendaAgendarRecarregamento)
-      .on('postgres_changes', { event:'*', schema:'public', table:'solicitacoes' }, agendaAgendarRecarregamento)
-      .on('postgres_changes', { event:'*', schema:'public', table:'pc_manutencoes' }, agendaAgendarRecarregamento)
+      .on('postgres_changes', { event:'*', schema:'public', table:'agenda_eventos' }, agendaRecarregarParte('eventos'))
+      .on('postgres_changes', { event:'*', schema:'public', table:'chamados' }, agendaRecarregarParte('chamados'))
+      .on('postgres_changes', { event:'*', schema:'public', table:'solicitacoes' }, agendaRecarregarParte('chamados'))
+      .on('postgres_changes', { event:'*', schema:'public', table:'pc_manutencoes' }, agendaRecarregarParte('manutencoes'))
       .subscribe(function(status){
         if(status === 'CHANNEL_ERROR' || status === 'TIMED_OUT'){
           console.warn('Falha ao conectar ao tempo real da Agenda:', status);
