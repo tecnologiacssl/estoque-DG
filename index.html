@@ -5012,16 +5012,43 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
   body.tv-imprimindo #tv-print-host{display:block !important}
   @page{margin:12mm}
 }
-#tv-print-host .tvp-doc{font-family:Arial,Helvetica,sans-serif;color:#111;font-size:12px;background:#fff}
-#tv-print-host h1{margin:0 0 4px;font-size:20px;color:#111}
-#tv-print-host h1 span{font-size:12px;color:#555;font-weight:normal}
-#tv-print-host .tvp-sub{color:#555;margin:0 0 14px}
+#tv-print-host .tvp-doc{font-family:Arial,Helvetica,sans-serif;color:#1a1a2e;font-size:11.5px;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#tv-print-host .tvp-doc *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#tv-print-host .tvp-topo{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding-bottom:12px;border-bottom:3px solid #0601fe;margin-bottom:14px}
+#tv-print-host .tvp-marca{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b6b85;margin-bottom:4px}
+#tv-print-host .tvp-marca span{display:inline-block;background:#0601fe;color:#fff;padding:1px 6px;border-radius:4px;margin-right:4px;letter-spacing:.04em}
+#tv-print-host h1{margin:0;font-size:22px;color:#111;line-height:1.15}
+#tv-print-host .tvp-filtro{margin-top:4px;color:#555;font-size:11.5px}
+#tv-print-host .tvp-gerado{text-align:right;font-size:10.5px;color:#6b6b85;line-height:1.5}
+#tv-print-host .tvp-gerado b{display:block;color:#111;font-size:11.5px}
+#tv-print-host .tvp-resumo{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px}
+#tv-print-host .tvp-num{border:1px solid #e4e4ec;border-radius:8px;padding:8px 10px;background:#f7f7fb}
+#tv-print-host .tvp-num b{display:block;font-size:20px;color:#111;line-height:1.1}
+#tv-print-host .tvp-num span{font-size:9.5px;color:#6b6b85;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+#tv-print-host .tvp-num.tvp-am{background:#fef3c7;border-color:#fcd34d}#tv-print-host .tvp-num.tvp-am b{color:#92400e}
+#tv-print-host .tvp-num.tvp-vm{background:#fee2e2;border-color:#fca5a5}#tv-print-host .tvp-num.tvp-vm b{color:#991b1b}
+#tv-print-host .tvp-atencao{border:1px solid #fcd34d;background:#fffbeb;border-radius:8px;padding:9px 11px;margin-bottom:14px;break-inside:avoid}
+#tv-print-host .tvp-atencao-tit{font-weight:700;color:#92400e;font-size:11px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+#tv-print-host .tvp-atencao-lista{display:flex;flex-wrap:wrap;gap:5px}
 #tv-print-host table{width:100%;border-collapse:collapse}
-#tv-print-host th{background:#0601fe !important;color:#fff !important;text-align:left;padding:7px 8px;font-size:11px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#tv-print-host td{padding:6px 8px;border-bottom:1px solid #ddd;color:#111}
-#tv-print-host tr:nth-child(even) td{background:#f6f6fb !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-#tv-print-host .prob{color:#b45309;font-weight:bold}
-#tv-print-host .tvp-rod{margin-top:16px;font-size:10.5px;color:#777}
+#tv-print-host thead{display:table-header-group}
+#tv-print-host th{background:#0601fe;color:#fff;text-align:left;padding:7px 8px;font-size:10.5px;letter-spacing:.03em;text-transform:uppercase}
+#tv-print-host th.c,#tv-print-host td.c{text-align:center}
+#tv-print-host td{padding:6px 8px;border-bottom:1px solid #ececf3;color:#1a1a2e;vertical-align:middle}
+#tv-print-host tr{break-inside:avoid}
+#tv-print-host .tvp-setor td{background:#eef0ff;border-bottom:1px solid #d6d8ff;padding:7px 8px;break-after:avoid}
+#tv-print-host .tvp-setor b{font-size:12px;color:#0a0896;margin-right:8px}
+#tv-print-host .tvp-setor span{font-size:10.5px;color:#555}
+#tv-print-host .tvp-setor em{font-style:normal;color:#b45309;font-weight:700}
+#tv-print-host .tvp-pill{display:inline-block;line-height:1.4;white-space:nowrap;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;border:1px solid}
+#tv-print-host .tvp-pill.tvp-ok{background:#dcfce7;color:#166534;border-color:#86efac}
+#tv-print-host .tvp-pill.tvp-am{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+#tv-print-host .tvp-pill.tvp-vm{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+#tv-print-host .tvp-pill.tvp-neu{background:#f4f4f5;color:#52525b;border-color:#e4e4e7}
+#tv-print-host i{font-style:normal;font-weight:700}
+#tv-print-host .tvp-sim{color:#166534}#tv-print-host .tvp-nao{color:#a1a1aa;font-weight:400}
+#tv-print-host .tvp-cinza{color:#a1a1aa}
+#tv-print-host .tvp-rod{display:flex;justify-content:space-between;margin-top:14px;padding-top:8px;border-top:1px solid #e4e4ec;font-size:9.5px;color:#888}
 </style>
 </head>
 <body>
@@ -25707,53 +25734,134 @@ formSolicitacao.addEventListener('submit', async function(e){
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
     tvToast('Planilha baixada (abre no Excel).', 'ok');
   }
+  // REDESIGN: modelo do documento de TVs (PDF / Imprimir / Excel) —
+  // cabeçalho, resumo em números, "precisam de atenção" e a lista agrupada
+  // por setor com o estado do controle colorido.
+  function tvOrdenados(){
+    return tvRegistrosFiltrados().slice().sort(function(a, b){
+      var s = String(a.setor || '').localeCompare(String(b.setor || ''), 'pt-BR');
+      if(s) return s;
+      var la = parseInt(String(a.leito).replace(/\D/g, ''), 10), lb = parseInt(String(b.leito).replace(/\D/g, ''), 10);
+      if(!isNaN(la) && !isNaN(lb) && la !== lb) return la - lb;
+      return String(a.leito || '').localeCompare(String(b.leito || ''), 'pt-BR', { numeric: true });
+    });
+  }
+  function tvResumo(regs){
+    var r = { total: regs.length, smart: 0, wifi: 0, antena: 0, falhando: 0, semControle: 0, setores: {} };
+    regs.forEach(function(x){
+      if(x.smart) r.smart++; if(x.wifi) r.wifi++; if(x.antena_cabo === 'ANTENA') r.antena++;
+      if(x.controle === 'FALHANDO') r.falhando++; if(x.controle === 'NÃO TEM') r.semControle++;
+      var st = x.setor || 'Sem setor';
+      (r.setores[st] = r.setores[st] || []).push(x);
+    });
+    return r;
+  }
+  function tvRotControle(c){ return (TV2_CONTROLE[c] || { rot: c || '—' }).rot; }
+  function tvClasseControle(c){ return c === 'FUNCIONANDO' ? 'tvp-ok' : (c === 'FALHANDO' ? 'tvp-am' : (c === 'NÃO TEM' ? 'tvp-vm' : 'tvp-neu')); }
   async function tvExportar(modo){
+    var regs = tvOrdenados();
+    if(!regs.length){ tvToast('Nenhuma TV para exportar com os filtros atuais.', 'err'); return; }
     var linhas = tvLinhasExport();
-    if(!linhas.length){ tvToast('Nenhuma TV para exportar com os filtros atuais.', 'err'); return; }
     var agora = new Date();
     var dataTxt = agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    var quem = (typeof nomeLogado !== 'undefined' && nomeLogado) ? nomeLogado : ((typeof emailLogado !== 'undefined' && emailLogado) ? emailLogado : '');
+    var res = tvResumo(regs);
+    var nomeArq = 'TVs - ' + agora.toLocaleDateString('pt-BR').replace(/\//g, '-');
+
+    // ------------------------- Excel -------------------------
     if(modo === 'excel'){
-      // CORREÇÃO: se a biblioteca do Excel não carregou, tenta carregar agora;
-      // sem ela, baixa um .csv (abre no Excel do mesmo jeito)
       if(!window.ExcelJS) await tvCarregarExcelJs();
       if(!window.ExcelJS){ tvBaixarCsv(linhas, agora); return; }
       try{
+        var AZUL = 'FF0601FE', CINZA = 'FF6B6B85';
+        var CORES = { 'FUNCIONANDO': ['FFDCFCE7', 'FF166534'], 'FALHANDO': ['FFFEF3C7', 'FF92400E'], 'NÃO TEM': ['FFFEE2E2', 'FF991B1B'] };
+        var borda = { bottom: { style: 'thin', color: { argb: 'FFE4E4EC' } } };
         var wb = new ExcelJS.Workbook();
-        var ws = wb.addWorksheet('TVs');
-        ws.addRow(['TVs — CSSL Central TI']).font = { bold:true, size:14 };
-        ws.addRow([tvDescricaoFiltros() + ' · gerado em ' + dataTxt]).font = { color:{ argb:'FF666666' } };
-        ws.addRow([]);
-        var cab = ws.addRow(TV_COLUNAS);
-        cab.font = { bold:true, color:{ argb:'FFFFFFFF' } };
-        cab.eachCell(function(c){ c.fill = { type:'pattern', pattern:'solid', fgColor:{ argb:'FF0601FE' } }; });
-        linhas.forEach(function(l){ ws.addRow(l); });
-        [14, 14, 22, 8, 13, 15, 8].forEach(function(w, i){ ws.getColumn(i + 1).width = w; });
+        wb.creator = 'CSSL Central TI';
+        var ws = wb.addWorksheet('TVs', { views: [{ state: 'frozen', ySplit: 6 }], pageSetup: { orientation: 'portrait', fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9 } });
+        ws.columns = [{ width: 22 }, { width: 11 }, { width: 26 }, { width: 8 }, { width: 8 }, { width: 13 }, { width: 15 }];
+        ws.mergeCells('A1:G1'); ws.getCell('A1').value = 'Inventário de TVs';
+        ws.getCell('A1').font = { bold: true, size: 16, color: { argb: 'FF111111' } };
+        ws.mergeCells('A2:G2'); ws.getCell('A2').value = 'CSSL Central TI · ' + tvDescricaoFiltros() + ' · gerado em ' + dataTxt + (quem ? ' por ' + quem : '');
+        ws.getCell('A2').font = { size: 10, color: { argb: CINZA } };
+        // resumo
+        var resumoRot = ['TVs', 'Smart', 'Com Wi-Fi', 'Com antena', 'Controle falhando', 'Sem controle'];
+        var resumoVal = [res.total, res.smart, res.wifi, res.antena, res.falhando, res.semControle];
+        var r3 = ws.getRow(3), r4 = ws.getRow(4);
+        resumoRot.forEach(function(t, k){
+          var c1 = r3.getCell(k + 1), c2 = r4.getCell(k + 1);
+          c1.value = t; c1.font = { size: 9, color: { argb: CINZA } };
+          c2.value = resumoVal[k]; c2.font = { bold: true, size: 14, color: { argb: k >= 4 && resumoVal[k] ? (k === 4 ? 'FF92400E' : 'FF991B1B') : 'FF111111' } };
+          c2.alignment = c1.alignment = { horizontal: 'left' };
+        });
+        var cab = ws.getRow(6);
+        cab.values = ['Setor', 'Leito', 'Modelo', 'Smart', 'Wi-Fi', 'Antena/Cabo', 'Controle'];
+        cab.height = 20;
+        cab.eachCell(function(c){ c.font = { bold: true, color: { argb: 'FFFFFFFF' } }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: AZUL } }; c.alignment = { vertical: 'middle' }; });
+        regs.forEach(function(x, k){
+          var row = ws.addRow([x.setor || '', tvRotuloLeito(x), x.modelo || '', x.smart ? 'Sim' : 'Não', x.wifi ? 'Sim' : 'Não', x.antena_cabo === 'ANTENA' ? 'Antena' : 'Não tem', tvRotControle(x.controle)]);
+          row.eachCell({ includeEmpty: true }, function(c){ c.border = borda; if(k % 2) c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF7F7FB' } }; });
+          var cor = CORES[x.controle];
+          if(cor){ var cc = row.getCell(7); cc.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: cor[0] } }; cc.font = { bold: true, color: { argb: cor[1] } }; }
+        });
+        ws.autoFilter = { from: { row: 6, column: 1 }, to: { row: 6 + regs.length, column: 7 } };
+        // aba por setor
+        var ws2 = wb.addWorksheet('Por setor');
+        ws2.columns = [{ header: 'Setor', width: 24 }, { header: 'TVs', width: 8 }, { header: 'Smart', width: 8 }, { header: 'Com Wi-Fi', width: 10 }, { header: 'Com antena', width: 11 }, { header: 'Controle com problema', width: 21 }];
+        ws2.getRow(1).eachCell(function(c){ c.font = { bold: true, color: { argb: 'FFFFFFFF' } }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: AZUL } }; });
+        Object.keys(res.setores).sort(function(a, b){ return a.localeCompare(b, 'pt-BR'); }).forEach(function(st){
+          var l = res.setores[st];
+          var prob = l.filter(tvTemProblema).length;
+          var row = ws2.addRow([st, l.length, l.filter(function(x){ return x.smart; }).length, l.filter(function(x){ return x.wifi; }).length, l.filter(function(x){ return x.antena_cabo === 'ANTENA'; }).length, prob]);
+          if(prob) row.getCell(6).font = { bold: true, color: { argb: 'FF991B1B' } };
+        });
+        var tot = ws2.addRow(['Total', res.total, res.smart, res.wifi, res.antena, res.falhando + res.semControle]);
+        tot.font = { bold: true };
         var buf = await wb.xlsx.writeBuffer();
-        var blob = new Blob([buf], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        var blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'TVs - ' + agora.toLocaleDateString('pt-BR').replace(/\//g, '-') + '.xlsx';
+        a.href = URL.createObjectURL(blob); a.download = nomeArq + '.xlsx';
         document.body.appendChild(a); a.click();
         setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
         tvToast('Excel gerado.', 'ok');
       }catch(err){ console.error(err); tvBaixarCsv(linhas, agora); }
       return;
     }
-    // CORREÇÃO: PDF e Imprimir agora usam o mesmo jeito do Relatório —
-    // o documento vai para dentro da própria página e o resto some só na
-    // hora de imprimir (antes era numa moldura invisível, que falhava em
-    // alguns navegadores e no app de computador).
-    var tituloArquivo = 'TVs - ' + agora.toLocaleDateString('pt-BR').replace(/\//g, '-');
+
+    // ------------------------- PDF / Imprimir -------------------------
+    var e = tvEsc;
+    var problemas = regs.filter(tvTemProblema);
+    var html = '<div class="tvp-doc">' +
+      '<div class="tvp-topo"><div><div class="tvp-marca"><span>CSSL</span> Central TI · Equipe de TI</div><h1>Inventário de TVs</h1>' +
+        '<div class="tvp-filtro">' + e(tvDescricaoFiltros()) + '</div></div>' +
+        '<div class="tvp-gerado"><b>' + e(dataTxt) + '</b>' + (quem ? '<span>por ' + e(quem) + '</span>' : '') + '</div></div>' +
+      '<div class="tvp-resumo">' +
+        [['TVs', res.total, ''], ['Smart', res.smart, ''], ['Com Wi-Fi', res.wifi, ''], ['Com antena', res.antena, ''],
+         ['Controle falhando', res.falhando, res.falhando ? 'tvp-am' : ''], ['Sem controle', res.semControle, res.semControle ? 'tvp-vm' : '']]
+          .map(function(c){ return '<div class="tvp-num ' + c[2] + '"><b>' + c[1] + '</b><span>' + c[0] + '</span></div>'; }).join('') +
+      '</div>' +
+      (problemas.length ? '<div class="tvp-atencao"><div class="tvp-atencao-tit">Precisam de atenção (' + problemas.length + ')</div><div class="tvp-atencao-lista">' +
+        problemas.map(function(x){ return '<span class="tvp-pill ' + tvClasseControle(x.controle) + '">' + e(x.setor || '') + ' · ' + e(tvRotuloLeito(x)) + ' — ' + e(tvRotControle(x.controle)) + '</span>'; }).join('') + '</div></div>' : '') +
+      '<table><thead><tr><th>Leito</th><th>Modelo</th><th class="c">Smart</th><th class="c">Wi-Fi</th><th>Antena/Cabo</th><th>Controle</th></tr></thead><tbody>' +
+      Object.keys(res.setores).sort(function(a, b){ return a.localeCompare(b, 'pt-BR'); }).map(function(st){
+        var l = res.setores[st], prob = l.filter(tvTemProblema).length;
+        return '<tr class="tvp-setor"><td colspan="6"><b>' + e(st) + '</b><span>' + l.length + (l.length === 1 ? ' TV' : ' TVs') + (prob ? ' · <em>' + prob + ' com problema no controle</em>' : '') + '</span></td></tr>' +
+          l.map(function(x){
+            return '<tr><td>' + e(tvRotuloLeito(x)) + '</td><td>' + e(x.modelo || '—') + '</td>' +
+              '<td class="c">' + (x.smart ? '<i class="tvp-sim">Sim</i>' : '<i class="tvp-nao">Não</i>') + '</td>' +
+              '<td class="c">' + (x.wifi ? '<i class="tvp-sim">Sim</i>' : '<i class="tvp-nao">Não</i>') + '</td>' +
+              '<td>' + (x.antena_cabo === 'ANTENA' ? 'Antena' : '<span class="tvp-cinza">Não tem</span>') + '</td>' +
+              '<td><span class="tvp-pill ' + tvClasseControle(x.controle) + '">' + e(tvRotControle(x.controle)) + '</span></td></tr>';
+          }).join('');
+      }).join('') +
+      '</tbody></table>' +
+      '<div class="tvp-rod"><span>CSSL Central TI · Inventário de TVs</span><span>' + res.total + (res.total === 1 ? ' TV' : ' TVs') + ' em ' + Object.keys(res.setores).length + (Object.keys(res.setores).length === 1 ? ' setor' : ' setores') + '</span></div>' +
+    '</div>';
     var host = document.getElementById('tv-print-host'); if(host) host.remove();
-    host = document.createElement('div'); host.id = 'tv-print-host';
-    host.innerHTML = '<div class="tvp-doc">' +
-      '<h1>TVs <span>CSSL Central TI</span></h1><p class="tvp-sub">' + tvEsc(tvDescricaoFiltros()) + ' · ' + linhas.length + (linhas.length === 1 ? ' TV' : ' TVs') + ' · gerado em ' + tvEsc(dataTxt) + '</p>' +
-      '<table><thead><tr>' + TV_COLUNAS.map(function(c){ return '<th>' + c + '</th>'; }).join('') + '</tr></thead><tbody>' +
-      linhas.map(function(l){ return '<tr>' + l.map(function(v, i){ return '<td' + (i === 5 && v !== 'Funcionando' ? ' class="prob"' : '') + '>' + tvEsc(v) + '</td>'; }).join('') + '</tr>'; }).join('') +
-      '</tbody></table><div class="tvp-rod">Documento gerado pela tela de TVs do CSSL Central TI.</div></div>';
+    host = document.createElement('div'); host.id = 'tv-print-host'; host.innerHTML = html;
     document.body.appendChild(host);
     var tituloAntes = document.title;
-    document.title = tituloArquivo; // vira o nome sugerido do PDF
+    document.title = nomeArq; // vira o nome sugerido do PDF
     document.body.classList.add('tv-imprimindo');
     var limpo = false;
     function limpar(){
@@ -25765,26 +25873,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     }
     window.addEventListener('afterprint', limpar);
     if(modo === 'pdf') tvToast('Na janela que abrir, escolha "Salvar como PDF" no destino.', 'ok');
-    setTimeout(function(){ try{ window.print(); }catch(err){ console.error(err); } setTimeout(limpar, 60000); }, 120); // limpa no afterprint; o tempo é só garantia
-    return;
-    var html = '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>TVs - ' + agora.toLocaleDateString('pt-BR').replace(/\//g, '-') + '</title><style>' +
-      'body{margin:0;padding:26px 30px;font-family:Arial,Helvetica,sans-serif;color:#111;font-size:12px}h1{margin:0 0 4px;font-size:20px}.sub{color:#555;margin:0 0 14px}' +
-      'table{width:100%;border-collapse:collapse}th{background:#0601fe;color:#fff;text-align:left;padding:7px 8px;font-size:11px}td{padding:6px 8px;border-bottom:1px solid #ddd}tr:nth-child(even) td{background:#f6f6fb}' +
-      '.prob{color:#b45309;font-weight:bold}.rod{margin-top:16px;font-size:10.5px;color:#777}@page{margin:12mm}</style></head><body>' +
-      '<h1>TVs <span style="font-size:12px;color:#555;font-weight:normal">CSSL Central TI</span></h1><p class="sub">' + tvEsc(tvDescricaoFiltros()) + ' · ' + linhas.length + (linhas.length === 1 ? ' TV' : ' TVs') + ' · gerado em ' + tvEsc(dataTxt) + '</p>' +
-      '<table><thead><tr>' + TV_COLUNAS.map(function(c){ return '<th>' + c + '</th>'; }).join('') + '</tr></thead><tbody>' +
-      linhas.map(function(l){ return '<tr>' + l.map(function(v, i){ return '<td' + (i === 5 && v !== 'Funcionando' ? ' class="prob"' : '') + '>' + tvEsc(v) + '</td>'; }).join('') + '</tr>'; }).join('') +
-      '</tbody></table><div class="rod">Documento gerado pela tela de TVs do CSSL Central TI.</div></body></html>';
-    var antigo = document.getElementById('tvFrameImpressao');
-    if(antigo) antigo.remove();
-    var ifr = document.createElement('iframe');
-    ifr.id = 'tvFrameImpressao';
-    ifr.setAttribute('aria-hidden', 'true');
-    ifr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
-    document.body.appendChild(ifr);
-    var doc = ifr.contentWindow.document;
-    doc.open(); doc.write(html); doc.close();
-    setTimeout(function(){ try{ ifr.contentWindow.focus(); ifr.contentWindow.print(); }catch(err){ console.error(err); } }, 250);
+    setTimeout(function(){ try{ window.print(); }catch(err){ console.error(err); } setTimeout(limpar, 60000); }, 120);
   }
 
   async function carregarTvs(){
