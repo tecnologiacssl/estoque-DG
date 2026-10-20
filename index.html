@@ -5118,6 +5118,18 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 .ad-mestra-aviso b{color:#fff}
 .ad-pc-linha{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 @media (max-width:640px){.ad-grade{grid-template-columns:1fr}.ad-barra select{flex:1}}
+
+/* AnyDesk: grupos por setor */
+.ad-setor{margin:0 0 14px}
+.ad-setor-cab{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 10px;padding:8px 4px;border:0;border-bottom:1px solid rgba(255,255,255,.07);background:none;color:#fff;cursor:pointer;text-align:left;font:inherit}
+.ad-setor-seta{width:15px;height:15px;color:#71717a;transition:transform .15s;transform:rotate(90deg);flex:none}
+.ad-setor.fechado .ad-setor-seta{transform:none}
+.ad-setor-nome{font-size:14.5px;font-weight:800}
+.ad-setor.fav .ad-setor-nome{color:#fcd34d}
+.ad-setor-qt{min-width:22px;height:20px;padding:0 7px;border-radius:99px;background:rgba(255,255,255,.08);color:#c4c4cf;font-size:11.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.ad-setor-cab:hover .ad-setor-nome{color:#c9c8ff}
+.ad-setor.fechado .ad-grade{display:none}
+.ad-setor.fechado .ad-setor-cab{margin-bottom:0}
 </style>
 </head>
 <body>
@@ -7005,6 +7017,7 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
       <div class="ad-busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="ad-busca" placeholder="Buscar por ID, nome, setor, local ou computador..." autocomplete="off"></div>
       <select id="ad-filtro-setor"><option value="">Todos os setores</option></select>
       <button type="button" class="ad-chip-fav" id="ad-so-fav" aria-pressed="false">★ Favoritos</button>
+      <button type="button" class="ad-chip-fav" id="ad-recolher">Recolher todos</button>
     </div>
     <div class="ad-sugestoes" id="ad-sugestoes" hidden>
       <button type="button" class="ad-sug-cab" id="ad-sug-cab" aria-expanded="false">
@@ -30755,11 +30768,19 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
     } else if(!itens.length){
       lista.innerHTML = '<div class="ad-vazio"><b>Nada encontrado</b>Tente outro termo ou limpe os filtros.</div>';
     } else {
+      // ALTERADO: organizado por setor (favoritos continuam no topo)
       var favs = itens.filter(function(x){ return x.favorito; }), outros = itens.filter(function(x){ return !x.favorito; });
+      var buscando = !!termo;
       var html = '';
-      if(favs.length) html += '<div class="ad-grupo-tit">★ Favoritos</div><div class="ad-grade">' + favs.map(cartao).join('') + '</div>';
-      if(outros.length) html += (favs.length ? '<div class="ad-grupo-tit">Todos</div>' : '') + '<div class="ad-grade">' + outros.map(cartao).join('') + '</div>';
+      if(favs.length) html += grupoHtml('__fav__', '★ Favoritos', favs, buscando);
+      var porSetor = {};
+      outros.forEach(function(x){ var st = x.setor || 'Sem setor'; (porSetor[st] = porSetor[st] || []).push(x); });
+      Object.keys(porSetor).sort(function(a, b){
+        if(a === 'Sem setor') return 1; if(b === 'Sem setor') return -1;
+        return a.localeCompare(b, 'pt-BR');
+      }).forEach(function(st){ html += grupoHtml(st, st, porSetor[st], buscando); });
       lista.innerHTML = html;
+      atualizarBotaoRecolher();
     }
     // sugestões
     var box = el('ad-sugestoes');
@@ -30776,10 +30797,27 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
       }).join('');
     }
   }
+  function atualizarBotaoRecolher(){
+    var bt = el('ad-recolher'); if(!bt) return;
+    var secoes = [].slice.call(tela.querySelectorAll('.ad-setor'));
+    bt.hidden = secoes.length < 2;
+    bt.textContent = secoes.some(function(sc){ return !sc.classList.contains('fechado'); }) ? 'Recolher todos' : 'Abrir todos';
+  }
+  function lerFechados(){ try{ return JSON.parse(localStorage.getItem('cssl_anydesk_fechados') || '{}') || {}; }catch(e){ return {}; } }
+  function gravarFechados(o){ try{ localStorage.setItem('cssl_anydesk_fechados', JSON.stringify(o)); }catch(e){} }
+  function grupoHtml(chave, titulo, itens, buscando){
+    var fechado = !buscando && !!lerFechados()[chave];
+    var porNome = itens.slice().sort(function(a, b){ return String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR'); });
+    return '<section class="ad-setor' + (fechado ? ' fechado' : '') + (chave === '__fav__' ? ' fav' : '') + '">' +
+      '<button type="button" class="ad-setor-cab" data-grupo="' + esc(chave) + '" aria-expanded="' + (fechado ? 'false' : 'true') + '">' +
+        '<svg class="ad-setor-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>' +
+        '<span class="ad-setor-nome">' + esc(titulo) + '</span><span class="ad-setor-qt">' + itens.length + '</span></button>' +
+      '<div class="ad-grade">' + porNome.map(cartao).join('') + '</div></section>';
+  }
   function cartao(x){
     var pc = pcDe(x.computador_id);
     var infos = [];
-    if(x.setor) infos.push('<span class="ad-tag">🏥 ' + esc(x.setor) + '</span>');
+
     if(x.local) infos.push('<span class="ad-tag">📍 ' + esc(x.local) + '</span>');
     if(pc) infos.push('<span class="ad-tag pc" data-abrir-pc="' + esc(pc.id) + '" title="Computador do cadastro">🖥 ' + esc(pc.nome || '') + (pc.patrimonio ? ' · ' + esc(pc.patrimonio) : '') + '</span>');
     if(x.senha_cripto) infos.push('<span class="ad-tag senha" data-senha-tag="' + esc(x.id) + '">🔒 Senha guardada</span>');
@@ -30834,7 +30872,25 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
       return abrirForm(null, { anydesk_id: v, nome: g ? g.solicitante : '', setor: g ? g.setor : '' });
     }
     if((v = b.getAttribute('data-sug-ignorar'))){ ignorar(v); sugestoes = sugestoes.filter(function(x){ return x.id !== v; }); render(); return; }
+    if((v = b.getAttribute('data-grupo'))){
+      var fch = lerFechados(), sec = b.closest('.ad-setor');
+      var fechar = !sec.classList.contains('fechado');
+      sec.classList.toggle('fechado', fechar); b.setAttribute('aria-expanded', fechar ? 'false' : 'true');
+      if(fechar) fch[v] = 1; else delete fch[v];
+      gravarFechados(fch); atualizarBotaoRecolher(); return;
+    }
     if(b.id === 'ad-sug-cab'){ var ab = b.getAttribute('aria-expanded') !== 'true'; b.setAttribute('aria-expanded', ab ? 'true' : 'false'); el('ad-sug-lista').hidden = !ab; return; }
+    if(b.id === 'ad-recolher'){
+      var secoes = [].slice.call(tela.querySelectorAll('.ad-setor'));
+      var algumAberto = secoes.some(function(sc){ return !sc.classList.contains('fechado'); });
+      var f2 = lerFechados();
+      secoes.forEach(function(sc){
+        var cab = sc.querySelector('[data-grupo]'), k = cab.getAttribute('data-grupo');
+        sc.classList.toggle('fechado', algumAberto); cab.setAttribute('aria-expanded', algumAberto ? 'false' : 'true');
+        if(algumAberto) f2[k] = 1; else delete f2[k];
+      });
+      gravarFechados(f2); atualizarBotaoRecolher(); return;
+    }
     if(b.id === 'ad-so-fav'){ soFav = !soFav; b.setAttribute('aria-pressed', soFav ? 'true' : 'false'); render(); return; }
     if(b.id === 'ad-btn-novo') return abrirForm(null);
   });
