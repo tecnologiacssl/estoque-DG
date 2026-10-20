@@ -5003,6 +5003,25 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 .pgc-area-todos:hover{color:#fff;border-color:rgba(125,123,255,.5)}
 .pgc-area .pgc-chips{display:none;padding:0 0 12px}
 .pgc-area.aberta .pgc-chips{display:flex}
+
+/* TVs: impressão / PDF dentro da própria página */
+#tv-print-host{display:none}
+@media print{
+  body.tv-imprimindo > *:not(#tv-print-host){display:none !important}
+  body.tv-imprimindo{background:#fff !important}
+  body.tv-imprimindo #tv-print-host{display:block !important}
+  @page{margin:12mm}
+}
+#tv-print-host .tvp-doc{font-family:Arial,Helvetica,sans-serif;color:#111;font-size:12px;background:#fff}
+#tv-print-host h1{margin:0 0 4px;font-size:20px;color:#111}
+#tv-print-host h1 span{font-size:12px;color:#555;font-weight:normal}
+#tv-print-host .tvp-sub{color:#555;margin:0 0 14px}
+#tv-print-host table{width:100%;border-collapse:collapse}
+#tv-print-host th{background:#0601fe !important;color:#fff !important;text-align:left;padding:7px 8px;font-size:11px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#tv-print-host td{padding:6px 8px;border-bottom:1px solid #ddd;color:#111}
+#tv-print-host tr:nth-child(even) td{background:#f6f6fb !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#tv-print-host .prob{color:#b45309;font-weight:bold}
+#tv-print-host .tvp-rod{margin-top:16px;font-size:10.5px;color:#777}
 </style>
 </head>
 <body>
@@ -25668,13 +25687,36 @@ formSolicitacao.addEventListener('submit', async function(e){
     return p.length ? p.join(' · ') : 'Todas as TVs';
   }
   var TV_COLUNAS = ['Setor', 'Leito', 'Modelo', 'Wi-Fi', 'Antena/Cabo', 'Controle', 'Smart'];
+  function tvCarregarExcelJs(){
+    return new Promise(function(res){
+      if(window.ExcelJS) return res();
+      var sc = document.createElement('script');
+      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js';
+      sc.onload = function(){ res(); }; sc.onerror = function(){ res(); };
+      document.head.appendChild(sc);
+      setTimeout(res, 8000);
+    });
+  }
+  function tvBaixarCsv(linhas, agora){
+    var q = function(v){ v = String(v == null ? '' : v); return /[";\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var csv = '\ufeff' + [TV_COLUNAS].concat(linhas).map(function(l){ return l.map(q).join(';'); }).join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'TVs - ' + agora.toLocaleDateString('pt-BR').replace(/\//g, '-') + '.csv';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    tvToast('Planilha baixada (abre no Excel).', 'ok');
+  }
   async function tvExportar(modo){
     var linhas = tvLinhasExport();
     if(!linhas.length){ tvToast('Nenhuma TV para exportar com os filtros atuais.', 'err'); return; }
     var agora = new Date();
     var dataTxt = agora.toLocaleDateString('pt-BR') + ' às ' + agora.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
     if(modo === 'excel'){
-      if(!window.ExcelJS){ tvToast('Não foi possível gerar o Excel agora.', 'err'); return; }
+      // CORREÇÃO: se a biblioteca do Excel não carregou, tenta carregar agora;
+      // sem ela, baixa um .csv (abre no Excel do mesmo jeito)
+      if(!window.ExcelJS) await tvCarregarExcelJs();
+      if(!window.ExcelJS){ tvBaixarCsv(linhas, agora); return; }
       try{
         var wb = new ExcelJS.Workbook();
         var ws = wb.addWorksheet('TVs');
@@ -25694,9 +25736,37 @@ formSolicitacao.addEventListener('submit', async function(e){
         document.body.appendChild(a); a.click();
         setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
         tvToast('Excel gerado.', 'ok');
-      }catch(err){ console.error(err); tvToast('Não foi possível gerar o Excel.', 'err'); }
+      }catch(err){ console.error(err); tvBaixarCsv(linhas, agora); }
       return;
     }
+    // CORREÇÃO: PDF e Imprimir agora usam o mesmo jeito do Relatório —
+    // o documento vai para dentro da própria página e o resto some só na
+    // hora de imprimir (antes era numa moldura invisível, que falhava em
+    // alguns navegadores e no app de computador).
+    var tituloArquivo = 'TVs - ' + agora.toLocaleDateString('pt-BR').replace(/\//g, '-');
+    var host = document.getElementById('tv-print-host'); if(host) host.remove();
+    host = document.createElement('div'); host.id = 'tv-print-host';
+    host.innerHTML = '<div class="tvp-doc">' +
+      '<h1>TVs <span>CSSL Central TI</span></h1><p class="tvp-sub">' + tvEsc(tvDescricaoFiltros()) + ' · ' + linhas.length + (linhas.length === 1 ? ' TV' : ' TVs') + ' · gerado em ' + tvEsc(dataTxt) + '</p>' +
+      '<table><thead><tr>' + TV_COLUNAS.map(function(c){ return '<th>' + c + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      linhas.map(function(l){ return '<tr>' + l.map(function(v, i){ return '<td' + (i === 5 && v !== 'Funcionando' ? ' class="prob"' : '') + '>' + tvEsc(v) + '</td>'; }).join('') + '</tr>'; }).join('') +
+      '</tbody></table><div class="tvp-rod">Documento gerado pela tela de TVs do CSSL Central TI.</div></div>';
+    document.body.appendChild(host);
+    var tituloAntes = document.title;
+    document.title = tituloArquivo; // vira o nome sugerido do PDF
+    document.body.classList.add('tv-imprimindo');
+    var limpo = false;
+    function limpar(){
+      if(limpo) return; limpo = true;
+      document.body.classList.remove('tv-imprimindo');
+      document.title = tituloAntes;
+      var h = document.getElementById('tv-print-host'); if(h) h.remove();
+      window.removeEventListener('afterprint', limpar);
+    }
+    window.addEventListener('afterprint', limpar);
+    if(modo === 'pdf') tvToast('Na janela que abrir, escolha "Salvar como PDF" no destino.', 'ok');
+    setTimeout(function(){ try{ window.print(); }catch(err){ console.error(err); } setTimeout(limpar, 60000); }, 120); // limpa no afterprint; o tempo é só garantia
+    return;
     var html = '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>TVs - ' + agora.toLocaleDateString('pt-BR').replace(/\//g, '-') + '</title><style>' +
       'body{margin:0;padding:26px 30px;font-family:Arial,Helvetica,sans-serif;color:#111;font-size:12px}h1{margin:0 0 4px;font-size:20px}.sub{color:#555;margin:0 0 14px}' +
       'table{width:100%;border-collapse:collapse}th{background:#0601fe;color:#fff;text-align:left;padding:7px 8px;font-size:11px}td{padding:6px 8px;border-bottom:1px solid #ddd}tr:nth-child(even) td{background:#f6f6fb}' +
