@@ -5130,6 +5130,9 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 .ad-setor-cab:hover .ad-setor-nome{color:#c9c8ff}
 .ad-setor.fechado .ad-grade{display:none}
 .ad-setor.fechado .ad-setor-cab{margin-bottom:0}
+/* Campos de busca: sem o "x" nativo do type=search (o visual continua igual) */
+#buscaPortalCards::-webkit-search-cancel-button,#pc-busca-input::-webkit-search-cancel-button,#ad-busca::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+#buscaPortalCards,#pc-busca-input,#ad-busca{-webkit-appearance:none;appearance:none}
 </style>
 </head>
 <body>
@@ -5345,7 +5348,7 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
         <p>O que você precisa fazer hoje?</p>
         <div class="hero-busca">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-          <input type="text" id="buscaPortalCards" placeholder="Buscar chamado, estoque, computador...">
+          <input type="search" id="buscaPortalCards" name="cssl-q-inicio" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore placeholder="Buscar chamado, estoque, computador...">
           <kbd class="hero-busca-atalho" title="Atalho: aperte / para buscar">/</kbd>
         </div>
       </div>
@@ -6582,7 +6585,7 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
     <div class="pc-pagina" id="pc-pagina-lista">
       <div class="pc-toolbar">
         <div class="pc-busca">
-          <input type="text" id="pc-busca-input" placeholder="Pesquisar por nome, patrimônio, IP, MAC ou usuário...">
+          <input type="search" id="pc-busca-input" name="cssl-q-pc" autocomplete="off" data-lpignore="true" placeholder="Pesquisar por nome, patrimônio, IP, MAC ou usuário...">
         </div>
         <!-- ALTERADO: os filtros de Setor/Status/Sistema agora ficam escondidos
              atrás do botão "Filtros" (ícone de funil) — mesmo padrão já usado
@@ -7014,7 +7017,7 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
       </div>
     </div>
     <div class="ad-barra">
-      <div class="ad-busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="ad-busca" placeholder="Buscar por ID, nome, setor, local ou computador..." autocomplete="off"></div>
+      <div class="ad-busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="search" id="ad-busca" name="cssl-q-ad" data-lpignore="true" placeholder="Buscar por ID, nome, setor, local ou computador..." autocomplete="off"></div>
       <select id="ad-filtro-setor"><option value="">Todos os setores</option></select>
       <button type="button" class="ad-chip-fav" id="ad-so-fav" aria-pressed="false">★ Favoritos</button>
       <button type="button" class="ad-chip-fav" id="ad-recolher">Recolher todos</button>
@@ -31076,6 +31079,54 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
       });
     }catch(e){}
   };
+})();
+</script>
+<script>
+/* ADIÇÃO: o navegador (Chrome/Edge/app) às vezes "lembra" o e-mail do login
+   e preenche sozinho um campo de BUSCA (ex.: a busca da Início). Aí a busca
+   filtrava pelo e-mail e todos os cartões sumiam. Aqui: só aceita texto nos
+   campos de busca quando a própria pessoa digitou/colou; preenchimento
+   automático é apagado na hora e a lista volta ao normal. */
+(function(){
+  var IDS = ['buscaPortalCards','pc-busca-input','ad-busca','pgc-busca','kb-busca','adm-busca','adm-setor-busca','agenda-busca','pc-manut-busca','pc-etq-busca','tv-busca-input'];
+  var ultimoToque = {};
+  function ehBusca(el){ return el && el.id && IDS.indexOf(el.id) > -1; }
+  function marcar(e){ if(ehBusca(e.target)) ultimoToque[e.target.id] = Date.now(); }
+  ['beforeinput','keydown','paste','drop','compositionstart','compositionupdate'].forEach(function(t){ document.addEventListener(t, marcar, true); });
+  function autoPreenchido(el){
+    try{ if(el.matches(':-webkit-autofill') || el.matches(':autofill')) return true; }catch(e){}
+    return false;
+  }
+  function limpar(el){
+    el.value = '';
+    try{ el.dispatchEvent(new Event('input', { bubbles:true })); }catch(e){}
+  }
+  document.addEventListener('input', function(e){
+    var el = e.target;
+    if(!ehBusca(el) || !el.value) return;
+    var recente = (Date.now() - (ultimoToque[el.id] || 0)) < 1500;
+    if(!recente || autoPreenchido(el)){
+      e.stopImmediatePropagation();
+      setTimeout(function(){ limpar(el); }, 0);
+    }
+  }, true);
+  // Se o navegador encheu o campo sem avisar (sem evento), confere de novo
+  // ao entrar no portal e logo depois de carregar.
+  function varrer(){
+    IDS.forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el || !el.value) return;
+      if(document.activeElement === el && (Date.now() - (ultimoToque[id] || 0)) < 600000) return;
+      if(!ultimoToque[id] || autoPreenchido(el)) limpar(el);
+    });
+  }
+  window.addEventListener('load', function(){ setTimeout(varrer, 300); setTimeout(varrer, 1500); setTimeout(varrer, 4000); });
+  window.addEventListener('pageshow', function(){ setTimeout(varrer, 300); });
+  document.addEventListener('cssl:permissoes-aplicadas', function(){ setTimeout(varrer, 200); setTimeout(varrer, 1500); });
+  document.addEventListener('animationstart', function(e){ if(e.animationName === 'csslAutofillDetect' && ehBusca(e.target)) setTimeout(function(){ if(!ultimoToque[e.target.id]) limpar(e.target); }, 0); }, true);
+  var st = document.createElement('style');
+  st.textContent = '@keyframes csslAutofillDetect{from{opacity:1}to{opacity:1}}' + IDS.map(function(id){ return '#'+id+':-webkit-autofill'; }).join(',') + '{animation:csslAutofillDetect .01s}';
+  document.head.appendChild(st);
 })();
 </script>
 </body>
