@@ -5049,6 +5049,75 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 #tv-print-host .tvp-sim{color:#166534}#tv-print-host .tvp-nao{color:#a1a1aa;font-weight:400}
 #tv-print-host .tvp-cinza{color:#a1a1aa}
 #tv-print-host .tvp-rod{display:flex;justify-content:space-between;margin-top:14px;padding-top:8px;border-top:1px solid #e4e4ec;font-size:9.5px;color:#888}
+
+/* ===== AnyDesk salvos ===== */
+#tela-anydesk{display:none;padding-top:36px;animation:fadeSlideIn .35s cubic-bezier(.2,.8,.2,1)}
+.card-app.anydesk .selo{background:rgba(239,68,68,.14);color:#f87171}
+#tela-portal .inicio-grupos .card-app.anydesk{--cor:#f87171}
+.ad-topo-acoes{display:flex;gap:8px;align-items:center}
+.ad-barra{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px}
+.ad-busca{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;padding:0 12px;height:42px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--borda,rgba(255,255,255,.1))}
+.ad-busca svg{width:16px;height:16px;color:#71717a;flex:none}
+.ad-busca input{flex:1;min-width:0;background:none;border:0;outline:none;color:#fff;font:inherit;font-size:13.5px;margin:0;padding:0;height:100%}
+.ad-barra select{width:auto;min-width:170px;margin:0;height:42px;padding:0 34px 0 12px;border-radius:12px;background-color:rgba(255,255,255,.04);border:1px solid var(--borda,rgba(255,255,255,.1));color:#e4e4e7;font:inherit;font-size:13.5px}
+.ad-barra select option{background:#16161c;color:#fff}
+.ad-chip-fav{width:auto;margin:0;height:42px;padding:0 14px;border-radius:12px;border:1px solid var(--borda,rgba(255,255,255,.1));background:rgba(255,255,255,.03);color:#c4c4cf;font:700 13px inherit;cursor:pointer}
+.ad-chip-fav[aria-pressed="true"]{border-color:#fbbf24;color:#fcd34d;background:rgba(251,191,36,.1)}
+.ad-sugestoes{margin:0 0 16px;border-radius:14px;border:1px dashed rgba(251,191,36,.4);background:rgba(251,191,36,.05)}
+.ad-sugestoes[hidden]{display:none}
+.ad-sug-cab{display:flex;align-items:center;gap:12px;width:100%;margin:0;padding:12px 14px;border:0;background:none;color:#fff;text-align:left;cursor:pointer;font:inherit}
+.ad-sug-cab b{display:block;font-size:14px}
+.ad-sug-cab small{display:block;font-size:12px;color:#a1a1aa;margin-top:2px}
+.ad-sug-ic{font-size:20px}
+.ad-sug-seta{width:18px;height:18px;margin-left:auto;color:#a1a1aa;transition:transform .15s;flex:none}
+.ad-sug-cab[aria-expanded="true"] .ad-sug-seta{transform:rotate(180deg)}
+.ad-sug-lista{padding:0 14px 12px;display:flex;flex-direction:column;gap:6px}
+.ad-sug-lista[hidden]{display:none}
+.ad-sug-item{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.ad-sug-item .ad-num{font-size:15px}
+.ad-sug-txt{flex:1;min-width:0;font-size:12.5px;color:#a1a1aa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ad-sug-txt b{color:#e4e4e7}
+.ad-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:auto;margin:0;height:32px;padding:0 11px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#e4e4e7;font:700 12.5px inherit;cursor:pointer;white-space:nowrap}
+.ad-btn:hover{border-color:rgba(125,123,255,.5);color:#fff}
+.ad-btn.pri{background:#0601fe;border-color:#0601fe;color:#fff}
+.ad-btn.pri:hover{filter:brightness(1.12)}
+.ad-btn svg{width:14px;height:14px}
+.ad-btn.icone{width:32px;padding:0}
+.ad-grupo-tit{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#71717a;margin:18px 0 8px}
+.ad-grupo-tit:first-child{margin-top:0}
+.ad-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+.ad-card{position:relative;display:flex;flex-direction:column;gap:10px;padding:14px 14px 12px;border-radius:14px;background:var(--superficie,#141418);border:1px solid var(--borda,rgba(255,255,255,.08))}
+.ad-card:hover{border-color:rgba(125,123,255,.3)}
+.ad-card-topo{display:flex;align-items:flex-start;gap:10px}
+.ad-estrela{flex:none;width:30px;height:30px;margin:-4px 0 0 -6px;padding:0;border:0;background:none;color:#52525b;font-size:19px;cursor:pointer;line-height:1}
+.ad-estrela.on{color:#fbbf24}
+.ad-card-id{flex:1;min-width:0}
+.ad-num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:800;font-size:19px;color:#fff;letter-spacing:.02em}
+.ad-nome{font-size:13px;color:#c4c4cf;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ad-menu{flex:none}
+.ad-infos{display:flex;flex-wrap:wrap;gap:6px}
+.ad-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;font-size:11.5px;font-weight:600;background:rgba(255,255,255,.05);color:#c4c4cf;border:1px solid rgba(255,255,255,.07);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ad-tag.pc{background:rgba(125,123,255,.1);color:#c9c8ff;border-color:rgba(125,123,255,.25);cursor:pointer}
+.ad-tag.senha{background:rgba(34,197,94,.08);color:#86efac;border-color:rgba(34,197,94,.25)}
+.ad-obs{font-size:12px;color:#8b8b99;line-height:1.4;white-space:pre-wrap}
+.ad-acoes{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.ad-acoes .pri{flex:1}
+.ad-senha-revelada{font-family:ui-monospace,Consolas,monospace;font-weight:700;color:#fff;letter-spacing:.04em}
+.ad-vazio{text-align:center;padding:40px 16px;color:#8b8b99;border:1px dashed rgba(255,255,255,.1);border-radius:14px}
+.ad-vazio b{display:block;color:#e4e4e7;font-size:15px;margin-bottom:4px}
+.ad-dup{display:block;margin-top:5px;font-size:12px;color:#fcd34d}
+.ad-dup[hidden]{display:none}
+.ad-dica{display:block;margin-top:5px;font-size:11.5px;color:#8b8b99}
+.ad-senha-campo{display:flex;gap:6px}
+.ad-senha-campo input{flex:1;min-width:0;margin:0}
+.ad-olho{width:42px;margin:0;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);cursor:pointer}
+.ad-fav-check{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#e4e4e7;cursor:pointer}
+.ad-fav-check input{width:auto;margin:0}
+.ad-mestra-aviso{margin:4px 0 8px;padding:10px 12px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.35);color:#fcd34d;font-size:12.5px;line-height:1.45}
+.ad-mestra-aviso[hidden]{display:none}
+.ad-mestra-aviso b{color:#fff}
+.ad-pc-linha{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+@media (max-width:640px){.ad-grade{grid-template-columns:1fr}.ad-barra select{flex:1}}
 </style>
 </head>
 <body>
@@ -5417,6 +5486,17 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
             <h3>Wi-Fi</h3>
           </div>
           <p>Redes e senhas cadastradas da CSSL.</p>
+          <span class="tag-livre">Acessar →</span>
+        </div>
+        <span class="card-seta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+      <div class="card-app anydesk" id="card-anydesk" style="display:none">
+        <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="m10 8 2 2 4-4"/></svg></div>
+        <div class="card-corpo">
+          <div class="card-topo">
+            <h3>AnyDesk</h3>
+          </div>
+          <p>IDs de acesso remoto salvos dos computadores.</p>
           <span class="tag-livre">Acessar →</span>
         </div>
         <span class="card-seta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
@@ -6909,6 +6989,33 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
   </div>
 
   <!-- ============ MÓDULO: WI-FI (lista de redes e senhas) ============ -->
+  <!-- ============ MÓDULO: ANYDESK SALVOS (só admins) ============ -->
+  <div id="tela-anydesk">
+    <div class="topo-chamado">
+      <div>
+        <h2>AnyDesk</h2>
+        <p>IDs de acesso remoto salvos. Clique em Conectar para abrir o AnyDesk direto no computador.</p>
+      </div>
+      <div class="ad-topo-acoes">
+        <button class="btn-principal" id="ad-btn-novo" type="button" style="width:auto;margin:0">+ Adicionar</button>
+        <button class="btn-secundario btn-voltar-portal" id="btn-voltar-portal-anydesk">Voltar</button>
+      </div>
+    </div>
+    <div class="ad-barra">
+      <div class="ad-busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="ad-busca" placeholder="Buscar por ID, nome, setor, local ou computador..." autocomplete="off"></div>
+      <select id="ad-filtro-setor"><option value="">Todos os setores</option></select>
+      <button type="button" class="ad-chip-fav" id="ad-so-fav" aria-pressed="false">★ Favoritos</button>
+    </div>
+    <div class="ad-sugestoes" id="ad-sugestoes" hidden>
+      <button type="button" class="ad-sug-cab" id="ad-sug-cab" aria-expanded="false">
+        <span class="ad-sug-ic">💡</span><span><b id="ad-sug-titulo">Encontrados nos chamados</b><small>IDs que os usuários informaram ao abrir chamado e ainda não estão salvos.</small></span>
+        <svg class="ad-sug-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="ad-sug-lista" id="ad-sug-lista" hidden></div>
+    </div>
+    <div id="ad-lista"></div>
+  </div>
+
   <div id="tela-wifi">
     <div class="topo-chamado">
       <div>
@@ -18482,7 +18589,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     'tela-avaliacao':'Avaliação', 'tela-painel':'Painel de Chamados', 'tela-admin':'Gerenciar usuários',
     'tela-computadores':'Computadores', 'tela-wifi':'Wi-Fi', 'tela-tv':'TVs', 'tela-agenda':'Agenda',
     'tela-chat':'Chat Interno', 'tela-auditoria-chat':'Auditoria de Conversas', 'tela-estoque':'Estoque',
-    'tela-sugestoes':'Sugestões'
+    'tela-sugestoes':'Sugestões', 'tela-anydesk':'AnyDesk'
   };
   function logado(){ return document.body.classList.contains('logado'); }
   function visivel(e){ return !!e && getComputedStyle(e).display !== 'none'; }
@@ -20998,6 +21105,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       pcItemDet('Patrimônio', c.patrimonio) + pcItemDet('Nome', c.nome) + pcItemDet('Setor', c.setor) + pcItemDet('Usuário', c.usuario) + pcItemDet('Status', c.status);
     document.getElementById('pc-det-rede').innerHTML =
       pcItemDet('IP', c.ip) + pcItemDet('MAC', c.mac) + pcItemDet('Hostname', c.hostname) + pcItemDet('DHCP', c.dhcp) + pcItemDet('VLAN', c.vlan);
+    if(window.csslAnydeskDoComputador) window.csslAnydeskDoComputador(id, document.getElementById('pc-det-rede'));
     document.getElementById('pc-det-hardware').innerHTML =
       pcItemDet('Processador', c.processador) + pcItemDet('Memória RAM', c.ram) + pcItemDet('Armazenamento', c.armazenamento) + pcItemDet('Fabricante', c.fabricante) + pcItemDet('Modelo', c.modelo) + pcItemDet('Número de série', c.serie);
     document.getElementById('pc-det-sistema').innerHTML =
@@ -30485,6 +30593,433 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
     var corpo = el('permissoes-usuario-corpo'); if(corpo) corpo.scrollTop = 0;
   };
   window.csslGruposChatLer = function(){ return marcados.slice(); };
+})();
+</script>
+
+<!-- ADIÇÃO: AnyDesk — formulário e senha mestra -->
+<div class="pc-modal-overlay" id="ad-modal-form" role="dialog" aria-modal="true" aria-labelledby="ad-form-titulo">
+  <div class="pc-modal-box" style="width:min(560px,100%)">
+    <button class="pc-modal-fechar" id="ad-form-fechar" type="button" aria-label="Fechar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <h3 class="pc-modal-titulo" id="ad-form-titulo">Adicionar AnyDesk</h3>
+    <p class="pc-modal-sub">Salve o ID para acessar o computador depois com um clique.</p>
+    <form id="ad-form" autocomplete="off">
+      <div class="pc-grid2" style="margin-bottom:14px">
+        <div class="pc-campo"><label for="ad-f-id">ID do AnyDesk</label><input type="text" id="ad-f-id" required placeholder="123 456 789" inputmode="numeric"><small class="ad-dup" id="ad-dup" hidden></small></div>
+        <div class="pc-campo"><label for="ad-f-nome">Nome <span class="agf-opc">(opcional)</span></label><input type="text" id="ad-f-nome" placeholder="Ex.: Recepção - Guichê 1"></div>
+      </div>
+      <div class="pc-grid2" style="margin-bottom:14px">
+        <div class="pc-campo"><label for="ad-f-setor">Setor</label><select id="ad-f-setor"><option value="">Sem setor</option></select></div>
+        <div class="pc-campo"><label for="ad-f-local">Local <span class="agf-opc">(opcional)</span></label><input type="text" id="ad-f-local" placeholder="Ex.: Posto de enfermagem"></div>
+      </div>
+      <div class="pc-campo" style="margin-bottom:14px"><label for="ad-f-pc">Computador <span class="agf-opc">(opcional)</span></label><select id="ad-f-pc"><option value="">Não ligado a um computador</option></select><small class="ad-dica">Ligando aqui, o AnyDesk também aparece nos detalhes do computador.</small></div>
+      <div class="pc-campo" style="margin-bottom:14px"><label for="ad-f-senha">Senha de acesso <span class="agf-opc">(opcional)</span></label>
+        <div class="ad-senha-campo"><input type="password" id="ad-f-senha" placeholder="Senha de acesso sem confirmação" autocomplete="new-password"><button type="button" id="ad-f-ver" class="ad-olho" aria-label="Mostrar senha">👁</button></div>
+        <small class="ad-dica" id="ad-senha-dica">Fica guardada com cadeado (protegida pela senha mestra da TI).</small></div>
+      <div class="pc-campo" style="margin-bottom:10px"><label for="ad-f-obs">Observação <span class="agf-opc">(opcional)</span></label><textarea id="ad-f-obs" rows="2" placeholder="Algo útil para quem for acessar"></textarea></div>
+      <label class="ad-fav-check"><input type="checkbox" id="ad-f-fav"> ★ Marcar como favorito</label>
+      <p class="small" id="ad-form-erro" style="display:none;color:var(--vermelho);margin:8px 0 0"></p>
+      <div class="pc-modal-acoes">
+        <button type="button" class="btn-secundario" id="ad-form-excluir" style="display:none;margin-right:auto;color:var(--vermelho)">Excluir</button>
+        <button type="button" class="btn-secundario" id="ad-form-cancelar">Cancelar</button>
+        <button type="submit" class="btn-principal" id="ad-form-salvar" style="width:auto;margin:0">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="pc-modal-overlay" id="ad-modal-mestra" role="dialog" aria-modal="true" aria-labelledby="ad-mestra-titulo">
+  <div class="pc-modal-box" style="width:min(420px,100%)">
+    <button class="pc-modal-fechar" id="ad-mestra-fechar" type="button" aria-label="Fechar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <h3 class="pc-modal-titulo" id="ad-mestra-titulo">🔒 Senha mestra da TI</h3>
+    <p class="pc-modal-sub" id="ad-mestra-sub">Digite a senha mestra para ver ou salvar senhas de acesso.</p>
+    <div class="pc-campo" style="margin-bottom:10px"><input type="password" id="ad-mestra-1" placeholder="Senha mestra" autocomplete="off"></div>
+    <div class="pc-campo" id="ad-mestra-2-box" style="margin-bottom:10px" hidden><input type="password" id="ad-mestra-2" placeholder="Repita a senha mestra" autocomplete="off"></div>
+    <p class="ad-mestra-aviso" id="ad-mestra-aviso" hidden>É a primeira senha guardada. Combine essa senha mestra com a equipe e <b>anote em lugar seguro</b>: ela não fica salva em lugar nenhum, e sem ela não dá para ver as senhas guardadas.</p>
+    <p class="small" id="ad-mestra-erro" style="display:none;color:var(--vermelho);margin:4px 0 0"></p>
+    <div class="pc-modal-acoes">
+      <button type="button" class="btn-secundario" id="ad-mestra-cancelar">Cancelar</button>
+      <button type="button" class="btn-principal" id="ad-mestra-ok" style="width:auto;margin:0">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   ADIÇÃO: AnyDesk salvos (só admins). Tabela anydesk_salvos.
+   - Conectar: abre o AnyDesk instalado (anydesk:ID).
+   - Sugestões: IDs informados nos chamados que ainda não foram salvos.
+   - Senha de acesso: guardada CRIPTOGRAFADA no navegador (AES-GCM com
+     chave tirada da "senha mestra da TI", que não é salva em lugar nenhum).
+     Quem só tem a chave pública do banco vê um texto embaralhado.
+   ============================================================ */
+(function(){
+  var card = document.getElementById('card-anydesk');
+  var tela = document.getElementById('tela-anydesk');
+  if(!card || !tela) return;
+  function el(id){ return document.getElementById(id); }
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function norm(v){ return String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function soDigitos(v){ return String(v || '').replace(/\s+/g, ''); }
+  function formatarId(v){ var d = soDigitos(v); return /^\d+$/.test(d) ? d.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : String(v || ''); }
+  function toast(msg, tipo){
+    var t = document.createElement('div');
+    t.className = 'ad-toast ' + (tipo || 'ok'); t.textContent = msg;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:100001;padding:11px 16px;border-radius:12px;font:600 13.5px inherit;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.4);background:' + (tipo === 'err' ? '#b91c1c' : '#15803d');
+    document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 2600);
+  }
+  var ICON = {
+    conectar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>',
+    copiar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+    editar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+    chave: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg>'
+  };
+
+  var registros = [], computadores = [], setores = [], sugestoes = [];
+  var soFav = false, tabelaFaltando = false;
+
+  function ehAdmin(){ return !!(window.csslEhAdmin && window.csslEhAdmin()); }
+  function aplicarVisibilidade(){ card.style.display = ehAdmin() ? '' : 'none'; }
+  document.addEventListener('cssl:permissoes-aplicadas', aplicarVisibilidade);
+  aplicarVisibilidade();
+
+  // ---------------- dados ----------------
+  async function carregar(){
+    if(typeof db === 'undefined' || !db) return;
+    var r = await db.from('anydesk_salvos').select('*').order('nome', { ascending: true });
+    tabelaFaltando = !!(r.error && /relation|does not exist|schema cache|anydesk_salvos/i.test(r.error.message || ''));
+    registros = r.error ? [] : (r.data || []);
+    try{
+      var rp = await db.from('pc_computadores').select('id,nome,patrimonio,setor').order('nome', { ascending: true });
+      computadores = rp.error ? [] : (rp.data || []);
+    }catch(e){ computadores = []; }
+    try{
+      var rs = await db.from('pc_setores').select('nome,ativo').eq('ativo', true).order('nome', { ascending: true });
+      setores = rs.error ? [] : (rs.data || []).map(function(x){ return x.nome; });
+    }catch(e){ setores = []; }
+    await carregarSugestoes();
+    montarSelects();
+    render();
+  }
+  async function carregarSugestoes(){
+    sugestoes = [];
+    try{
+      var r = await db.from('chamados').select('anydesk,solicitante,setor,criado_em').neq('anydesk', '').order('criado_em', { ascending: false }).limit(500);
+      if(r.error) return;
+      var salvos = {}; registros.forEach(function(x){ salvos[soDigitos(x.anydesk_id)] = true; });
+      var ignorados = lerIgnorados(), vistos = {};
+      (r.data || []).forEach(function(c){
+        var d = soDigitos(c.anydesk);
+        if(!d || d.length < 6 || salvos[d] || ignorados[d]) return;
+        if(vistos[d]){ vistos[d].vezes++; return; }
+        vistos[d] = { id: d, solicitante: c.solicitante || '', setor: c.setor || '', quando: c.criado_em, vezes: 1 };
+        sugestoes.push(vistos[d]);
+      });
+    }catch(e){}
+  }
+  function lerIgnorados(){ try{ return JSON.parse(localStorage.getItem('cssl_anydesk_ignorados') || '{}') || {}; }catch(e){ return {}; } }
+  function ignorar(id){ var g = lerIgnorados(); g[id] = 1; try{ localStorage.setItem('cssl_anydesk_ignorados', JSON.stringify(g)); }catch(e){} }
+
+  function montarSelects(){
+    var todosSetores = setores.slice();
+    registros.forEach(function(x){ if(x.setor && todosSetores.indexOf(x.setor) === -1) todosSetores.push(x.setor); });
+    todosSetores.sort(function(a, b){ return a.localeCompare(b, 'pt-BR'); });
+    var f = el('ad-filtro-setor'), atual = f.value;
+    f.innerHTML = '<option value="">Todos os setores</option>' + todosSetores.map(function(st){ return '<option>' + esc(st) + '</option>'; }).join('');
+    f.value = atual;
+    el('ad-f-setor').innerHTML = '<option value="">Sem setor</option>' + todosSetores.map(function(st){ return '<option>' + esc(st) + '</option>'; }).join('');
+    el('ad-f-pc').innerHTML = '<option value="">Não ligado a um computador</option>' + computadores.map(function(c){
+      return '<option value="' + esc(c.id) + '">' + esc(c.nome || '') + (c.patrimonio ? ' · ' + esc(c.patrimonio) : '') + (c.setor ? ' · ' + esc(c.setor) : '') + '</option>';
+    }).join('');
+  }
+  function pcDe(id){ return computadores.filter(function(c){ return String(c.id) === String(id); })[0] || null; }
+
+  // ---------------- lista ----------------
+  function render(){
+    var lista = el('ad-lista');
+    if(tabelaFaltando){
+      lista.innerHTML = '<div class="ad-vazio"><b>Falta criar a tabela no banco</b>A tela já está pronta, mas a tabela <code>anydesk_salvos</code> ainda não existe no Supabase.</div>';
+      el('ad-sugestoes').hidden = true; return;
+    }
+    var termo = norm(el('ad-busca').value.trim()), setor = el('ad-filtro-setor').value;
+    var itens = registros.filter(function(x){
+      if(soFav && !x.favorito) return false;
+      if(setor && x.setor !== setor) return false;
+      if(!termo) return true;
+      var pc = pcDe(x.computador_id);
+      return norm([x.anydesk_id, soDigitos(x.anydesk_id), x.nome, x.setor, x.local, x.observacao, pc && pc.nome, pc && pc.patrimonio].join(' ')).indexOf(termo) !== -1;
+    }).sort(function(a, b){
+      if(!!a.favorito !== !!b.favorito) return a.favorito ? -1 : 1;
+      return String(a.setor || 'zzz').localeCompare(String(b.setor || 'zzz'), 'pt-BR') || String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR');
+    });
+    if(!registros.length){
+      lista.innerHTML = '<div class="ad-vazio"><b>Nenhum AnyDesk salvo ainda</b>Clique em <b>+ Adicionar</b>' + (sugestoes.length ? ' ou salve um dos encontrados nos chamados, logo acima.' : '.') + '</div>';
+    } else if(!itens.length){
+      lista.innerHTML = '<div class="ad-vazio"><b>Nada encontrado</b>Tente outro termo ou limpe os filtros.</div>';
+    } else {
+      var favs = itens.filter(function(x){ return x.favorito; }), outros = itens.filter(function(x){ return !x.favorito; });
+      var html = '';
+      if(favs.length) html += '<div class="ad-grupo-tit">★ Favoritos</div><div class="ad-grade">' + favs.map(cartao).join('') + '</div>';
+      if(outros.length) html += (favs.length ? '<div class="ad-grupo-tit">Todos</div>' : '') + '<div class="ad-grade">' + outros.map(cartao).join('') + '</div>';
+      lista.innerHTML = html;
+    }
+    // sugestões
+    var box = el('ad-sugestoes');
+    box.hidden = !sugestoes.length;
+    if(sugestoes.length){
+      el('ad-sug-titulo').textContent = 'Encontrados nos chamados (' + sugestoes.length + ')';
+      el('ad-sug-lista').innerHTML = sugestoes.slice(0, 50).map(function(g){
+        var d = g.quando ? new Date(g.quando).toLocaleDateString('pt-BR') : '';
+        return '<div class="ad-sug-item"><span class="ad-num">' + esc(formatarId(g.id)) + '</span>' +
+          '<span class="ad-sug-txt"><b>' + esc(g.solicitante || '—') + '</b>' + (g.setor ? ' · ' + esc(g.setor) : '') + (d ? ' · último chamado em ' + d : '') + (g.vezes > 1 ? ' · ' + g.vezes + ' chamados' : '') + '</span>' +
+          '<button type="button" class="ad-btn" data-sug-conectar="' + esc(g.id) + '" title="Conectar">' + ICON.conectar + '</button>' +
+          '<button type="button" class="ad-btn pri" data-sug-salvar="' + esc(g.id) + '">Salvar</button>' +
+          '<button type="button" class="ad-btn icone" data-sug-ignorar="' + esc(g.id) + '" title="Não mostrar mais">✕</button></div>';
+      }).join('');
+    }
+  }
+  function cartao(x){
+    var pc = pcDe(x.computador_id);
+    var infos = [];
+    if(x.setor) infos.push('<span class="ad-tag">🏥 ' + esc(x.setor) + '</span>');
+    if(x.local) infos.push('<span class="ad-tag">📍 ' + esc(x.local) + '</span>');
+    if(pc) infos.push('<span class="ad-tag pc" data-abrir-pc="' + esc(pc.id) + '" title="Computador do cadastro">🖥 ' + esc(pc.nome || '') + (pc.patrimonio ? ' · ' + esc(pc.patrimonio) : '') + '</span>');
+    if(x.senha_cripto) infos.push('<span class="ad-tag senha" data-senha-tag="' + esc(x.id) + '">🔒 Senha guardada</span>');
+    return '<div class="ad-card" data-id="' + esc(x.id) + '">' +
+      '<div class="ad-card-topo"><button type="button" class="ad-estrela' + (x.favorito ? ' on' : '') + '" data-fav="' + esc(x.id) + '" title="' + (x.favorito ? 'Tirar dos favoritos' : 'Favoritar') + '">' + (x.favorito ? '★' : '☆') + '</button>' +
+        '<div class="ad-card-id"><div class="ad-num">' + esc(formatarId(x.anydesk_id)) + '</div>' + (x.nome ? '<div class="ad-nome">' + esc(x.nome) + '</div>' : '') + '</div>' +
+        '<button type="button" class="ad-btn icone ad-menu" data-editar="' + esc(x.id) + '" title="Editar">' + ICON.editar + '</button></div>' +
+      (infos.length ? '<div class="ad-infos">' + infos.join('') + '</div>' : '') +
+      (x.observacao ? '<div class="ad-obs">' + esc(x.observacao) + '</div>' : '') +
+      '<div class="ad-acoes"><button type="button" class="ad-btn pri" data-conectar="' + esc(x.anydesk_id) + '">' + ICON.conectar + 'Conectar</button>' +
+        '<button type="button" class="ad-btn" data-copiar="' + esc(soDigitos(x.anydesk_id)) + '">' + ICON.copiar + 'Copiar ID</button>' +
+        (x.senha_cripto ? '<button type="button" class="ad-btn" data-ver-senha="' + esc(x.id) + '">' + ICON.chave + 'Senha</button>' : '') + '</div>' +
+    '</div>';
+  }
+
+  // ---------------- ações ----------------
+  function conectar(id){
+    var d = soDigitos(id);
+    try{ window.location.href = 'anydesk:' + d; }catch(e){}
+    toast('Abrindo o AnyDesk em ' + formatarId(d) + '...');
+  }
+  async function copiar(texto, msg){
+    try{ await navigator.clipboard.writeText(texto); toast(msg || 'Copiado.'); }
+    catch(e){
+      var t = document.createElement('textarea'); t.value = texto; document.body.appendChild(t); t.select();
+      try{ document.execCommand('copy'); toast(msg || 'Copiado.'); }catch(e2){ toast('Não foi possível copiar.', 'err'); }
+      t.remove();
+    }
+  }
+  tela.addEventListener('click', async function(e){
+    var b = e.target.closest('button,[data-abrir-pc]'); if(!b) return;
+    var v;
+    if((v = b.getAttribute('data-conectar'))) return conectar(v);
+    if((v = b.getAttribute('data-copiar'))) return copiar(v, 'ID ' + formatarId(v) + ' copiado.');
+    if((v = b.getAttribute('data-editar'))) return abrirForm(registros.filter(function(x){ return String(x.id) === v; })[0]);
+    if((v = b.getAttribute('data-ver-senha'))) return verSenha(v, b);
+    if((v = b.getAttribute('data-fav'))){
+      var r = registros.filter(function(x){ return String(x.id) === v; })[0]; if(!r) return;
+      r.favorito = !r.favorito; render();
+      var u = await db.from('anydesk_salvos').update({ favorito: r.favorito }).eq('id', r.id);
+      if(u.error){ r.favorito = !r.favorito; render(); toast('Não foi possível salvar o favorito.', 'err'); }
+      return;
+    }
+    if((v = b.getAttribute('data-abrir-pc'))){
+      var cardPc = document.getElementById('card-computadores'); if(!cardPc) return;
+      el('btn-voltar-portal-anydesk').click(); cardPc.click();
+      return;
+    }
+    if((v = b.getAttribute('data-sug-conectar'))) return conectar(v);
+    if((v = b.getAttribute('data-sug-salvar'))){
+      var g = sugestoes.filter(function(x){ return x.id === v; })[0];
+      return abrirForm(null, { anydesk_id: v, nome: g ? g.solicitante : '', setor: g ? g.setor : '' });
+    }
+    if((v = b.getAttribute('data-sug-ignorar'))){ ignorar(v); sugestoes = sugestoes.filter(function(x){ return x.id !== v; }); render(); return; }
+    if(b.id === 'ad-sug-cab'){ var ab = b.getAttribute('aria-expanded') !== 'true'; b.setAttribute('aria-expanded', ab ? 'true' : 'false'); el('ad-sug-lista').hidden = !ab; return; }
+    if(b.id === 'ad-so-fav'){ soFav = !soFav; b.setAttribute('aria-pressed', soFav ? 'true' : 'false'); render(); return; }
+    if(b.id === 'ad-btn-novo') return abrirForm(null);
+  });
+  el('ad-busca').addEventListener('input', render);
+  el('ad-filtro-setor').addEventListener('change', render);
+
+  // ---------------- abrir / voltar ----------------
+  card.addEventListener('click', async function(){
+    if(!ehAdmin()) return;
+    document.getElementById('tela-portal').style.display = 'none';
+    tela.style.display = 'block';
+    el('ad-lista').innerHTML = '<p class="small">Carregando...</p>';
+    await carregar();
+  });
+  el('btn-voltar-portal-anydesk').addEventListener('click', function(){
+    tela.style.display = 'none';
+    document.getElementById('tela-portal').style.display = 'block';
+  });
+  var antesEntrar = window.entrarNoPortal;
+  window.entrarNoPortal = function(){ var r = antesEntrar ? antesEntrar.apply(this, arguments) : undefined; tela.style.display = 'none'; return r; };
+
+  // ---------------- criptografia da senha ----------------
+  var mestra = null; // só na memória desta janela
+  var te = new TextEncoder(), td = new TextDecoder();
+  function b64(buf){ var s = '', a = new Uint8Array(buf); for(var i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s); }
+  function deB64(t){ var s = atob(t), a = new Uint8Array(s.length); for(var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
+  async function chave(senha, sal){
+    var base = await crypto.subtle.importKey('raw', te.encode(senha), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: sal, iterations: 150000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  async function cifrar(texto, senha){
+    var sal = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    var k = await chave(senha, sal);
+    var ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k, te.encode(texto));
+    return 'v1:' + b64(sal) + ':' + b64(iv) + ':' + b64(ct);
+  }
+  async function decifrar(pacote, senha){
+    var p = String(pacote).split(':'); if(p[0] !== 'v1' || p.length !== 4) throw new Error('formato');
+    var k = await chave(senha, deB64(p[1]));
+    var pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: deB64(p[2]) }, k, deB64(p[3]));
+    return td.decode(pt);
+  }
+  function existeSenhaGuardada(excetoId){ return registros.filter(function(x){ return x.senha_cripto && String(x.id) !== String(excetoId || ''); })[0] || null; }
+
+  // pede a senha mestra (e confere com uma senha já guardada)
+  function pedirMestra(paraSalvar, excetoId){
+    return new Promise(function(resolve){
+      if(mestra) return resolve(mestra);
+      var modal = el('ad-modal-mestra'), primeira = paraSalvar && !existeSenhaGuardada(excetoId);
+      el('ad-mestra-1').value = ''; el('ad-mestra-2').value = '';
+      el('ad-mestra-2-box').hidden = !primeira; el('ad-mestra-aviso').hidden = !primeira;
+      el('ad-mestra-sub').textContent = primeira ? 'Crie a senha mestra que vai proteger as senhas de acesso.' : 'Digite a senha mestra para ver ou salvar senhas de acesso.';
+      el('ad-mestra-erro').style.display = 'none';
+      modal.classList.add('aberto');
+      setTimeout(function(){ el('ad-mestra-1').focus(); }, 50);
+      function fim(v){ modal.classList.remove('aberto'); limpar(); resolve(v); }
+      async function ok(){
+        var s1 = el('ad-mestra-1').value, erro = el('ad-mestra-erro');
+        function falha(t){ erro.textContent = t; erro.style.display = 'block'; }
+        if(s1.length < 6) return falha('Use pelo menos 6 caracteres.');
+        if(primeira){
+          if(s1 !== el('ad-mestra-2').value) return falha('As duas senhas não são iguais.');
+        } else {
+          var ref = existeSenhaGuardada(excetoId);
+          if(ref){ try{ await decifrar(ref.senha_cripto, s1); }catch(e){ return falha('Senha mestra incorreta.'); } }
+        }
+        mestra = s1; fim(s1);
+      }
+      function tecla(e){ if(e.key === 'Enter'){ e.preventDefault(); ok(); } }
+      function cancelar(){ fim(null); }
+      function limpar(){
+        el('ad-mestra-ok').removeEventListener('click', ok); el('ad-mestra-cancelar').removeEventListener('click', cancelar);
+        el('ad-mestra-fechar').removeEventListener('click', cancelar); modal.removeEventListener('keydown', tecla);
+      }
+      el('ad-mestra-ok').addEventListener('click', ok); el('ad-mestra-cancelar').addEventListener('click', cancelar);
+      el('ad-mestra-fechar').addEventListener('click', cancelar); modal.addEventListener('keydown', tecla);
+    });
+  }
+  async function verSenha(id, botao){
+    var r = registros.filter(function(x){ return String(x.id) === String(id); })[0];
+    if(!r || !r.senha_cripto) return;
+    var m = await pedirMestra(false, null); if(!m) return;
+    try{
+      var senha = await decifrar(r.senha_cripto, m);
+      var tag = tela.querySelector('[data-senha-tag="' + id + '"]');
+      if(tag){ tag.innerHTML = '🔓 <span class="ad-senha-revelada">' + esc(senha) + '</span>'; setTimeout(function(){ if(tag.isConnected) tag.innerHTML = '🔒 Senha guardada'; }, 20000); }
+      copiar(senha, 'Senha copiada (some da tela em 20 segundos).');
+    }catch(e){ mestra = null; toast('Senha mestra incorreta para esta senha.', 'err'); }
+  }
+
+  // ---------------- formulário ----------------
+  var editando = null, senhaOriginal = null;
+  function abrirForm(reg, pre){
+    editando = reg || null; pre = pre || {};
+    var d = reg || pre;
+    el('ad-form-titulo').textContent = reg ? 'Editar AnyDesk' : 'Adicionar AnyDesk';
+    el('ad-f-id').value = d.anydesk_id ? formatarId(d.anydesk_id) : '';
+    el('ad-f-nome').value = d.nome || '';
+    var selSetor = el('ad-f-setor');
+    if(d.setor && ![].some.call(selSetor.options, function(o){ return o.value === d.setor; })){ var o = document.createElement('option'); o.textContent = d.setor; selSetor.appendChild(o); }
+    selSetor.value = d.setor || '';
+    el('ad-f-local').value = d.local || '';
+    el('ad-f-pc').value = d.computador_id || '';
+    el('ad-f-senha').value = ''; el('ad-f-senha').type = 'password';
+    senhaOriginal = reg ? reg.senha_cripto : null;
+    el('ad-f-senha').placeholder = senhaOriginal ? '•••••••• (guardada — digite só se quiser trocar)' : 'Senha de acesso sem confirmação';
+    el('ad-f-obs').value = d.observacao || '';
+    el('ad-f-fav').checked = !!d.favorito;
+    el('ad-form-excluir').style.display = reg ? '' : 'none';
+    el('ad-form-erro').style.display = 'none';
+    conferirDuplicado();
+    el('ad-modal-form').classList.add('aberto');
+    setTimeout(function(){ (reg ? el('ad-f-nome') : el('ad-f-id')).focus(); }, 60);
+  }
+  function fecharForm(){ el('ad-modal-form').classList.remove('aberto'); editando = null; }
+  function conferirDuplicado(){
+    var d = soDigitos(el('ad-f-id').value), aviso = el('ad-dup');
+    var dup = d && registros.filter(function(x){ return soDigitos(x.anydesk_id) === d && (!editando || x.id !== editando.id); })[0];
+    aviso.hidden = !dup;
+    if(dup) aviso.textContent = 'Esse ID já está salvo' + (dup.nome ? ' como "' + dup.nome + '"' : '') + '.';
+    return !!dup;
+  }
+  el('ad-f-id').addEventListener('input', conferirDuplicado);
+  el('ad-f-id').addEventListener('blur', function(){ this.value = formatarId(this.value.trim()); });
+  el('ad-f-pc').addEventListener('change', function(){
+    var pc = pcDe(this.value);
+    if(pc && pc.setor && !el('ad-f-setor').value){ el('ad-f-setor').value = pc.setor; }
+    if(pc && !el('ad-f-nome').value.trim()) el('ad-f-nome').value = pc.nome || '';
+  });
+  el('ad-f-ver').addEventListener('click', function(){ var i = el('ad-f-senha'); i.type = i.type === 'password' ? 'text' : 'password'; });
+  el('ad-form-cancelar').addEventListener('click', fecharForm);
+  el('ad-form-fechar').addEventListener('click', fecharForm);
+  el('ad-modal-form').addEventListener('click', function(e){ if(e.target === el('ad-modal-form')) fecharForm(); });
+  el('ad-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var erro = el('ad-form-erro'); function falha(t){ erro.textContent = t; erro.style.display = 'block'; }
+    erro.style.display = 'none';
+    var id = el('ad-f-id').value.trim();
+    if(!id) return falha('Informe o ID do AnyDesk.');
+    if(soDigitos(id).length < 6) return falha('Esse ID parece curto demais. Confira o número.');
+    if(conferirDuplicado()) return falha('Esse ID já está salvo. Edite o existente.');
+    var payload = {
+      anydesk_id: soDigitos(id), nome: el('ad-f-nome').value.trim() || null, setor: el('ad-f-setor').value || null,
+      local: el('ad-f-local').value.trim() || null, computador_id: el('ad-f-pc').value || null,
+      observacao: el('ad-f-obs').value.trim() || null, favorito: el('ad-f-fav').checked
+    };
+    var senha = el('ad-f-senha').value;
+    if(senha){
+      var m = await pedirMestra(true, editando && editando.id); if(!m) return falha('Para guardar a senha, é preciso a senha mestra.');
+      try{ payload.senha_cripto = await cifrar(senha, m); }catch(err){ return falha('Não foi possível proteger a senha neste navegador.'); }
+    }
+    var bt = el('ad-form-salvar'); bt.disabled = true;
+    try{
+      var r;
+      if(editando) r = await db.from('anydesk_salvos').update(payload).eq('id', editando.id);
+      else{ payload.criado_por = (typeof emailLogado !== 'undefined' && emailLogado) ? emailLogado : null; r = await db.from('anydesk_salvos').insert(payload); }
+      if(r && r.error) throw r.error;
+      fecharForm(); toast(editando ? 'AnyDesk atualizado.' : 'AnyDesk salvo.');
+      await carregar();
+    }catch(err){ falha('Não foi possível salvar (' + (err && err.message ? err.message : 'erro') + ').'); }
+    finally{ bt.disabled = false; }
+  });
+  el('ad-form-excluir').addEventListener('click', async function(){
+    if(!editando) return;
+    if(!confirm('Excluir o AnyDesk ' + formatarId(editando.anydesk_id) + (editando.nome ? ' (' + editando.nome + ')' : '') + '?')) return;
+    var r = await db.from('anydesk_salvos').delete().eq('id', editando.id);
+    if(r.error){ toast('Não foi possível excluir.', 'err'); return; }
+    fecharForm(); toast('AnyDesk excluído.'); await carregar();
+  });
+
+  // ---------------- nos detalhes do computador ----------------
+  window.csslAnydeskDoComputador = async function(pcId, alvo){
+    if(!ehAdmin() || !alvo || typeof db === 'undefined' || !db) return;
+    try{
+      var r = await db.from('anydesk_salvos').select('anydesk_id,nome').eq('computador_id', pcId);
+      if(r.error || !r.data || !r.data.length) return;
+      r.data.forEach(function(x){
+        var div = document.createElement('div'); div.className = 'pc-det-item';
+        div.innerHTML = '<div class="lbl">AnyDesk</div><div class="val ad-pc-linha"><span class="ad-num" style="font-size:14px">' + esc(formatarId(x.anydesk_id)) + '</span>' +
+          '<button type="button" class="ad-btn pri" data-pc-conectar="' + esc(x.anydesk_id) + '">' + ICON.conectar + 'Conectar</button></div>';
+        div.querySelector('[data-pc-conectar]').addEventListener('click', function(){ conectar(x.anydesk_id); });
+        alvo.appendChild(div);
+      });
+    }catch(e){}
+  };
 })();
 </script>
 </body>
