@@ -5348,7 +5348,7 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
       <div class="hero-txt">
         <div class="hero-data"><span class="hero-data-ponto"></span><span id="hero-data-hoje"></span></div>
         <h2><span id="saudacaoPrefixo">Olá</span>, <span id="email-atual"></span></h2>
-        <p>O que você precisa fazer hoje?</p>
+        <p id="hero-frase-dia" title="Frase do dia">O que você precisa fazer hoje?</p>
         <div class="hero-busca">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
           <input type="search" id="buscaPortalCards" name="cssl-q-inicio" autocomplete="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore placeholder="Buscar chamado, estoque, computador...">
@@ -31224,6 +31224,86 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   // valor que veio lembrado/preenchido automaticamente também é limpo
   new MutationObserver(function(){ if(inp.value && /\D/.test(inp.value)) limpar(); }).observe(inp, { attributes:true, attributeFilter:['value'] });
   setInterval(function(){ if(inp.value && /\D/.test(inp.value) && document.activeElement !== inp) limpar(); }, 2000);
+})();
+</script>
+<script>
+/* ADIÇÃO: "Frase do dia" embaixo do "Bom dia/Boa tarde". Muda uma vez por
+   dia (todo mundo vê a mesma frase no mesmo dia) e troca sozinha quando
+   vira o dia com o portal aberto. */
+(function(){
+  var el = document.getElementById('hero-frase-dia');
+  if(!el) return;
+  var F = [
+    'Pequenos cuidados evitam grandes problemas.',
+    'Um bom atendimento começa com uma boa escuta.',
+    'Organização hoje é tempo livre amanhã.',
+    'Cada chamado resolvido é alguém voltando a trabalhar tranquilo.',
+    'Paciência também é uma ferramenta de trabalho.',
+    'Faça o simples bem feito.',
+    'Um sistema funcionando ajuda quem cuida de vidas.',
+    'Antes de reiniciar o mundo, reinicie o computador.',
+    'Trabalho em equipe deixa qualquer dia mais leve.',
+    'Prevenir é sempre mais rápido que consertar.',
+    'Gentileza também resolve chamado.',
+    'Quem anota não esquece.',
+    'Um passo de cada vez ainda é andar para frente.',
+    'Por trás de cada tela tem uma pessoa precisando de ajuda.',
+    'Backup feito é noite bem dormida.',
+    'Problema bem descrito é meio caminho resolvido.',
+    'Hoje é um bom dia para deixar tudo em ordem.',
+    'Cuidar de quem cuida também é cuidar do paciente.',
+    'Senha forte, dados protegidos.',
+    'Dúvida perguntada é erro evitado.',
+    'O melhor suporte é aquele que ninguém precisa pedir duas vezes.',
+    'Comece pelo mais importante.',
+    'Calma e café resolvem muita coisa.',
+    'Todo dia dá para melhorar um pouquinho.',
+    'Desconfie de link estranho: na dúvida, chame a TI.',
+    'Um ambiente organizado ajuda a pensar melhor.',
+    'Comunicação clara evita retrabalho.',
+    'Conhecimento compartilhado vale em dobro.',
+    'Cada setor faz parte do mesmo cuidado.',
+    'Feito é melhor que perfeito, mas bem feito é melhor ainda.',
+    'Respire fundo: tudo tem solução.',
+    'Bloqueie a tela ao sair da mesa. Seus dados agradecem.',
+    'Agradecer também faz parte do trabalho.',
+    'Quem ajuda o colega fortalece a equipe toda.',
+    'Planejar a semana deixa o dia mais tranquilo.',
+    'Errar faz parte; aprender com o erro faz a diferença.',
+    'Um sorriso no atendimento muda o dia de alguém.',
+    'Atualizar o sistema também é se proteger.',
+    'Foco no que dá para fazer agora.',
+    'Juntos a gente chega mais longe.',
+    'A pressa passa, o retrabalho fica.',
+    'Termine o que começou antes de abrir outra tarefa.',
+    'Bom humor também é contagioso.',
+    'Toda grande melhoria começa com uma pequena ideia.',
+    'Confira duas vezes, envie uma.',
+    'O cuidado com os detalhes aparece no resultado.',
+    'Valorize quem está do seu lado no plantão.',
+    'Um dia de cada vez, um chamado de cada vez.',
+    'Seu trabalho faz diferença, mesmo quando ninguém vê.',
+    'Desligar o monitor ao sair também economiza.',
+    'Saber pedir ajuda é sinal de força.',
+    'Tudo fica mais fácil quando a informação está no lugar certo.',
+    'Escute primeiro, resolva depois.',
+    'Pausas curtas ajudam a render mais.',
+    'Mantenha a calma, o sistema é seu aliado.',
+    'Quem cuida dos detalhes cuida de todos.',
+    'Um bom dia de trabalho começa com uma boa organização.',
+    'Ninguém sabe tudo, mas juntos a gente sabe muito.',
+    'Hoje é dia de fazer acontecer.',
+    'Obrigado por fazer parte da Casa de Saúde Santa Lúcia.'
+  ];
+  function diaDoAno(d){ var ini = new Date(d.getFullYear(), 0, 0); return Math.floor((d - ini) / 86400000); }
+  function aplicar(){
+    var d = new Date();
+    var i = (diaDoAno(d) + d.getFullYear() * 7) % F.length;
+    el.textContent = F[i];
+  }
+  aplicar();
+  document.addEventListener('cssl:novo-dia', aplicar);
+  document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') aplicar(); });
 })();
 </script>
 </body>
