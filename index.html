@@ -5133,6 +5133,9 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 /* Campos de busca: sem o "x" nativo do type=search (o visual continua igual) */
 #buscaPortalCards::-webkit-search-cancel-button,#pc-busca-input::-webkit-search-cancel-button,#ad-busca::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
 #buscaPortalCards,#pc-busca-input,#ad-busca{-webkit-appearance:none;appearance:none}
+#form-chamado .ad-num-erro{display:none;margin:6px 0 0;font-size:12.5px;font-weight:600;color:#fca5a5}
+#form-chamado .ad-num-erro.ver{display:block}
+#form-chamado .ad-num-invalido .ch-ctrl input{border-color:#ef4444 !important;box-shadow:0 0 0 3px rgba(239,68,68,.18) !important}
 </style>
 </head>
 <body>
@@ -5725,7 +5728,7 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
           </div>
           <div class="ch-campo">
             <label for="input-anydesk-numero">ID do AnyDesk</label>
-            <div class="ch-ctrl"><svg class="ch-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><input type="text" name="anydesk" id="input-anydesk-numero" placeholder="Digite seu ID do AnyDesk"></div>
+            <div class="ch-ctrl"><svg class="ch-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><input type="text" name="anydesk" id="input-anydesk-numero" placeholder="Ex.: 123456789 (só números)" inputmode="numeric" pattern="[0-9]*" autocomplete="off"></div>
             <p class="campo-hint">Para a TI acessar seu computador remotamente, se precisar.</p>
           </div>
         </section>
@@ -11848,7 +11851,7 @@ formChamado.addEventListener('submit', async function(e){
     let whatsappNumero = (d.whatsapp_numero || '').trim();
     let whatsappCompleto = whatsappNumero ? (d.whatsapp_ddi || '+55') + ' ' + whatsappNumero : null;
     // ADIÇÃO: número do AnyDesk (opcional)
-    let anydeskNumero = (d.anydesk || '').trim() || null;
+    let anydeskNumero = (d.anydesk || '').replace(/\D/g, '') || null;
 
     // ADIÇÃO: quando a categoria é "Acesso / Senha", inclui Nome, Número de
     // Matrícula, Profissão e Número de Registro junto do chamado. A tabela
@@ -25439,17 +25442,56 @@ formSolicitacao.addEventListener('submit', async function(e){
       inputLeito.disabled = true;
       return;
     }
-    var opts = ['<option value="">Selecione</option>'];
+    // ADIÇÃO: leito que já tem TV cadastrada some da lista (a não ser o
+    // leito da própria TV que está sendo editada).
+    var ocupados = tvLeitosOcupados(setor);
+    var opts = [], livres = 0;
     for(var n = faixa.inicio; n <= faixa.fim; n++){
       var valor = String(n);
-      var selecionado = valorSelecionado !== undefined && valorSelecionado !== null && String(valorSelecionado) === valor;
+      var selecionado = valorSelecionado !== undefined && valorSelecionado !== null && valorSelecionado !== '' && parseInt(valorSelecionado, 10) === n;
+      if(ocupados[n] && !selecionado) continue;
+      livres++;
       opts.push('<option value="' + valor + '"' + (selecionado ? ' selected' : '') + '>Leito ' + tvFormatarLeito(setor, n) + '</option>');
     }
+    if(!livres){
+      inputLeito.innerHTML = '<option value="">Todos os leitos de ' + tvEsc(setor) + ' já têm TV</option>';
+      inputLeito.disabled = true;
+      return;
+    }
+    opts.unshift('<option value="">Selecione (' + livres + (livres === 1 ? ' livre' : ' livres') + ')</option>');
     inputLeito.innerHTML = opts.join('');
     inputLeito.disabled = false;
   }
+  function tvLeitosOcupados(setor){
+    var idEd = inputIdEdicao ? String(inputIdEdicao.value || '') : '';
+    var oc = {};
+    (tvRegistros || []).forEach(function(r){
+      if(r.setor !== setor || (idEd && String(r.id) === idEd)) return;
+      var n = parseInt(String(r.leito).replace(/\D/g, ''), 10);
+      if(!isNaN(n)) oc[n] = true;
+    });
+    return oc;
+  }
+  // Mostra no setor quantos leitos ainda estão livres; setor cheio fica
+  // desativado (menos quando é o setor da TV que está sendo editada).
+  function tvAtualizarSetores(){
+    if(!inputSetor) return;
+    var idEd = inputIdEdicao ? String(inputIdEdicao.value || '') : '';
+    var setorEd = '';
+    if(idEd){ var re = (tvRegistros || []).find(function(x){ return String(x.id) === idEd; }); setorEd = re ? re.setor : ''; }
+    [].forEach.call(inputSetor.options, function(o){
+      var f = TV_LEITOS_POR_SETOR[o.value]; if(!f) return;
+      var oc = tvLeitosOcupados(o.value), total = f.fim - f.inicio + 1, usados = 0;
+      for(var n = f.inicio; n <= f.fim; n++) if(oc[n]) usados++;
+      var livres = total - usados;
+      o.textContent = o.value + (livres ? ' (' + livres + (livres === 1 ? ' leito livre)' : ' leitos livres)') : ' (todos cadastrados)');
+      o.disabled = !livres && o.value !== setorEd;
+    });
+  }
 
   if(inputSetor){
+    inputSetor.addEventListener('focus', tvAtualizarSetores);
+    inputSetor.addEventListener('pointerdown', tvAtualizarSetores);
     inputSetor.addEventListener('change', function(){
       tvPopularLeitos(inputSetor.value, '');
     });
@@ -25476,6 +25518,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(inputIdEdicao) inputIdEdicao.value = '';
     if(inputSetor) inputSetor.value = '';
     tvPopularLeitos('', '');
+    tvAtualizarSetores();
     if(inputModelo) inputModelo.value = '';
     if(inputWifi) inputWifi.value = '';
     if(inputAntena) inputAntena.value = '';
@@ -25750,6 +25793,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     if(!r) return;
     if(inputIdEdicao) inputIdEdicao.value = r.id;
     if(inputSetor) inputSetor.value = r.setor || '';
+    tvAtualizarSetores();
     tvPopularLeitos(r.setor, r.leito);
     if(inputModelo) inputModelo.value = r.modelo || '';
     if(inputWifi) inputWifi.value = r.wifi ? 'sim' : 'nao';
@@ -31127,6 +31171,59 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   var st = document.createElement('style');
   st.textContent = '@keyframes csslAutofillDetect{from{opacity:1}to{opacity:1}}' + IDS.map(function(id){ return '#'+id+':-webkit-autofill'; }).join(',') + '{animation:csslAutofillDetect .01s}';
   document.head.appendChild(st);
+})();
+</script>
+<script>
+/* ADIÇÃO: Abrir Chamado — o ID do AnyDesk só aceita números.
+   Letras, espaços e traços são tirados na hora (dá pra colar "123 456 789").
+   Continua opcional; se preencher, precisa ter 9 ou 10 números. */
+(function(){
+  var inp = document.getElementById('input-anydesk-numero');
+  var form = document.getElementById('form-chamado');
+  if(!inp || !form) return;
+  var campo = inp.closest('.ch-campo') || inp.parentNode.parentNode;
+  var erro = document.createElement('p'); erro.className = 'ad-num-erro';
+  campo.appendChild(erro);
+  var aviso = null;
+  function msg(){
+    var n = inp.value.length;
+    if(!n) return '';
+    if(n < 9) return 'O ID do AnyDesk tem 9 ou 10 números. Confira no AnyDesk, em "Este dispositivo".';
+    return '';
+  }
+  function validar(mostrar){
+    var m = msg(); inp.setCustomValidity(m);
+    if(mostrar || !m){ erro.textContent = m; erro.classList.toggle('ver', !!m); campo.classList.toggle('ad-num-invalido', !!m); }
+  }
+  function limpar(){
+    var v = inp.value, d = v.replace(/\D/g, '').slice(0, 10);
+    if(d !== v){
+      var pos = inp.selectionStart || 0, antes = v.slice(0, pos).replace(/\D/g, '').length;
+      inp.value = d;
+      try{ inp.setSelectionRange(Math.min(antes, d.length), Math.min(antes, d.length)); }catch(e){}
+      if(/[^\d\s.\-]/.test(v)){
+        erro.textContent = 'Aqui só aceita números.'; erro.classList.add('ver');
+        clearTimeout(aviso); aviso = setTimeout(function(){ validar(false); if(!msg()){ erro.classList.remove('ver'); } }, 1800);
+        return;
+      }
+    }
+    validar(erro.classList.contains('ver'));
+  }
+  inp.addEventListener('beforeinput', function(e){
+    if(e.inputType === 'insertText' && e.data && /\D/.test(e.data) && !/^[\d\s.\-]+$/.test(e.data)){
+      e.preventDefault();
+      erro.textContent = 'Aqui só aceita números.'; erro.classList.add('ver');
+      clearTimeout(aviso); aviso = setTimeout(function(){ validar(false); if(!msg()) erro.classList.remove('ver'); }, 1800);
+    }
+  });
+  inp.addEventListener('input', limpar);
+  inp.addEventListener('blur', function(){ limpar(); validar(true); });
+  inp.addEventListener('invalid', function(){ validar(true); if(campo.scrollIntoView) campo.scrollIntoView({ behavior:'smooth', block:'center' }); });
+  form.addEventListener('submit', function(){ limpar(); }, true);
+  form.addEventListener('reset', function(){ setTimeout(function(){ erro.classList.remove('ver'); campo.classList.remove('ad-num-invalido'); inp.setCustomValidity(''); }, 0); });
+  // valor que veio lembrado/preenchido automaticamente também é limpo
+  new MutationObserver(function(){ if(inp.value && /\D/.test(inp.value)) limpar(); }).observe(inp, { attributes:true, attributeFilter:['value'] });
+  setInterval(function(){ if(inp.value && /\D/.test(inp.value) && document.activeElement !== inp) limpar(); }, 2000);
 })();
 </script>
 </body>
