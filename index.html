@@ -2920,7 +2920,7 @@ header.nav .marca{min-width:0}
 #tela-portal .inicio-painel-faixa .card-seta svg{width:16px;height:16px}
 
 /* Gestão de TI: demais módulos lado a lado, todos do mesmo tamanho */
-#tela-portal .inicio-mosaico{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+#tela-portal .inicio-mosaico{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
 #tela-portal .inicio-mosaico .card-app{flex-direction:column;align-items:stretch;min-height:148px;gap:12px}
 #tela-portal .inicio-mosaico .card-corpo{margin-top:auto}
 #tela-portal .inicio-mosaico .card-seta{position:absolute;top:16px;right:16px}
@@ -5136,6 +5136,112 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 #form-chamado .ad-num-erro{display:none;margin:6px 0 0;font-size:12.5px;font-weight:600;color:#fca5a5}
 #form-chamado .ad-num-erro.ver{display:block}
 #form-chamado .ad-num-invalido .ch-ctrl input{border-color:#ef4444 !important;box-shadow:0 0 0 3px rgba(239,68,68,.18) !important}
+/* ===== Switches (só admins) ===== */
+#tela-switch{display:none;padding-top:36px;animation:fadeSlideIn .35s cubic-bezier(.2,.8,.2,1)}
+.card-app.switch .selo{background:rgba(52,211,153,.14);color:#34d399}
+#tela-portal .inicio-grupos .card-app.switch{--cor:#34d399}
+.sw-topo-acoes{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sw-exp-wrap{position:relative}
+#tela-switch .tv2-btn{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px;margin:0;width:auto}
+#tela-switch .tv2-btn svg{width:15px;height:15px;flex:none}
+#tela-switch #sw-btn-novo{height:38px;padding:0 15px;display:inline-flex;align-items:center}
+#tela-switch .btn-voltar-portal{height:38px}
+.sw-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 16px}
+.sw-stat{display:flex;align-items:center;gap:12px;min-width:0;padding:14px;border-radius:14px;border:1px solid var(--borda,rgba(255,255,255,.08));background:var(--superficie,#141418)}
+.sw-stat-ic{width:40px;height:40px;flex:none;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c)}
+.sw-stat b{display:block;font-size:22px;font-weight:800;line-height:1.1;color:#fff}
+.sw-stat small{display:block;margin-top:2px;font-size:12px;font-weight:700;color:#e4e4e7}
+.sw-stat em{display:block;font-style:normal;font-size:11px;font-weight:600;color:var(--texto-3,#71717a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-grupo{margin:0 0 18px}
+.sw-grupo-tit{display:flex;align-items:center;gap:8px;margin:0 2px 10px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#a1a1aa}
+.sw-grupo-tit span{font-size:11px;padding:1px 8px;border-radius:99px;background:rgba(255,255,255,.07);color:#c4c4cf;letter-spacing:0}
+.sw-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.sw-card{display:flex;flex-direction:column;gap:11px;padding:14px;border-radius:14px;background:var(--superficie,#141418);border:1px solid var(--borda,rgba(255,255,255,.08))}
+.sw-card:hover{border-color:rgba(52,211,153,.35)}
+.sw-card.st-defeito{border-color:rgba(239,68,68,.45)}
+.sw-card.st-desligado{opacity:.78}
+.sw-card-topo{display:flex;align-items:flex-start;gap:10px}
+.sw-card-nome{flex:1;min-width:0}
+.sw-card-nome b{display:block;font-size:16px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-card-nome small{display:block;font-size:12px;color:#a1a1aa;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-status{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:800;white-space:nowrap;border:1px solid}
+.sw-status i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.sw-status.funcionando{color:#4ade80;background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3)}
+.sw-status.defeito{color:#f87171;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.35)}
+.sw-status.desligado{color:#a1a1aa;background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12)}
+.sw-ip{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sw-ip code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;font-weight:700;color:#e4e4e7;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);padding:4px 9px;border-radius:8px;margin-right:2px}
+.sw-ip .sem{font-size:12px;color:#71717a}
+.sw-tags{display:flex;flex-wrap:wrap;gap:6px}
+.sw-mini{display:flex;flex-wrap:wrap;gap:3px}
+.sw-mini i{width:9px;height:9px;border-radius:2px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.sw-mini i.oc{background:var(--pc,#818cf8);border-color:transparent}
+.sw-mini i.df{background:#ef4444;border-color:transparent}
+.sw-uso{font-size:12px;color:#a1a1aa}
+.sw-uso b{color:#fff}
+.sw-uso .df{color:#f87171;font-weight:700}
+.sw-acoes{display:flex;gap:6px;flex-wrap:wrap}
+.sw-acoes .pri{flex:1}
+/* formulário */
+.sw-qtd-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.sw-qtd-chips button{width:auto;margin:0;padding:4px 10px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#c4c4cf;font:700 12px inherit;cursor:pointer}
+.sw-qtd-chips button.on{border-color:#34d399;color:#6ee7b7;background:rgba(52,211,153,.1)}
+.sw-seg{display:flex;gap:6px;flex-wrap:wrap}
+.sw-seg button{flex:1;min-width:0;width:auto;margin:0;height:38px;padding:0 10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:#c4c4cf;font:700 12.5px inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.sw-seg button i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.sw-seg button[data-v="funcionando"].on,.sw-seg button[data-v="ocupada"].on{border-color:#22c55e;color:#4ade80;background:rgba(34,197,94,.1)}
+.sw-seg button[data-v="defeito"].on{border-color:#ef4444;color:#f87171;background:rgba(239,68,68,.1)}
+.sw-seg button[data-v="desligado"].on,.sw-seg button[data-v="livre"].on{border-color:#a1a1aa;color:#e4e4e7;background:rgba(255,255,255,.08)}
+/* mapa de portas */
+.sw-mapa-cab{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin:0 0 12px;padding-right:44px}
+.sw-mapa-cab .sw-card-nome b{font-size:18px}
+.sw-mapa-resumo{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.sw-mapa-resumo span{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#c4c4cf}
+.sw-mapa-resumo span b{color:#fff}
+.sw-painel-wrap{overflow-x:auto;padding:2px 0 6px;margin:0 0 10px}
+.sw-painel{display:inline-flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:14px;background:linear-gradient(180deg,#1f2229,#16181d);border:1px solid rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.sw-painel-linha{display:flex;gap:5px}
+.sw-painel-linha .gap{width:10px;flex:none}
+.sw-porta{position:relative;flex:none;width:40px;height:40px;margin:0;padding:0;border-radius:6px;border:1.5px solid rgba(255,255,255,.18);background:#0d0e12;color:#8b8b99;font:800 11px ui-monospace,Consolas,monospace;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1;transition:transform .1s}
+.sw-porta:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.4);color:#fff}
+.sw-porta.oc{background:color-mix(in srgb,var(--pc) 22%,#0d0e12);border-color:var(--pc);color:#fff}
+.sw-porta.df{background:rgba(239,68,68,.18);border-color:#ef4444;color:#fecaca}
+.sw-porta.df::after{content:'✕';position:absolute;top:-1px;right:2px;font-size:9px;color:#f87171}
+.sw-porta.sel{outline:2px solid #fff;outline-offset:2px}
+.sw-porta .ic{font-size:11px;line-height:1}
+.sw-legenda{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px;font-size:11.5px;color:#a1a1aa}
+.sw-legenda span{display:inline-flex;align-items:center;gap:5px}
+.sw-legenda i{width:11px;height:11px;border-radius:3px;border:1.5px solid rgba(255,255,255,.18);background:#0d0e12}
+.sw-legenda i.oc{background:color-mix(in srgb,var(--pc) 30%,#0d0e12);border-color:var(--pc)}
+.sw-legenda i.df{background:rgba(239,68,68,.25);border-color:#ef4444}
+.sw-editor{border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.025);padding:14px}
+.sw-editor-cab{display:flex;align-items:center;gap:8px;margin:0 0 12px}
+.sw-editor-cab h4{margin:0;font-size:15px;color:#fff;flex:1}
+.sw-editor .pc-campo{margin-bottom:12px}
+.sw-editor-aviso{font-size:12px;color:#fcd34d;margin:-6px 0 10px}
+.sw-editor-aviso[hidden]{display:none}
+.sw-editor-acoes{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.sw-editor-acoes .pri{margin-left:auto}
+.sw-uso-lista{margin-top:14px}
+.sw-uso-lista h5{margin:0 0 8px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#71717a}
+.sw-uso-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:9px;font-size:12.5px;color:#c4c4cf;cursor:pointer}
+.sw-uso-item:hover{background:rgba(255,255,255,.04)}
+.sw-uso-item .n{flex:none;width:34px;font:800 12px ui-monospace,Consolas,monospace;color:#fff}
+.sw-uso-item .t{flex:none;width:140px;color:#a1a1aa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-uso-item .d{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-uso-item.df .t{color:#f87171}
+.sw-pc-linha{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#tv-print-host .swp-bloco{margin-top:16px;break-inside:avoid}
+#tv-print-host .swp-bloco h3{margin:0 0 6px;font-size:13px;color:#0a0896}
+#tv-print-host .swp-bloco h3 span{font-weight:400;color:#555;font-size:11px;margin-left:6px}
+#tv-print-host .swp-sec{margin:22px 0 4px;font-size:15px;color:#111;border-bottom:2px solid #0601fe;padding-bottom:4px}
+@media (max-width:900px){ .sw-stats{grid-template-columns:1fr 1fr;gap:8px} }
+@media (max-width:640px){
+  .sw-grade{grid-template-columns:1fr}
+  .sw-uso-item .t{width:96px}
+  #tela-switch .ad-barra select{flex:1;min-width:0}
+}
+#sw-modal-mapa [hidden]{display:none !important}
 </style>
 </head>
 <body>
@@ -5515,6 +5621,17 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
             <h3>AnyDesk</h3>
           </div>
           <p>IDs de acesso remoto salvos dos computadores.</p>
+          <span class="tag-livre">Acessar →</span>
+        </div>
+        <span class="card-seta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+      <div class="card-app switch" id="card-switch" style="display:none">
+        <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 11h1M9.5 11h1M13 11h1M16.5 11h1M6 14h12"/></svg></div>
+        <div class="card-corpo">
+          <div class="card-topo">
+            <h3>Switches</h3>
+          </div>
+          <p>Switches da rede e mapa de portas.</p>
           <span class="tag-livre">Acessar →</span>
         </div>
         <span class="card-seta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
@@ -7007,6 +7124,35 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
   </div>
 
   <!-- ============ MÓDULO: WI-FI (lista de redes e senhas) ============ -->
+  <!-- ============ MÓDULO: SWITCHES (só admins) ============ -->
+  <div id="tela-switch">
+    <div class="topo-chamado">
+      <div>
+        <h2>Switches</h2>
+        <p>Cadastro dos switches da rede e o mapa de portas de cada um.</p>
+      </div>
+      <div class="sw-topo-acoes">
+        <div class="sw-exp-wrap">
+          <button type="button" class="btn-secundario tv2-btn" id="sw-btn-exportar" aria-haspopup="menu" aria-expanded="false" title="Exportar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg><span class="tv2-txt">Exportar</span></button>
+          <div class="pc2-menu" id="sw-menu-exportar" role="menu" hidden>
+            <button type="button" role="menuitem" data-sw-exportar="pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Salvar em PDF</button>
+            <button type="button" role="menuitem" data-sw-exportar="excel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Baixar Excel</button>
+            <button type="button" role="menuitem" data-sw-exportar="imprimir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Imprimir</button>
+          </div>
+        </div>
+        <button class="btn-principal" id="sw-btn-novo" type="button" style="width:auto;margin:0">+ Adicionar</button>
+        <button class="btn-secundario btn-voltar-portal" id="btn-voltar-portal-switch">Voltar</button>
+      </div>
+    </div>
+    <div class="sw-stats" id="sw-stats"></div>
+    <div class="ad-barra">
+      <div class="ad-busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="search" id="sw-busca" name="cssl-q-sw" data-lpignore="true" placeholder="Buscar por nome, IP, setor, modelo, patrimônio ou o que está ligado..." autocomplete="off"></div>
+      <select id="sw-filtro-setor"><option value="">Todos os setores</option></select>
+      <select id="sw-filtro-status"><option value="">Todos os status</option><option value="funcionando">Funcionando</option><option value="defeito">Com defeito</option><option value="desligado">Desligado</option></select>
+    </div>
+    <div id="sw-lista"></div>
+  </div>
+
   <!-- ============ MÓDULO: ANYDESK SALVOS (só admins) ============ -->
   <div id="tela-anydesk">
     <div class="topo-chamado">
@@ -18424,7 +18570,10 @@ formSolicitacao.addEventListener('submit', async function(e){
     // ADIÇÃO: Sugestões e Wi-Fi não estavam na lista — o cabeçalho sumia
     // (chat, sino e menu do usuário) quando uma delas estava aberta
     sugestoes: document.getElementById('tela-sugestoes'),
-    wifi: document.getElementById('tela-wifi')
+    wifi: document.getElementById('tela-wifi'),
+    // ADIÇÃO: AnyDesk e Switches (o cabeçalho sumia com elas abertas)
+    anydesk: document.getElementById('tela-anydesk'),
+    switches: document.getElementById('tela-switch')
   };
 
   // ADIÇÃO: telas "de trabalho" (tabela/grade) que devem ocupar a largura
@@ -18433,7 +18582,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // Avaliação ficam de fora de propósito (não foram pedidas).
   // ALTERADO: a Início (portal) também passou a ocupar a largura toda da
   // tela, sem o espaço vazio nas laterais — a pedido do usuário.
-  var TELAS_LARGURA_TOTAL = { portal:1, painel:1, admin:1, estoque:1, computadores:1, chat:1, agenda:1, auditoria:1, tv:1, chamado:1, solicitacao:1, sugestoes:1 };
+  var TELAS_LARGURA_TOTAL = { portal:1, painel:1, admin:1, estoque:1, computadores:1, chat:1, agenda:1, auditoria:1, tv:1, chamado:1, solicitacao:1, sugestoes:1, anydesk:1, switches:1 };
   var mainAreaEl = document.getElementById('mainArea');
 
   // Move os botões reais de notificação/sair para dentro da barra do topo,
@@ -18608,7 +18757,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     'tela-avaliacao':'Avaliação', 'tela-painel':'Painel de Chamados', 'tela-admin':'Gerenciar usuários',
     'tela-computadores':'Computadores', 'tela-wifi':'Wi-Fi', 'tela-tv':'TVs', 'tela-agenda':'Agenda',
     'tela-chat':'Chat Interno', 'tela-auditoria-chat':'Auditoria de Conversas', 'tela-estoque':'Estoque',
-    'tela-sugestoes':'Sugestões', 'tela-anydesk':'AnyDesk'
+    'tela-sugestoes':'Sugestões', 'tela-anydesk':'AnyDesk', 'tela-switch':'Switches'
   };
   function logado(){ return document.body.classList.contains('logado'); }
   function visivel(e){ return !!e && getComputedStyle(e).display !== 'none'; }
@@ -21125,6 +21274,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     document.getElementById('pc-det-rede').innerHTML =
       pcItemDet('IP', c.ip) + pcItemDet('MAC', c.mac) + pcItemDet('Hostname', c.hostname) + pcItemDet('DHCP', c.dhcp) + pcItemDet('VLAN', c.vlan);
     if(window.csslAnydeskDoComputador) window.csslAnydeskDoComputador(id, document.getElementById('pc-det-rede'));
+    if(window.csslSwitchDoComputador) window.csslSwitchDoComputador(id, document.getElementById('pc-det-rede'));
     document.getElementById('pc-det-hardware').innerHTML =
       pcItemDet('Processador', c.processador) + pcItemDet('Memória RAM', c.ram) + pcItemDet('Armazenamento', c.armazenamento) + pcItemDet('Fabricante', c.fabricante) + pcItemDet('Modelo', c.modelo) + pcItemDet('Número de série', c.serie);
     document.getElementById('pc-det-sistema').innerHTML =
@@ -31132,7 +31282,7 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
    campos de busca quando a própria pessoa digitou/colou; preenchimento
    automático é apagado na hora e a lista volta ao normal. */
 (function(){
-  var IDS = ['buscaPortalCards','pc-busca-input','ad-busca','pgc-busca','kb-busca','adm-busca','adm-setor-busca','agenda-busca','pc-manut-busca','pc-etq-busca','tv-busca-input'];
+  var IDS = ['buscaPortalCards','pc-busca-input','ad-busca','sw-busca','pgc-busca','kb-busca','adm-busca','adm-setor-busca','agenda-busca','pc-manut-busca','pc-etq-busca','tv-busca-input'];
   var ultimoToque = {};
   function ehBusca(el){ return el && el.id && IDS.indexOf(el.id) > -1; }
   function marcar(e){ if(ehBusca(e.target)) ultimoToque[e.target.id] = Date.now(); }
@@ -31304,6 +31454,652 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   aplicar();
   document.addEventListener('cssl:novo-dia', aplicar);
   document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') aplicar(); });
+})();
+</script>
+<!-- ADIÇÃO: Switches — formulário e mapa de portas -->
+<div class="pc-modal-overlay" id="sw-modal-form" role="dialog" aria-modal="true" aria-labelledby="sw-form-titulo">
+  <div class="pc-modal-box" style="width:min(600px,100%)">
+    <button class="pc-modal-fechar" id="sw-form-fechar" type="button" aria-label="Fechar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <h3 class="pc-modal-titulo" id="sw-form-titulo">Adicionar switch</h3>
+    <p class="pc-modal-sub">Depois de salvar, abra o <b>Mapa de portas</b> para anotar o que está ligado em cada porta.</p>
+    <form id="sw-form" autocomplete="off">
+      <div class="pc-grid2" style="margin-bottom:14px">
+        <div class="pc-campo"><label for="sw-f-nome">Nome</label><input type="text" id="sw-f-nome" required placeholder="Ex.: SW-UTI-01"></div>
+        <div class="pc-campo"><label for="sw-f-ip">IP <span class="agf-opc">(opcional)</span></label><input type="text" id="sw-f-ip" placeholder="Ex.: 192.168.9.2" inputmode="decimal" spellcheck="false"><small class="ad-dup" id="sw-ip-dup" hidden></small></div>
+      </div>
+      <div class="pc-grid2" style="margin-bottom:14px">
+        <div class="pc-campo"><label for="sw-f-setor">Setor</label><select id="sw-f-setor"><option value="">Sem setor</option></select></div>
+        <div class="pc-campo"><label for="sw-f-local">Local <span class="agf-opc">(opcional)</span></label><input type="text" id="sw-f-local" placeholder="Ex.: Rack do corredor"></div>
+      </div>
+      <div class="pc-grid2" style="margin-bottom:14px">
+        <div class="pc-campo"><label for="sw-f-marca">Marca <span class="agf-opc">(opcional)</span></label><input type="text" id="sw-f-marca" list="sw-lista-marcas" placeholder="Ex.: TP-Link">
+          <datalist id="sw-lista-marcas"><option value="TP-Link"><option value="Intelbras"><option value="D-Link"><option value="Cisco"><option value="HP / Aruba"><option value="Ubiquiti"><option value="Mikrotik"><option value="Huawei"><option value="Multilaser"></datalist></div>
+        <div class="pc-campo"><label for="sw-f-modelo">Modelo <span class="agf-opc">(opcional)</span></label><input type="text" id="sw-f-modelo" placeholder="Ex.: TL-SG1024D"></div>
+      </div>
+      <div class="pc-grid2" style="margin-bottom:14px">
+        <div class="pc-campo"><label for="sw-f-portas">Quantidade de portas</label><input type="number" id="sw-f-portas" min="1" max="96" required value="24">
+          <div class="sw-qtd-chips" id="sw-qtd-chips"><button type="button" data-q="5">5</button><button type="button" data-q="8">8</button><button type="button" data-q="16">16</button><button type="button" data-q="24">24</button><button type="button" data-q="48">48</button></div></div>
+        <div class="pc-campo"><label for="sw-f-patrimonio">Patrimônio <span class="agf-opc">(opcional)</span></label><input type="text" id="sw-f-patrimonio" placeholder="Ex.: 004512"></div>
+      </div>
+      <div class="pc-campo" style="margin-bottom:14px"><label>Status</label>
+        <div class="sw-seg" id="sw-f-status"><button type="button" data-v="funcionando" class="on"><i></i>Funcionando</button><button type="button" data-v="defeito"><i></i>Com defeito</button><button type="button" data-v="desligado"><i></i>Desligado</button></div></div>
+      <div class="pc-campo" style="margin-bottom:10px"><label for="sw-f-obs">Observação <span class="agf-opc">(opcional)</span></label><textarea id="sw-f-obs" rows="2" placeholder="Algo útil sobre esse switch"></textarea></div>
+      <p class="small" id="sw-form-erro" style="display:none;color:var(--vermelho);margin:8px 0 0"></p>
+      <div class="pc-modal-acoes">
+        <button type="button" class="btn-secundario" id="sw-form-excluir" style="display:none;margin-right:auto;color:var(--vermelho)">Excluir</button>
+        <button type="button" class="btn-secundario" id="sw-form-cancelar">Cancelar</button>
+        <button type="submit" class="btn-principal" id="sw-form-salvar" style="width:auto;margin:0">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="pc-modal-overlay" id="sw-modal-mapa" role="dialog" aria-modal="true" aria-labelledby="sw-mapa-nome">
+  <div class="pc-modal-box" style="width:min(1040px,100%)">
+    <button class="pc-modal-fechar" id="sw-mapa-fechar" type="button" aria-label="Fechar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="sw-mapa-cab">
+      <div class="sw-card-nome"><b id="sw-mapa-nome">Switch</b><small id="sw-mapa-sub"></small></div>
+      <div class="sw-mapa-resumo" id="sw-mapa-resumo"></div>
+    </div>
+    <div class="sw-painel-wrap"><div class="sw-painel" id="sw-painel"></div></div>
+    <div class="sw-legenda" id="sw-legenda"></div>
+    <div class="sw-editor" id="sw-editor">
+      <div class="sw-editor-cab"><h4 id="sw-ed-titulo">Porta 1</h4>
+        <button type="button" class="ad-btn icone" id="sw-ed-ant" title="Porta anterior">‹</button>
+        <button type="button" class="ad-btn icone" id="sw-ed-prox" title="Próxima porta">›</button></div>
+      <div class="pc-campo"><label>Situação da porta</label>
+        <div class="sw-seg" id="sw-ed-estado"><button type="button" data-v="livre"><i></i>Livre</button><button type="button" data-v="ocupada"><i></i>Em uso</button><button type="button" data-v="defeito"><i></i>Com defeito</button></div></div>
+      <div class="pc-grid2" id="sw-ed-linha-tipo">
+        <div class="pc-campo"><label for="sw-ed-tipo">O que está ligado</label><select id="sw-ed-tipo"></select></div>
+        <div class="pc-campo" id="sw-ed-campo-pc"><label for="sw-ed-pc">Computador</label><select id="sw-ed-pc"><option value="">Escolha o computador</option></select></div>
+        <div class="pc-campo" id="sw-ed-campo-sw" hidden><label for="sw-ed-sw">Qual switch</label><select id="sw-ed-sw"><option value="">Escolha o switch</option></select></div>
+      </div>
+      <p class="sw-editor-aviso" id="sw-ed-aviso" hidden></p>
+      <div class="pc-campo"><label for="sw-ed-desc">Identificação / observação <span class="agf-opc">(opcional)</span></label><input type="text" id="sw-ed-desc" placeholder="Ex.: Ponto 12 · Sala 3, Impressora da recepção..."></div>
+      <div class="sw-editor-acoes">
+        <span class="small" id="sw-ed-salvo" style="color:#86efac"></span>
+        <button type="button" class="ad-btn pri" id="sw-ed-salvar">Salvar porta</button>
+      </div>
+    </div>
+    <div class="sw-uso-lista" id="sw-uso-lista"></div>
+  </div>
+</div>
+<script>
+/* ============================================================
+   ADIÇÃO: Switches (só admins). Tabela "switches".
+   - Cadastro: nome, setor, local, IP, marca, modelo, portas,
+     patrimônio, status e observação.
+   - Mapa de portas: cada porta livre / em uso / com defeito e o que
+     está ligado (computador do cadastro, ponto de rede, impressora,
+     outro switch...). Fica tudo no campo "portas" (JSON) do switch.
+   - Abrir o IP no navegador, exportar PDF/Excel/Imprimir.
+   - Nos detalhes do computador aparece em qual switch/porta ele está.
+   ============================================================ */
+(function(){
+  var card = document.getElementById('card-switch');
+  var tela = document.getElementById('tela-switch');
+  if(!card || !tela) return;
+  function el(id){ return document.getElementById(id); }
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function norm(v){ return String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function toast(msg, tipo){
+    var t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:100001;padding:11px 16px;border-radius:12px;font:600 13.5px inherit;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:90vw;background:' + (tipo === 'err' ? '#b91c1c' : '#15803d');
+    document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 2800);
+  }
+  var ICON = {
+    abrir: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>',
+    copiar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+    editar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+    mapa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 11h2M10 11h2M14 11h2M6 14h2M10 14h2M14 14h2"/></svg>'
+  };
+  var TIPOS = {
+    pc:         { rot: 'Computador', ic: '🖥', cor: '#818cf8' },
+    ponto:      { rot: 'Ponto de rede', ic: '🔌', cor: '#38bdf8' },
+    impressora: { rot: 'Impressora', ic: '🖨', cor: '#f472b6' },
+    switch:     { rot: 'Outro switch', ic: '🔀', cor: '#34d399' },
+    ap:         { rot: 'Wi-Fi / Access point', ic: '📶', cor: '#22d3ee' },
+    camera:     { rot: 'Câmera', ic: '📷', cor: '#fbbf24' },
+    telefone:   { rot: 'Telefone IP', ic: '☎', cor: '#a78bfa' },
+    servidor:   { rot: 'Servidor / Roteador', ic: '🗄', cor: '#fb923c' },
+    outro:      { rot: 'Outro', ic: '•', cor: '#a1a1aa' }
+  };
+  var STATUS = { funcionando: 'Funcionando', defeito: 'Com defeito', desligado: 'Desligado' };
+
+  var registros = [], computadores = [], setores = [], tabelaFaltando = false;
+
+  function ehAdmin(){ return !!(window.csslEhAdmin && window.csslEhAdmin()); }
+  function aplicarVisibilidade(){ card.style.display = ehAdmin() ? '' : 'none'; }
+  document.addEventListener('cssl:permissoes-aplicadas', aplicarVisibilidade);
+  aplicarVisibilidade();
+
+  // ---------------- dados ----------------
+  async function carregar(){
+    if(typeof db === 'undefined' || !db) return;
+    var r = await db.from('switches').select('*').order('nome', { ascending: true });
+    tabelaFaltando = !!(r.error && /relation|does not exist|schema cache|switches/i.test(r.error.message || ''));
+    registros = r.error ? [] : (r.data || []);
+    registros.forEach(function(x){ if(!x.portas || typeof x.portas !== 'object') x.portas = {}; });
+    try{
+      var rp = await db.from('pc_computadores').select('id,nome,patrimonio,setor').order('nome', { ascending: true });
+      computadores = rp.error ? [] : (rp.data || []);
+    }catch(e){ computadores = []; }
+    try{
+      var rs = await db.from('pc_setores').select('nome,ativo').eq('ativo', true).order('nome', { ascending: true });
+      setores = rs.error ? [] : (rs.data || []).map(function(x){ return x.nome; });
+    }catch(e){ setores = []; }
+    montarSelects();
+    render();
+  }
+  function pcDe(id){ return computadores.filter(function(c){ return String(c.id) === String(id); })[0] || null; }
+  function swDe(id){ return registros.filter(function(x){ return String(x.id) === String(id); })[0] || null; }
+  function qtd(x){ return Math.max(1, parseInt(x.qtd_portas, 10) || 0); }
+  function porta(x, n){ var p = x.portas && x.portas[String(n)]; return p && p.estado && p.estado !== 'livre' ? p : null; }
+  function contar(x){
+    var t = qtd(x), oc = 0, df = 0;
+    for(var n = 1; n <= t; n++){ var p = porta(x, n); if(p){ if(p.estado === 'defeito') df++; else oc++; } }
+    return { total: t, ocupadas: oc, defeito: df, livres: t - oc - df };
+  }
+  function ligadoA(p){
+    if(!p) return '';
+    if(p.tipo === 'pc'){ var pc = pcDe(p.computador_id); return pc ? (pc.nome || '') + (pc.patrimonio ? ' · ' + pc.patrimonio : '') : 'Computador (removido do cadastro)'; }
+    if(p.tipo === 'switch'){ var s = swDe(p.switch_id); return s ? s.nome : 'Switch'; }
+    return '';
+  }
+  function textoPorta(p){
+    if(!p) return 'Livre';
+    if(p.estado === 'defeito') return 'Com defeito' + (p.descricao ? ' · ' + p.descricao : '');
+    var t = TIPOS[p.tipo] || TIPOS.outro, l = ligadoA(p);
+    return t.rot + (l ? ': ' + l : '') + (p.descricao ? ' · ' + p.descricao : '');
+  }
+
+  function montarSelects(){
+    var todos = setores.slice();
+    registros.forEach(function(x){ if(x.setor && todos.indexOf(x.setor) === -1) todos.push(x.setor); });
+    todos.sort(function(a, b){ return a.localeCompare(b, 'pt-BR'); });
+    var f = el('sw-filtro-setor'), atual = f.value;
+    f.innerHTML = '<option value="">Todos os setores</option>' + todos.map(function(st){ return '<option>' + esc(st) + '</option>'; }).join('');
+    f.value = atual;
+    el('sw-f-setor').innerHTML = '<option value="">Sem setor</option>' + todos.map(function(st){ return '<option>' + esc(st) + '</option>'; }).join('');
+    el('sw-ed-pc').innerHTML = '<option value="">Escolha o computador</option>' + computadores.map(function(c){
+      return '<option value="' + esc(c.id) + '">' + esc(c.nome || '') + (c.patrimonio ? ' · ' + esc(c.patrimonio) : '') + (c.setor ? ' · ' + esc(c.setor) : '') + '</option>';
+    }).join('');
+    el('sw-ed-tipo').innerHTML = Object.keys(TIPOS).map(function(k){ return '<option value="' + k + '">' + TIPOS[k].ic + '  ' + esc(TIPOS[k].rot) + '</option>'; }).join('');
+  }
+
+  // ---------------- lista ----------------
+  function filtrados(){
+    var termo = norm(el('sw-busca').value.trim()), setor = el('sw-filtro-setor').value, st = el('sw-filtro-status').value;
+    return registros.filter(function(x){
+      if(setor && x.setor !== setor) return false;
+      if(st && (x.status || 'funcionando') !== st) return false;
+      if(!termo) return true;
+      var extra = [];
+      for(var n = 1; n <= qtd(x); n++){ var p = porta(x, n); if(p) extra.push(textoPorta(p)); }
+      return norm([x.nome, x.ip, x.setor, x.local, x.marca, x.modelo, x.patrimonio, x.observacao].concat(extra).join(' ')).indexOf(termo) !== -1;
+    });
+  }
+  function renderStats(){
+    var t = { sw: registros.length, ok: 0, portas: 0, oc: 0, livres: 0, df: 0, swRuim: 0 };
+    registros.forEach(function(x){
+      var c = contar(x); t.portas += c.total; t.oc += c.ocupadas; t.livres += c.livres; t.df += c.defeito;
+      if((x.status || 'funcionando') === 'funcionando') t.ok++; else t.swRuim++;
+    });
+    var pct = t.portas ? Math.round(t.oc * 100 / t.portas) : 0;
+    function tile(c, ic, num, rot, em){ return '<div class="sw-stat" style="--c:' + c + '"><div class="sw-stat-ic">' + ic + '</div><div style="min-width:0"><b>' + num + '</b><small>' + rot + '</small><em>' + em + '</em></div></div>'; }
+    el('sw-stats').innerHTML =
+      tile('#34d399', '🔀', t.sw, t.sw === 1 ? 'Switch' : 'Switches', t.ok + ' funcionando') +
+      tile('#818cf8', '🔌', t.oc, 'Portas em uso', pct + '% de ' + t.portas + ' portas') +
+      tile('#a1a1aa', '⬚', t.livres, 'Portas livres', t.livres === 1 ? 'pronta para usar' : 'prontas para usar') +
+      tile(t.df || t.swRuim ? '#f87171' : '#4ade80', t.df || t.swRuim ? '⚠' : '✓', t.df + t.swRuim, 'Precisam de atenção', t.swRuim + (t.swRuim === 1 ? ' switch' : ' switches') + ' · ' + t.df + (t.df === 1 ? ' porta com defeito' : ' portas com defeito'));
+  }
+  function render(){
+    var lista = el('sw-lista');
+    if(tabelaFaltando){
+      el('sw-stats').innerHTML = '';
+      lista.innerHTML = '<div class="ad-vazio"><b>Falta criar a tabela no banco</b>A tela já está pronta, mas a tabela <code>switches</code> ainda não existe no Supabase.</div>';
+      return;
+    }
+    renderStats();
+    var itens = filtrados();
+    if(!registros.length){ lista.innerHTML = '<div class="ad-vazio"><b>Nenhum switch cadastrado ainda</b>Clique em <b>+ Adicionar</b> para cadastrar o primeiro.</div>'; return; }
+    if(!itens.length){ lista.innerHTML = '<div class="ad-vazio"><b>Nada encontrado</b>Tente outro termo ou limpe os filtros.</div>'; return; }
+    var porSetor = {};
+    itens.forEach(function(x){ var st = x.setor || 'Sem setor'; (porSetor[st] = porSetor[st] || []).push(x); });
+    lista.innerHTML = Object.keys(porSetor).sort(function(a, b){
+      if(a === 'Sem setor') return 1; if(b === 'Sem setor') return -1; return a.localeCompare(b, 'pt-BR');
+    }).map(function(st){
+      var g = porSetor[st].sort(function(a, b){ return String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR', { numeric: true }); });
+      return '<section class="sw-grupo"><div class="sw-grupo-tit">' + esc(st) + '<span>' + g.length + '</span></div><div class="sw-grade">' + g.map(cartao).join('') + '</div></section>';
+    }).join('');
+  }
+  function miniPortas(x){
+    var h = '', t = qtd(x);
+    for(var n = 1; n <= t; n++){
+      var p = porta(x, n);
+      if(!p) h += '<i title="Porta ' + n + ': livre"></i>';
+      else if(p.estado === 'defeito') h += '<i class="df" title="Porta ' + n + ': ' + esc(textoPorta(p)) + '"></i>';
+      else h += '<i class="oc" style="--pc:' + (TIPOS[p.tipo] || TIPOS.outro).cor + '" title="Porta ' + n + ': ' + esc(textoPorta(p)) + '"></i>';
+    }
+    return h;
+  }
+  function cartao(x){
+    var c = contar(x), st = x.status || 'funcionando';
+    var marcaModelo = [x.marca, x.modelo].filter(Boolean).join(' ');
+    var tags = [];
+    if(x.local) tags.push('<span class="ad-tag">📍 ' + esc(x.local) + '</span>');
+    if(x.patrimonio) tags.push('<span class="ad-tag">🏷 ' + esc(x.patrimonio) + '</span>');
+    return '<div class="sw-card st-' + esc(st) + '">' +
+      '<div class="sw-card-topo"><div class="sw-card-nome"><b>' + esc(x.nome) + '</b><small>' + esc(marcaModelo || 'Marca/modelo não informado') + ' · ' + c.total + ' portas</small></div>' +
+        '<span class="sw-status ' + esc(st) + '"><i></i>' + esc(STATUS[st] || st) + '</span>' +
+        '<button type="button" class="ad-btn icone" data-sw-editar="' + esc(x.id) + '" title="Editar">' + ICON.editar + '</button></div>' +
+      '<div class="sw-ip">' + (x.ip ? '<code>' + esc(x.ip) + '</code><button type="button" class="ad-btn" data-sw-abrir="' + esc(x.id) + '" title="Abrir a página do switch no navegador">' + ICON.abrir + 'Abrir</button><button type="button" class="ad-btn icone" data-sw-copiar="' + esc(x.ip) + '" title="Copiar IP">' + ICON.copiar + '</button>' : '<span class="sem">Sem IP cadastrado</span>') + '</div>' +
+      (tags.length ? '<div class="sw-tags">' + tags.join('') + '</div>' : '') +
+      '<div><div class="sw-mini">' + miniPortas(x) + '</div><div class="sw-uso" style="margin-top:6px"><b>' + c.ocupadas + '</b> de ' + c.total + ' em uso · ' + c.livres + (c.livres === 1 ? ' livre' : ' livres') + (c.defeito ? ' · <span class="df">' + c.defeito + ' com defeito</span>' : '') + '</div></div>' +
+      (x.observacao ? '<div class="ad-obs">' + esc(x.observacao) + '</div>' : '') +
+      '<div class="sw-acoes"><button type="button" class="ad-btn pri" data-sw-mapa="' + esc(x.id) + '">' + ICON.mapa + 'Mapa de portas</button></div>' +
+    '</div>';
+  }
+
+  // ---------------- ações da lista ----------------
+  function urlDo(ip){ ip = String(ip || '').trim(); return /^https?:\/\//i.test(ip) ? ip : 'http://' + ip; }
+  function abrirIp(x){
+    if(!x || !x.ip) return;
+    var u = urlDo(x.ip);
+    if(window.csslDesktop){ try{ window.location.href = u; }catch(e){} }
+    else{ var w = window.open(u, '_blank', 'noopener'); if(!w) window.location.href = u; }
+    toast('Abrindo ' + x.ip + '...');
+  }
+  async function copiar(texto, msg){
+    try{ await navigator.clipboard.writeText(texto); toast(msg || 'Copiado.'); }
+    catch(e){
+      var t = document.createElement('textarea'); t.value = texto; document.body.appendChild(t); t.select();
+      try{ document.execCommand('copy'); toast(msg || 'Copiado.'); }catch(e2){ toast('Não foi possível copiar.', 'err'); }
+      t.remove();
+    }
+  }
+  tela.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var v;
+    if((v = b.getAttribute('data-sw-editar'))) return abrirForm(swDe(v));
+    if((v = b.getAttribute('data-sw-abrir'))) return abrirIp(swDe(v));
+    if((v = b.getAttribute('data-sw-copiar'))) return copiar(v, 'IP ' + v + ' copiado.');
+    if((v = b.getAttribute('data-sw-mapa'))) return abrirMapa(swDe(v));
+    if((v = b.getAttribute('data-sw-exportar'))){ fecharMenuExp(); return exportar(v); }
+    if(b.id === 'sw-btn-novo') return abrirForm(null);
+    if(b.id === 'sw-btn-exportar'){ alternarMenuExp(b); return; }
+  });
+  el('sw-busca').addEventListener('input', render);
+  el('sw-filtro-setor').addEventListener('change', render);
+  el('sw-filtro-status').addEventListener('change', render);
+
+  // menu Exportar
+  function fecharMenuExp(){ el('sw-menu-exportar').hidden = true; el('sw-btn-exportar').setAttribute('aria-expanded', 'false'); }
+  function alternarMenuExp(bt){
+    var m = el('sw-menu-exportar');
+    if(!m.hidden){ fecharMenuExp(); return; }
+    var r = bt.getBoundingClientRect();
+    m.hidden = false;
+    m.style.top = (r.bottom + 6) + 'px';
+    m.style.left = Math.max(8, Math.min(window.innerWidth - m.offsetWidth - 8, r.right - m.offsetWidth)) + 'px';
+    bt.setAttribute('aria-expanded', 'true');
+  }
+  document.addEventListener('click', function(e){ if(!el('sw-menu-exportar').hidden && !e.target.closest('#sw-menu-exportar,#sw-btn-exportar')) fecharMenuExp(); });
+  window.addEventListener('scroll', fecharMenuExp, true);
+
+  // ---------------- abrir / voltar ----------------
+  card.addEventListener('click', async function(){
+    if(!ehAdmin()) return;
+    document.getElementById('tela-portal').style.display = 'none';
+    tela.style.display = 'block';
+    el('sw-lista').innerHTML = '<p class="small">Carregando...</p>';
+    await carregar();
+  });
+  el('btn-voltar-portal-switch').addEventListener('click', function(){
+    tela.style.display = 'none';
+    document.getElementById('tela-portal').style.display = 'block';
+  });
+  var antesEntrar = window.entrarNoPortal;
+  window.entrarNoPortal = function(){ var r = antesEntrar ? antesEntrar.apply(this, arguments) : undefined; tela.style.display = 'none'; return r; };
+
+  // ---------------- formulário ----------------
+  var editando = null, statusForm = 'funcionando';
+  function marcarStatus(v){ statusForm = v; [].forEach.call(el('sw-f-status').children, function(b){ b.classList.toggle('on', b.getAttribute('data-v') === v); }); }
+  function marcarChips(){ var q = String(el('sw-f-portas').value); [].forEach.call(el('sw-qtd-chips').children, function(b){ b.classList.toggle('on', b.getAttribute('data-q') === q); }); }
+  function abrirForm(reg){
+    editando = reg || null;
+    var d = reg || {};
+    el('sw-form-titulo').textContent = reg ? 'Editar switch' : 'Adicionar switch';
+    el('sw-f-nome').value = d.nome || '';
+    el('sw-f-ip').value = d.ip || '';
+    var sel = el('sw-f-setor');
+    if(d.setor && ![].some.call(sel.options, function(o){ return o.value === d.setor; })){ var o = document.createElement('option'); o.textContent = d.setor; sel.appendChild(o); }
+    sel.value = d.setor || '';
+    el('sw-f-local').value = d.local || '';
+    el('sw-f-marca').value = d.marca || '';
+    el('sw-f-modelo').value = d.modelo || '';
+    el('sw-f-portas').value = d.qtd_portas || 24;
+    el('sw-f-patrimonio').value = d.patrimonio || '';
+    el('sw-f-obs').value = d.observacao || '';
+    marcarStatus(d.status || 'funcionando'); marcarChips();
+    el('sw-form-excluir').style.display = reg ? '' : 'none';
+    el('sw-form-erro').style.display = 'none';
+    conferirIp();
+    el('sw-modal-form').classList.add('aberto');
+    setTimeout(function(){ el('sw-f-nome').focus(); }, 60);
+  }
+  function fecharForm(){ el('sw-modal-form').classList.remove('aberto'); editando = null; }
+  function conferirIp(){
+    var ip = el('sw-f-ip').value.trim(), aviso = el('sw-ip-dup');
+    var dup = ip && registros.filter(function(x){ return String(x.ip || '').trim() === ip && (!editando || x.id !== editando.id); })[0];
+    aviso.hidden = !dup;
+    if(dup) aviso.textContent = 'Esse IP já está no switch "' + dup.nome + '".';
+  }
+  el('sw-f-ip').addEventListener('input', conferirIp);
+  el('sw-f-portas').addEventListener('input', marcarChips);
+  el('sw-qtd-chips').addEventListener('click', function(e){ var b = e.target.closest('[data-q]'); if(!b) return; el('sw-f-portas').value = b.getAttribute('data-q'); marcarChips(); });
+  el('sw-f-status').addEventListener('click', function(e){ var b = e.target.closest('[data-v]'); if(b) marcarStatus(b.getAttribute('data-v')); });
+  el('sw-form-cancelar').addEventListener('click', fecharForm);
+  el('sw-form-fechar').addEventListener('click', fecharForm);
+  el('sw-modal-form').addEventListener('click', function(e){ if(e.target === el('sw-modal-form')) fecharForm(); });
+  el('sw-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var erro = el('sw-form-erro'); function falha(t){ erro.textContent = t; erro.style.display = 'block'; }
+    erro.style.display = 'none';
+    var nome = el('sw-f-nome').value.trim();
+    if(!nome) return falha('Informe o nome do switch.');
+    var q = parseInt(el('sw-f-portas').value, 10);
+    if(!q || q < 1 || q > 96) return falha('Quantidade de portas deve ser entre 1 e 96.');
+    var ip = el('sw-f-ip').value.trim();
+    if(ip && !/^(https?:\/\/)?[\w.\-:]+(\/.*)?$/i.test(ip)) return falha('Esse IP parece estranho. Ex.: 192.168.9.2');
+    var payload = {
+      nome: nome, ip: ip || null, setor: el('sw-f-setor').value || null, local: el('sw-f-local').value.trim() || null,
+      marca: el('sw-f-marca').value.trim() || null, modelo: el('sw-f-modelo').value.trim() || null, qtd_portas: q,
+      patrimonio: el('sw-f-patrimonio').value.trim() || null, status: statusForm, observacao: el('sw-f-obs').value.trim() || null
+    };
+    if(editando){
+      var perdidas = [];
+      Object.keys(editando.portas || {}).forEach(function(k){ var n = parseInt(k, 10); if(n > q && porta(editando, n)) perdidas.push(n); });
+      if(perdidas.length){
+        if(!confirm('As portas ' + perdidas.join(', ') + ' têm anotações e vão sumir com ' + q + ' portas. Continuar?')) return;
+        var novo = {}; Object.keys(editando.portas).forEach(function(k){ if(parseInt(k, 10) <= q) novo[k] = editando.portas[k]; });
+        payload.portas = novo;
+      }
+    }
+    var bt = el('sw-form-salvar'); bt.disabled = true;
+    try{
+      var r, eraNovo = !editando;
+      if(editando) r = await db.from('switches').update(payload).eq('id', editando.id);
+      else{ payload.criado_por = (typeof emailLogado !== 'undefined' && emailLogado) ? emailLogado : null; payload.portas = {}; r = await db.from('switches').insert(payload).select(); }
+      if(r && r.error) throw r.error;
+      fecharForm(); toast(eraNovo ? 'Switch cadastrado. Agora é só montar o mapa de portas.' : 'Switch atualizado.');
+      await carregar();
+      if(eraNovo && r && r.data && r.data[0]){ var novoSw = swDe(r.data[0].id); if(novoSw) abrirMapa(novoSw); }
+    }catch(err){ falha('Não foi possível salvar (' + (err && err.message ? err.message : 'erro') + ').'); }
+    finally{ bt.disabled = false; }
+  });
+  el('sw-form-excluir').addEventListener('click', async function(){
+    if(!editando) return;
+    var c = contar(editando);
+    if(!confirm('Excluir o switch "' + editando.nome + '"' + (c.ocupadas ? ' e o mapa das ' + c.ocupadas + ' portas em uso' : '') + '? Essa ação não pode ser desfeita.')) return;
+    var r = await db.from('switches').delete().eq('id', editando.id);
+    if(r.error){ toast('Não foi possível excluir.', 'err'); return; }
+    fecharForm(); toast('Switch excluído.'); await carregar();
+  });
+
+  // ---------------- mapa de portas ----------------
+  var mapaSw = null, portaSel = 1, estadoEd = 'livre';
+  function abrirMapa(x){
+    if(!x) return;
+    mapaSw = x; portaSel = 1;
+    el('sw-mapa-nome').textContent = x.nome;
+    el('sw-mapa-sub').textContent = [x.ip, [x.marca, x.modelo].filter(Boolean).join(' '), x.setor, x.local].filter(Boolean).join(' · ') || (qtd(x) + ' portas');
+    el('sw-legenda').innerHTML = '<span><i></i>Livre</span>' + Object.keys(TIPOS).map(function(k){ return '<span><i class="oc" style="--pc:' + TIPOS[k].cor + '"></i>' + esc(TIPOS[k].rot) + '</span>'; }).join('') + '<span><i class="df"></i>Com defeito</span>';
+    var sws = registros.filter(function(s){ return s.id !== x.id; });
+    el('sw-ed-sw').innerHTML = '<option value="">Escolha o switch</option>' + sws.map(function(s){ return '<option value="' + esc(s.id) + '">' + esc(s.nome) + (s.setor ? ' · ' + esc(s.setor) : '') + '</option>'; }).join('');
+    // começa na primeira porta livre
+    for(var n = 1; n <= qtd(x); n++){ if(!porta(x, n)){ portaSel = n; break; } }
+    renderMapa(); selecionar(portaSel);
+    el('sw-modal-mapa').classList.add('aberto');
+  }
+  function fecharMapa(){ el('sw-modal-mapa').classList.remove('aberto'); mapaSw = null; }
+  function botaoPorta(n){
+    var p = porta(mapaSw, n), cls = 'sw-porta', st = '', ic = '';
+    if(p && p.estado === 'defeito') cls += ' df';
+    else if(p){ var t = TIPOS[p.tipo] || TIPOS.outro; cls += ' oc'; st = ' style="--pc:' + t.cor + '"'; ic = '<span class="ic">' + t.ic + '</span>'; }
+    if(n === portaSel) cls += ' sel';
+    return '<button type="button" class="' + cls + '"' + st + ' data-porta="' + n + '" title="Porta ' + n + ': ' + esc(textoPorta(p)) + '">' + n + ic + '</button>';
+  }
+  function renderMapa(){
+    var x = mapaSw, t = qtd(x), c = contar(x), h = '';
+    el('sw-mapa-resumo').innerHTML = '<span><b>' + c.ocupadas + '</b> em uso</span><span><b>' + c.livres + '</b> livres</span>' + (c.defeito ? '<span style="color:#f87171"><b>' + c.defeito + '</b> com defeito</span>' : '');
+    function linha(nums){ var s = '<div class="sw-painel-linha">'; nums.forEach(function(n, i){ if(i && i % 6 === 0) s += '<span class="gap"></span>'; s += botaoPorta(n); }); return s + '</div>'; }
+    if(t <= 12){ var a = []; for(var n = 1; n <= t; n++) a.push(n); h = linha(a); }
+    else{
+      var cima = [], baixo = [];
+      for(var m = 1; m <= t; m++){ (m % 2 ? cima : baixo).push(m); }
+      h = linha(cima) + linha(baixo);
+    }
+    el('sw-painel').innerHTML = h;
+    // lista das portas em uso
+    var usadas = [];
+    for(var k = 1; k <= t; k++){ var p = porta(x, k); if(p) usadas.push(k); }
+    el('sw-uso-lista').innerHTML = usadas.length ? '<h5>Portas em uso e com defeito (' + usadas.length + ')</h5>' + usadas.map(function(k){
+      var p = porta(x, k), tp = p.estado === 'defeito' ? 'Com defeito' : (TIPOS[p.tipo] || TIPOS.outro).ic + ' ' + (TIPOS[p.tipo] || TIPOS.outro).rot;
+      var d = [ligadoA(p), p.descricao].filter(Boolean).join(' · ');
+      return '<div class="sw-uso-item' + (p.estado === 'defeito' ? ' df' : '') + '" data-porta="' + k + '"><span class="n">' + k + '</span><span class="t">' + esc(tp) + '</span><span class="d">' + esc(d || '—') + '</span></div>';
+    }).join('') : '';
+  }
+  function marcarEstado(v){
+    estadoEd = v;
+    [].forEach.call(el('sw-ed-estado').children, function(b){ b.classList.toggle('on', b.getAttribute('data-v') === v); });
+    el('sw-ed-linha-tipo').hidden = v !== 'ocupada';
+    mostrarCamposTipo();
+  }
+  function mostrarCamposTipo(){
+    var tp = el('sw-ed-tipo').value, ativo = estadoEd === 'ocupada';
+    el('sw-ed-campo-pc').hidden = !(ativo && tp === 'pc');
+    el('sw-ed-campo-sw').hidden = !(ativo && tp === 'switch');
+    conferirPcRepetido();
+  }
+  function conferirPcRepetido(){
+    var aviso = el('sw-ed-aviso'), id = el('sw-ed-pc').value;
+    aviso.hidden = true;
+    if(estadoEd !== 'ocupada' || el('sw-ed-tipo').value !== 'pc' || !id) return;
+    var achou = null;
+    registros.forEach(function(s){ for(var n = 1; n <= qtd(s); n++){ var p = porta(s, n); if(p && p.estado === 'ocupada' && p.tipo === 'pc' && String(p.computador_id) === String(id) && !(s.id === mapaSw.id && n === portaSel)) achou = achou || { s: s, n: n }; } });
+    if(achou){ aviso.hidden = false; aviso.textContent = 'Esse computador já está anotado na porta ' + achou.n + ' do switch "' + achou.s.nome + '".'; }
+  }
+  function selecionar(n){
+    var t = qtd(mapaSw); if(n < 1) n = t; if(n > t) n = 1;
+    portaSel = n;
+    var p = porta(mapaSw, n) || {};
+    el('sw-ed-titulo').textContent = 'Porta ' + n;
+    el('sw-ed-tipo').value = p.tipo && TIPOS[p.tipo] ? p.tipo : 'pc';
+    el('sw-ed-pc').value = p.computador_id || '';
+    el('sw-ed-sw').value = p.switch_id || '';
+    el('sw-ed-desc').value = p.descricao || '';
+    el('sw-ed-salvo').textContent = '';
+    marcarEstado(p.estado || 'livre');
+    [].forEach.call(el('sw-painel').querySelectorAll('.sw-porta'), function(b){ b.classList.toggle('sel', parseInt(b.getAttribute('data-porta'), 10) === n); });
+  }
+  async function salvarPorta(){
+    if(!mapaSw) return;
+    var x = mapaSw, n = portaSel, novo = JSON.parse(JSON.stringify(x.portas || {}));
+    var desc = el('sw-ed-desc').value.trim();
+    if(estadoEd === 'livre') delete novo[String(n)];
+    else if(estadoEd === 'defeito') novo[String(n)] = { estado: 'defeito', descricao: desc || null };
+    else{
+      var tp = el('sw-ed-tipo').value, item = { estado: 'ocupada', tipo: tp, descricao: desc || null };
+      if(tp === 'pc'){ item.computador_id = el('sw-ed-pc').value || null; }
+      if(tp === 'switch'){ item.switch_id = el('sw-ed-sw').value || null; }
+      if(tp === 'pc' && !item.computador_id && !desc){ toast('Escolha o computador ou escreva uma identificação.', 'err'); return; }
+      novo[String(n)] = item;
+    }
+    var bt = el('sw-ed-salvar'); bt.disabled = true;
+    try{
+      var r = await db.from('switches').update({ portas: novo }).eq('id', x.id);
+      if(r && r.error) throw r.error;
+      x.portas = novo;
+      renderMapa(); render();
+      el('sw-ed-salvo').textContent = '✓ Porta ' + n + ' salva';
+      [].forEach.call(el('sw-painel').querySelectorAll('.sw-porta'), function(b){ b.classList.toggle('sel', parseInt(b.getAttribute('data-porta'), 10) === n); });
+    }catch(err){ toast('Não foi possível salvar a porta (' + (err && err.message ? err.message : 'erro') + ').', 'err'); }
+    finally{ bt.disabled = false; }
+  }
+  el('sw-modal-mapa').addEventListener('click', function(e){
+    if(e.target === el('sw-modal-mapa')) return fecharMapa();
+    var b = e.target.closest('[data-porta]'); if(b) return selecionar(parseInt(b.getAttribute('data-porta'), 10));
+    var s = e.target.closest('#sw-ed-estado [data-v]'); if(s) return marcarEstado(s.getAttribute('data-v'));
+  });
+  el('sw-mapa-fechar').addEventListener('click', fecharMapa);
+  el('sw-ed-ant').addEventListener('click', function(){ selecionar(portaSel - 1); });
+  el('sw-ed-prox').addEventListener('click', function(){ selecionar(portaSel + 1); });
+  el('sw-ed-tipo').addEventListener('change', mostrarCamposTipo);
+  el('sw-ed-pc').addEventListener('change', conferirPcRepetido);
+  el('sw-ed-salvar').addEventListener('click', salvarPorta);
+  el('sw-ed-desc').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); salvarPorta(); } });
+
+  // ---------------- exportar ----------------
+  function linhasPortas(x){
+    var out = [];
+    for(var n = 1; n <= qtd(x); n++){
+      var p = porta(x, n), pc = p && p.tipo === 'pc' ? pcDe(p.computador_id) : null, s2 = p && p.tipo === 'switch' ? swDe(p.switch_id) : null;
+      out.push({ n: n, estado: !p ? 'Livre' : (p.estado === 'defeito' ? 'Com defeito' : 'Em uso'), tipo: p && p.estado !== 'defeito' ? (TIPOS[p.tipo] || TIPOS.outro).rot : '',
+        pc: pc ? pc.nome || '' : '', pcPat: pc ? pc.patrimonio || '' : '', sw: s2 ? s2.nome : '', desc: p ? p.descricao || '' : '', ligado: p ? ligadoA(p) : '' });
+    }
+    return out;
+  }
+  function descFiltro(){
+    var f = [];
+    if(el('sw-filtro-setor').value) f.push('Setor: ' + el('sw-filtro-setor').value);
+    if(el('sw-filtro-status').value) f.push('Status: ' + STATUS[el('sw-filtro-status').value]);
+    if(el('sw-busca').value.trim()) f.push('Busca: "' + el('sw-busca').value.trim() + '"');
+    return f.length ? f.join(' · ') : 'Todos os switches';
+  }
+  function ordenados(){ return filtrados().slice().sort(function(a, b){ return String(a.setor || 'zzz').localeCompare(String(b.setor || 'zzz'), 'pt-BR') || String(a.nome).localeCompare(String(b.nome), 'pt-BR', { numeric: true }); }); }
+  async function exportar(modo){
+    var itens = ordenados();
+    if(!itens.length){ toast('Nada para exportar com esses filtros.', 'err'); return; }
+    var agora = new Date(), dataTxt = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    var nomeArq = 'Switches - ' + agora.toISOString().slice(0, 10);
+    if(modo === 'excel') return exportarExcel(itens, nomeArq);
+    imprimir(itens, modo, nomeArq, dataTxt);
+  }
+  function imprimir(itens, modo, nomeArq, dataTxt){
+    var tot = { sw: itens.length, portas: 0, oc: 0, livres: 0, df: 0, ruim: 0 };
+    itens.forEach(function(x){ var c = contar(x); tot.portas += c.total; tot.oc += c.ocupadas; tot.livres += c.livres; tot.df += c.defeito; if((x.status || 'funcionando') !== 'funcionando') tot.ruim++; });
+    var porSetor = {}; itens.forEach(function(x){ var st = x.setor || 'Sem setor'; (porSetor[st] = porSetor[st] || []).push(x); });
+    function pill(st){ return '<span class="tvp-pill ' + (st === 'defeito' ? 'tvp-vm' : st === 'desligado' ? 'tvp-neu' : 'tvp-ok') + '">' + esc(STATUS[st] || st) + '</span>'; }
+    var html = '<div class="tvp-doc">' +
+      '<div class="tvp-topo"><div><div class="tvp-marca"><span>CSSL</span> Central de TI</div><h1>Switches da rede</h1><div class="tvp-filtro">' + esc(descFiltro()) + '</div></div>' +
+        '<div class="tvp-gerado"><b>Gerado em ' + esc(dataTxt) + '</b>' + esc((typeof emailLogado !== 'undefined' && emailLogado) || '') + '</div></div>' +
+      '<div class="tvp-resumo">' +
+        '<div class="tvp-num"><b>' + tot.sw + '</b><span>Switches</span></div>' +
+        '<div class="tvp-num"><b>' + tot.portas + '</b><span>Portas</span></div>' +
+        '<div class="tvp-num"><b>' + tot.oc + '</b><span>Em uso</span></div>' +
+        '<div class="tvp-num"><b>' + tot.livres + '</b><span>Livres</span></div>' +
+        '<div class="tvp-num' + (tot.df ? ' tvp-vm' : '') + '"><b>' + tot.df + '</b><span>Portas c/ defeito</span></div>' +
+        '<div class="tvp-num' + (tot.ruim ? ' tvp-am' : '') + '"><b>' + tot.ruim + '</b><span>Switches parados</span></div>' +
+      '</div>' +
+      '<table><thead><tr><th>Nome</th><th>IP</th><th>Marca / modelo</th><th>Local</th><th>Patrimônio</th><th class="c">Portas em uso</th><th>Status</th></tr></thead><tbody>' +
+      Object.keys(porSetor).sort(function(a, b){ if(a === 'Sem setor') return 1; if(b === 'Sem setor') return -1; return a.localeCompare(b, 'pt-BR'); }).map(function(st){
+        var g = porSetor[st];
+        return '<tr class="tvp-setor"><td colspan="7"><b>' + esc(st) + '</b><span>' + g.length + (g.length === 1 ? ' switch' : ' switches') + '</span></td></tr>' +
+          g.map(function(x){ var c = contar(x);
+            return '<tr><td><b>' + esc(x.nome) + '</b></td><td>' + (x.ip ? esc(x.ip) : '<span class="tvp-cinza">—</span>') + '</td><td>' + esc([x.marca, x.modelo].filter(Boolean).join(' ') || '—') + '</td><td>' + esc(x.local || '—') + '</td><td>' + esc(x.patrimonio || '—') + '</td>' +
+              '<td class="c">' + c.ocupadas + ' / ' + c.total + (c.defeito ? ' <em style="color:#991b1b;font-style:normal">(' + c.defeito + ' c/ defeito)</em>' : '') + '</td><td>' + pill(x.status || 'funcionando') + '</td></tr>';
+          }).join('');
+      }).join('') + '</tbody></table>' +
+      '<h2 class="swp-sec">Mapa de portas</h2>' +
+      itens.map(function(x){
+        var ls = linhasPortas(x).filter(function(l){ return l.estado !== 'Livre'; }), c = contar(x);
+        return '<div class="swp-bloco"><h3>' + esc(x.nome) + '<span>' + esc([x.setor, x.ip].filter(Boolean).join(' · ')) + ' · ' + c.livres + ' de ' + c.total + ' livres</span></h3>' +
+          (ls.length ? '<table><thead><tr><th class="c" style="width:50px">Porta</th><th style="width:90px">Situação</th><th style="width:150px">Tipo</th><th>Ligado a</th><th>Identificação</th></tr></thead><tbody>' +
+            ls.map(function(l){ return '<tr><td class="c"><b>' + l.n + '</b></td><td>' + (l.estado === 'Com defeito' ? '<span class="tvp-pill tvp-vm">Com defeito</span>' : 'Em uso') + '</td><td>' + esc(l.tipo || '—') + '</td><td>' + esc(l.ligado || '—') + '</td><td>' + esc(l.desc || '—') + '</td></tr>'; }).join('') +
+            '</tbody></table>' : '<p class="tvp-cinza" style="margin:0">Nenhuma porta anotada.</p>') + '</div>';
+      }).join('') +
+      '<div class="tvp-rod"><span>CSSL Central TI · Switches</span><span>' + tot.sw + (tot.sw === 1 ? ' switch' : ' switches') + ' · ' + tot.portas + ' portas</span></div>' +
+    '</div>';
+    var host = document.getElementById('tv-print-host'); if(host) host.remove();
+    host = document.createElement('div'); host.id = 'tv-print-host'; host.innerHTML = html;
+    document.body.appendChild(host);
+    var tituloAntes = document.title; document.title = nomeArq;
+    document.body.classList.add('tv-imprimindo');
+    var limpo = false;
+    function limpar(){ if(limpo) return; limpo = true; document.body.classList.remove('tv-imprimindo'); document.title = tituloAntes; var h = document.getElementById('tv-print-host'); if(h) h.remove(); window.removeEventListener('afterprint', limpar); }
+    window.addEventListener('afterprint', limpar);
+    if(modo === 'pdf') toast('Na janela que abrir, escolha "Salvar como PDF" no destino.');
+    setTimeout(function(){ try{ window.print(); }catch(err){ console.error(err); } setTimeout(limpar, 60000); }, 120);
+  }
+  function carregarExcelJs(){
+    return new Promise(function(res){
+      if(window.ExcelJS) return res();
+      var sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js';
+      sc.onload = function(){ res(); }; sc.onerror = function(){ res(); }; document.head.appendChild(sc); setTimeout(res, 8000);
+    });
+  }
+  function baixar(blob, nome){
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nome;
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+  async function exportarExcel(itens, nomeArq){
+    var cabSw = ['Setor', 'Nome', 'IP', 'Marca', 'Modelo', 'Local', 'Patrimônio', 'Status', 'Portas', 'Em uso', 'Livres', 'Com defeito', 'Observação'];
+    var linSw = itens.map(function(x){ var c = contar(x); return [x.setor || 'Sem setor', x.nome, x.ip || '', x.marca || '', x.modelo || '', x.local || '', x.patrimonio || '', STATUS[x.status || 'funcionando'], c.total, c.ocupadas, c.livres, c.defeito, x.observacao || '']; });
+    var cabP = ['Setor', 'Switch', 'IP do switch', 'Porta', 'Situação', 'Tipo', 'Computador', 'Patrimônio do PC', 'Outro switch', 'Identificação'];
+    var linP = [];
+    itens.forEach(function(x){ linhasPortas(x).forEach(function(l){ linP.push([x.setor || 'Sem setor', x.nome, x.ip || '', l.n, l.estado, l.tipo, l.pc, l.pcPat, l.sw, l.desc]); }); });
+    await carregarExcelJs();
+    if(!window.ExcelJS){
+      var q = function(v){ v = String(v == null ? '' : v); return /[";\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+      var csv = '﻿' + [cabP].concat(linP).map(function(l){ return l.map(q).join(';'); }).join('\r\n');
+      baixar(new Blob([csv], { type: 'text/csv;charset=utf-8' }), nomeArq + ' - portas.csv');
+      toast('Excel indisponível agora: baixei o mapa de portas em CSV.');
+      return;
+    }
+    try{
+      var wb = new ExcelJS.Workbook(); wb.creator = 'CSSL Central TI';
+      function aba(nome, cab, linhas, larguras, colStatus){
+        var ws = wb.addWorksheet(nome, { views: [{ state: 'frozen', ySplit: 1 }] });
+        ws.addRow(cab);
+        linhas.forEach(function(l){ ws.addRow(l); });
+        ws.getRow(1).eachCell(function(c){ c.font = { bold: true, color: { argb: 'FFFFFFFF' } }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0601FE' } }; c.alignment = { vertical: 'middle' }; });
+        ws.getRow(1).height = 22;
+        larguras.forEach(function(w, i){ ws.getColumn(i + 1).width = w; });
+        ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: cab.length } };
+        if(colStatus){
+          ws.eachRow(function(row, i){ if(i === 1) return; var c = row.getCell(colStatus), v = String(c.value || '');
+            var cor = /defeito/i.test(v) ? ['FFFEE2E2', 'FF991B1B'] : /livre|desligado/i.test(v) ? ['FFF4F4F5', 'FF52525B'] : ['FFDCFCE7', 'FF166534'];
+            c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: cor[0] } }; c.font = { bold: true, color: { argb: cor[1] } }; });
+        }
+        return ws;
+      }
+      aba('Switches', cabSw, linSw, [20, 22, 16, 14, 18, 20, 14, 14, 9, 9, 9, 12, 36], 8);
+      aba('Portas', cabP, linP, [20, 22, 16, 8, 13, 20, 24, 16, 20, 34], 5);
+      var buf = await wb.xlsx.writeBuffer();
+      baixar(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), nomeArq + '.xlsx');
+      toast('Excel gerado.');
+    }catch(err){ console.error(err); toast('Não foi possível gerar o Excel.', 'err'); }
+  }
+
+  // ---------------- nos detalhes do computador ----------------
+  window.csslSwitchDoComputador = async function(pcId, alvo){
+    if(!ehAdmin() || !alvo || typeof db === 'undefined' || !db) return;
+    try{
+      var r = await db.from('switches').select('id,nome,ip,setor,portas,qtd_portas');
+      if(r.error || !r.data) return;
+      r.data.forEach(function(s){
+        var ps = s.portas || {};
+        Object.keys(ps).forEach(function(k){
+          var p = ps[k];
+          if(!p || p.estado !== 'ocupada' || p.tipo !== 'pc' || String(p.computador_id) !== String(pcId)) return;
+          var div = document.createElement('div'); div.className = 'pc-det-item';
+          div.innerHTML = '<div class="lbl">Switch</div><div class="val sw-pc-linha"><b>' + esc(s.nome) + '</b> · porta ' + esc(k) + (p.descricao ? ' <span style="color:#a1a1aa">(' + esc(p.descricao) + ')</span>' : '') + '</div>';
+          alvo.appendChild(div);
+        });
+      });
+    }catch(e){}
+  };
 })();
 </script>
 </body>
