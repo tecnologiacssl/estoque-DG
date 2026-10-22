@@ -5242,6 +5242,90 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
   #tela-switch .ad-barra select{flex:1;min-width:0}
 }
 #sw-modal-mapa [hidden]{display:none !important}
+/* ===== Ficha do equipamento (QR da etiqueta) ===== */
+.fp-box{width:min(460px,100%)}
+.fp-cab{display:flex;align-items:center;gap:12px;margin:0 40px 14px 0}
+.fp-ic{width:48px;height:48px;flex:none;border-radius:13px;background:rgba(129,140,248,.15);color:#818cf8;display:flex;align-items:center;justify-content:center;font-size:22px}
+.fp-cab b{display:block;font-size:19px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fp-cab small{display:block;font-size:12.5px;color:#a1a1aa;margin-top:2px}
+.fp-ip{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,rgba(6,1,254,.25),rgba(52,211,153,.1));border:1px solid rgba(125,123,255,.4);margin-bottom:12px}
+.fp-ip small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;color:#a5b4fc}
+.fp-ip b{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:22px;color:#fff}
+.fp-btn-cp{width:auto;margin:0;flex:none;font:700 12px inherit;padding:8px 12px;border-radius:9px;border:0;background:rgba(255,255,255,.12);color:#fff;cursor:pointer}
+.fp-btn-cp.pri{background:#0601fe}
+.fp-grade{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.fp-it{min-width:0;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+.fp-it small{display:block;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#71717a}
+.fp-it b{display:block;font-size:13.5px;color:#fff;margin-top:3px;overflow-wrap:anywhere}
+.fp-it.fp-mono b,.fp-mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.fp-larga{grid-column:1/-1}
+.fp-any{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.fp-any[hidden]{display:none}
+.fp-cinza{color:#71717a;font-weight:500}
+.fp-linhas{font-size:12.5px;color:#a1a1aa;line-height:1.6;margin-bottom:14px}
+.fp-linhas b{color:#e4e4e7}
+.fp-nota{font-size:13px;color:#a1a1aa;margin:0 0 14px;line-height:1.5}
+.fp-acoes{display:flex;flex-direction:column;gap:8px}
+.fp-acoes .btn-principal,.fp-acoes .btn-secundario{width:100%;margin:0;height:46px}
+.fp-vazio{text-align:center;padding:12px 4px 4px;color:#a1a1aa;font-size:13.5px;line-height:1.5}
+.fp-vazio b{display:block;color:#fff;font-size:16px;margin-bottom:4px}
+.fp-vazio-ic{font-size:34px;margin-bottom:6px}
+.fp-vazio .fp-acoes{margin-top:16px}
+.fp-aviso-login{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;margin:0 0 14px;border-radius:12px;background:rgba(6,1,254,.14);border:1px solid rgba(125,123,255,.4);font-size:13px;color:#c7d2fe}
+.fp-aviso-login b{display:block;color:#fff;font-size:13.5px}
+.fp-aviso-login span{font-size:18px;line-height:1.2}
+#fp-anydesk[hidden]{display:none}
+/* ===== Scanner de rede (só admins, funciona no app) ===== */
+#tela-scanner{display:none;padding-top:36px;animation:fadeSlideIn .35s cubic-bezier(.2,.8,.2,1)}
+.card-app.scanner .selo{background:rgba(250,204,21,.13);color:#facc15}
+#tela-portal .inicio-grupos .card-app.scanner{--cor:#facc15}
+#tela-scanner .tv2-btn{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 13px;margin:0;width:auto}
+#tela-scanner .tv2-btn svg{width:15px;height:15px;flex:none}
+#tela-scanner .btn-voltar-portal{height:38px}
+.sc-acoes{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#sc-btn-procurar{height:38px;padding:0 16px;display:inline-flex;align-items:center;gap:8px;width:auto;margin:0}
+#sc-btn-procurar svg{width:16px;height:16px}
+.sc-sem-app{display:flex;gap:16px;align-items:flex-start;padding:22px;border-radius:16px;border:1px dashed rgba(250,204,21,.4);background:rgba(250,204,21,.05);color:#d4d4d8;font-size:14px;line-height:1.55}
+.sc-sem-app[hidden]{display:none}
+.sc-sem-app b{display:block;color:#fff;font-size:16px;margin-bottom:4px}
+.sc-sem-app .ic{font-size:30px;line-height:1}
+.sc-prog{margin:0 0 16px;padding:14px 16px;border-radius:14px;background:var(--superficie,#141418);border:1px solid var(--borda,rgba(255,255,255,.08))}
+.sc-prog-l{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:12.5px;color:#a1a1aa;margin-bottom:9px}
+.sc-prog-l b{color:#fff}
+.sc-prog-l select{width:auto;margin:0;height:30px;padding:0 28px 0 10px;border-radius:9px;background-color:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:#e4e4e7;font:inherit;font-size:12.5px}
+.sc-barra{height:6px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden}
+.sc-barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0601fe,#34d399);transition:width .3s}
+.sc-prog.rodando .sc-barra i{background:linear-gradient(90deg,#0601fe,#7d7bff,#0601fe);background-size:200% 100%;animation:scBarra 1.2s linear infinite}
+@keyframes scBarra{to{background-position:-200% 0}}
+.sc-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 16px}
+.sc-filtros{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px}
+.sc-chip{width:auto;margin:0;height:36px;padding:0 13px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:#c4c4cf;font:700 12.5px inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.sc-chip span{font-size:11px;padding:1px 7px;border-radius:99px;background:rgba(255,255,255,.08)}
+.sc-chip.on{border-color:#7d7bff;color:#fff;background:rgba(125,123,255,.14)}
+.sc-filtros .ad-busca{flex:1;min-width:200px;height:36px}
+.sc-tabela-wrap{overflow-x:auto;border:1px solid var(--borda,rgba(255,255,255,.08));border-radius:14px;background:#111115}
+.sc-tabela{width:100%;border-collapse:collapse;min-width:860px}
+.sc-tabela th{text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:#71717a;padding:10px 14px;background:#16161c;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}
+.sc-tabela td{padding:10px 14px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle;color:#d4d4d8}
+.sc-tabela tr:last-child td{border-bottom:0}
+.sc-tabela tr.sc-eu td{background:rgba(125,123,255,.05)}
+.sc-ip{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-weight:800;color:#fff;font-size:13.5px;white-space:nowrap}
+.sc-mac{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#8b8b99;font-size:12px;white-space:nowrap}
+.sc-sub{display:block;font-size:11.5px;color:#71717a;margin-top:2px}
+.sc-ok{color:#86efac;font-weight:700}
+.sc-tag{display:inline-block;font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;border:1px solid;white-space:nowrap}
+.sc-tag.novo{color:#fcd34d;background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.35)}
+.sc-tag.dif{color:#fdba74;background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.35)}
+.sc-tag.off{color:#f87171;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.35)}
+.sc-tag.eu{color:#c7d2fe;background:rgba(125,123,255,.12);border-color:rgba(125,123,255,.35)}
+.sc-tag.ocult{color:#a1a1aa;background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12)}
+.sc-acao{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.sc-sep td{background:rgba(239,68,68,.05);font-size:10.5px !important;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#f87171 !important;padding:8px 14px !important}
+.sc-vazio{text-align:center;padding:40px 16px;color:#8b8b99}
+.sc-vazio b{display:block;color:#e4e4e7;font-size:15px;margin-bottom:4px}
+.sc-rodape{margin-top:10px;font-size:12px;color:#71717a}
+.sc-menu-novo{position:fixed;z-index:70;width:260px !important}
+@media (max-width:900px){ .sc-stats{grid-template-columns:1fr 1fr;gap:8px} }
 </style>
 </head>
 <body>
@@ -5632,6 +5716,17 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
             <h3>Switches</h3>
           </div>
           <p>Switches da rede e mapa de portas.</p>
+          <span class="tag-livre">Acessar →</span>
+        </div>
+        <span class="card-seta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+      <div class="card-app scanner" id="card-scanner" style="display:none">
+        <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12 19 5"/><path d="M19.4 14.5A8 8 0 1 1 9.5 4.6"/><path d="M15.5 12a3.5 3.5 0 1 1-3.5-3.5"/><circle cx="12" cy="12" r="1"/></svg></div>
+        <div class="card-corpo">
+          <div class="card-topo">
+            <h3>Scanner de rede</h3>
+          </div>
+          <p>O que está ligado na rede agora.</p>
           <span class="tag-livre">Acessar →</span>
         </div>
         <span class="card-seta" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
@@ -7124,6 +7219,48 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
   </div>
 
   <!-- ============ MÓDULO: WI-FI (lista de redes e senhas) ============ -->
+  <!-- ============ MÓDULO: SCANNER DE REDE (só admins, no app) ============ -->
+  <div id="tela-scanner">
+    <div class="topo-chamado">
+      <div>
+        <h2>Scanner de rede</h2>
+        <p>Mostra o que está ligado na rede agora e compara com o que já está cadastrado no portal.</p>
+      </div>
+      <div class="sc-acoes">
+        <button type="button" class="btn-secundario tv2-btn" id="sc-btn-exportar" title="Baixar a lista em Excel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg><span class="tv2-txt">Exportar</span></button>
+        <button type="button" class="btn-principal" id="sc-btn-procurar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg><span id="sc-btn-procurar-txt">Procurar agora</span></button>
+        <button class="btn-secundario btn-voltar-portal" id="btn-voltar-portal-scanner">Voltar</button>
+      </div>
+    </div>
+    <div id="sc-sem-app" class="sc-sem-app" hidden>
+      <span class="ic">🖥️</span>
+      <div><b>Abra esta tela pelo app Central de TI</b>O navegador não deixa nenhuma página procurar aparelhos na rede, por segurança. No <b style="display:inline;font-size:inherit">app Central de TI (versão 1.0.5 ou mais nova)</b> instalado no computador, o Scanner funciona. O app se atualiza sozinho quando fica escondido perto do relógio.</div>
+    </div>
+    <div id="sc-conteudo">
+      <div class="sc-prog" id="sc-prog">
+        <div class="sc-prog-l"><span id="sc-prog-txt">Clique em <b>Procurar agora</b> para ver o que está ligado na rede.</span><span id="sc-prog-dir"></span></div>
+        <div class="sc-barra"><i id="sc-barra"></i></div>
+      </div>
+      <div class="sc-stats" id="sc-stats"></div>
+      <div class="sc-filtros" id="sc-filtros">
+        <button type="button" class="sc-chip on" data-sc-filtro="todos">Todos<span id="sc-n-todos">0</span></button>
+        <button type="button" class="sc-chip" data-sc-filtro="novo">Desconhecidos<span id="sc-n-novo">0</span></button>
+        <button type="button" class="sc-chip" data-sc-filtro="dif">Diferente do cadastro<span id="sc-n-dif">0</span></button>
+        <button type="button" class="sc-chip" data-sc-filtro="off">Não responderam<span id="sc-n-off">0</span></button>
+        <button type="button" class="sc-chip" data-sc-filtro="ok">Cadastrados<span id="sc-n-ok">0</span></button>
+        <div class="ad-busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="search" id="sc-busca" name="cssl-q-sc" data-lpignore="true" autocomplete="off" placeholder="Buscar IP, nome, MAC ou fabricante..."></div>
+      </div>
+      <div id="sc-lista"></div>
+      <p class="sc-rodape" id="sc-rodape"></p>
+    </div>
+    <div class="pc2-menu sc-menu-novo" id="sc-menu-novo" role="menu" hidden>
+      <button type="button" role="menuitem" data-sc-novo="pc">🖥 Cadastrar como computador</button>
+      <button type="button" role="menuitem" data-sc-novo="switch">🔀 Cadastrar como switch</button>
+      <hr>
+      <button type="button" role="menuitem" data-sc-novo="ocultar">🙈 Ocultar (celular, visitante...)</button>
+    </div>
+  </div>
+
   <!-- ============ MÓDULO: SWITCHES (só admins) ============ -->
   <div id="tela-switch">
     <div class="topo-chamado">
@@ -18573,7 +18710,8 @@ formSolicitacao.addEventListener('submit', async function(e){
     wifi: document.getElementById('tela-wifi'),
     // ADIÇÃO: AnyDesk e Switches (o cabeçalho sumia com elas abertas)
     anydesk: document.getElementById('tela-anydesk'),
-    switches: document.getElementById('tela-switch')
+    switches: document.getElementById('tela-switch'),
+    scanner: document.getElementById('tela-scanner')
   };
 
   // ADIÇÃO: telas "de trabalho" (tabela/grade) que devem ocupar a largura
@@ -18582,7 +18720,7 @@ formSolicitacao.addEventListener('submit', async function(e){
   // Avaliação ficam de fora de propósito (não foram pedidas).
   // ALTERADO: a Início (portal) também passou a ocupar a largura toda da
   // tela, sem o espaço vazio nas laterais — a pedido do usuário.
-  var TELAS_LARGURA_TOTAL = { portal:1, painel:1, admin:1, estoque:1, computadores:1, chat:1, agenda:1, auditoria:1, tv:1, chamado:1, solicitacao:1, sugestoes:1, anydesk:1, switches:1 };
+  var TELAS_LARGURA_TOTAL = { portal:1, painel:1, admin:1, estoque:1, computadores:1, chat:1, agenda:1, auditoria:1, tv:1, chamado:1, solicitacao:1, sugestoes:1, anydesk:1, switches:1, scanner:1 };
   var mainAreaEl = document.getElementById('mainArea');
 
   // Move os botões reais de notificação/sair para dentro da barra do topo,
@@ -18757,7 +18895,7 @@ formSolicitacao.addEventListener('submit', async function(e){
     'tela-avaliacao':'Avaliação', 'tela-painel':'Painel de Chamados', 'tela-admin':'Gerenciar usuários',
     'tela-computadores':'Computadores', 'tela-wifi':'Wi-Fi', 'tela-tv':'TVs', 'tela-agenda':'Agenda',
     'tela-chat':'Chat Interno', 'tela-auditoria-chat':'Auditoria de Conversas', 'tela-estoque':'Estoque',
-    'tela-sugestoes':'Sugestões', 'tela-anydesk':'AnyDesk', 'tela-switch':'Switches'
+    'tela-sugestoes':'Sugestões', 'tela-anydesk':'AnyDesk', 'tela-switch':'Switches', 'tela-scanner':'Scanner de rede'
   };
   function logado(){ return document.body.classList.contains('logado'); }
   function visivel(e){ return !!e && getComputedStyle(e).display !== 'none'; }
@@ -20083,7 +20221,9 @@ formSolicitacao.addEventListener('submit', async function(e){
           // Estoque) e deixa o CSS (".pc-etiqueta .qr img/canvas", em mm)
           // encolher pro tamanho físico — QR pequeno de propósito (96px)
           // saía borrado ao imprimir numa etiqueta física de verdade.
-          new QRCode(alvo, { text: 'CSSL-' + item.comp.patrimonio, width: 420, height: 420, correctLevel: QRCode.CorrectLevel.M });
+          // ALTERADO: o QR agora é um link — a câmera do celular abre a ficha do
+          // equipamento no portal (ver "Ficha do equipamento" no fim do arquivo).
+          new QRCode(alvo, { text: window.csslUrlFichaPc ? window.csslUrlFichaPc(item.comp) : 'CSSL-' + item.comp.patrimonio, width: 420, height: 420, correctLevel: QRCode.CorrectLevel.M });
         }catch(e){ console.warn('Falha ao gerar QR Code', e); }
       }
       registrarHistorico(item.comp.id, 'etiqueta', '🏷️ Etiqueta impressa', 'Etiqueta (' + (pcModeloEtiqueta === 'p' ? 'pequena' : pcModeloEtiqueta === 'g' ? 'grande' : 'média') + ') gerada para impressão.');
@@ -21696,6 +21836,44 @@ formSolicitacao.addEventListener('submit', async function(e){
     telaComputadoresEl.style.display = 'none';
     document.getElementById('tela-portal').style.display = 'block';
   });
+
+  // ADIÇÃO: atalhos usados pela ficha do QR e pelo Scanner de rede
+  // (abrir a tela de Computadores direto num computador / no cadastro novo).
+  async function pcAbrirTelaDireto(){
+    if(!(window.csslPodeVer && window.csslPodeVer('computadores'))) return false;
+    document.querySelectorAll('main [id^="tela-"]').forEach(function(t){ if(t !== telaComputadoresEl && t.id !== 'tela-login') t.style.display = 'none'; });
+    document.getElementById('tela-portal').style.display = 'none';
+    telaComputadoresEl.style.display = 'block';
+    await pcCarregarTudo();
+    renderTudoComputadores();
+    ativarPaginaPc('dashboard');
+    return true;
+  }
+  window.csslPc = {
+    abrirDetalhes: async function(id){ if(await pcAbrirTelaDireto()) abrirDetalhes(id); },
+    abrirNovo: async function(pre){
+      if(!(await pcAbrirTelaDireto())) return;
+      abrirFormComputador();
+      pre = pre || {};
+      if(pre.ip) pcCampoEl('ip').value = pre.ip;
+      if(pre.mac) pcCampoEl('mac').value = pre.mac;
+      if(pre.nome){ pcCampoEl('nome').value = pre.nome; pcCampoEl('hostname').value = pre.hostname || pre.nome; }
+      else if(pre.hostname){ pcCampoEl('hostname').value = pre.hostname; pcHostnameEditadoManualmente = true; }
+      if(pre.fabricante) pcCampoEl('fabricante').value = pre.fabricante;
+    },
+    abrirEditar: async function(id){ if(await pcAbrirTelaDireto()) abrirFormComputador(id); },
+    // Scanner de rede: grava IP/MAC encontrados e registra no histórico do PC
+    atualizarRede: async function(id, campos){
+      campos = campos || {};
+      var row = { atualizado_em: new Date().toISOString() };
+      if(campos.ip) row.ip = campos.ip;
+      if(campos.mac) row.mac = campos.mac;
+      var r = await db.from('pc_computadores').update(row).eq('id', id);
+      if(r && r.error) throw r.error;
+      var c = buscarComputador(id); if(c){ if(campos.ip) c.ip = campos.ip; if(campos.mac) c.mac = campos.mac; c.atualizadoEm = row.atualizado_em; }
+      await registrarHistorico(id, 'atualizacao', '🌐 Rede atualizada pelo Scanner', [campos.ip ? 'IP: ' + campos.ip : '', campos.mac ? 'MAC: ' + campos.mac : ''].filter(Boolean).join(' · '));
+    }
+  };
 
   // Ao sair, some com a tela de Computadores também (mesmo padrão do Painel/Admin)
   document.getElementById('btn-sair').addEventListener('click', function(){
@@ -31282,7 +31460,7 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
    campos de busca quando a própria pessoa digitou/colou; preenchimento
    automático é apagado na hora e a lista volta ao normal. */
 (function(){
-  var IDS = ['buscaPortalCards','pc-busca-input','ad-busca','sw-busca','pgc-busca','kb-busca','adm-busca','adm-setor-busca','agenda-busca','pc-manut-busca','pc-etq-busca','tv-busca-input'];
+  var IDS = ['buscaPortalCards','pc-busca-input','ad-busca','sw-busca','sc-busca','pgc-busca','kb-busca','adm-busca','adm-setor-busca','agenda-busca','pc-manut-busca','pc-etq-busca','tv-busca-input'];
   var ultimoToque = {};
   function ehBusca(el){ return el && el.id && IDS.indexOf(el.id) > -1; }
   function marcar(e){ if(ehBusca(e.target)) ultimoToque[e.target.id] = Date.now(); }
@@ -32083,6 +32261,21 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
   }
 
   // ---------------- nos detalhes do computador ----------------
+  // usado pelo Scanner de rede ("Cadastrar como switch")
+  window.csslSwitch = {
+    abrirNovo: async function(pre){
+      if(!ehAdmin()) return;
+      pre = pre || {};
+      document.querySelectorAll('main [id^="tela-"]').forEach(function(t){ if(t !== tela && t.id !== 'tela-login') t.style.display = 'none'; });
+      tela.style.display = 'block';
+      await carregar();
+      abrirForm(null);
+      if(pre.nome) el('sw-f-nome').value = pre.nome;
+      if(pre.ip) el('sw-f-ip').value = pre.ip;
+      if(pre.marca) el('sw-f-marca').value = pre.marca;
+      conferirIp();
+    }
+  };
   window.csslSwitchDoComputador = async function(pcId, alvo){
     if(!ehAdmin() || !alvo || typeof db === 'undefined' || !db) return;
     try{
@@ -32100,6 +32293,507 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
       });
     }catch(e){}
   };
+})();
+</script>
+<!-- ADIÇÃO: Ficha do equipamento (aberta pelo QR code da etiqueta) -->
+<div class="pc-modal-overlay" id="ficha-pc-modal" role="dialog" aria-modal="true" aria-labelledby="fp-nome">
+  <div class="pc-modal-box fp-box">
+    <button class="pc-modal-fechar" id="fp-fechar" type="button" aria-label="Fechar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div id="fp-corpo"></div>
+  </div>
+</div>
+<script>
+/* ============================================================
+   ADIÇÃO: QR code da etiqueta → ficha do equipamento.
+   - As etiquetas novas levam um link: <portal>?pc=<patrimônio>.
+     A câmera do celular abre o portal direto na ficha.
+   - Se a pessoa ainda não entrou, faz o login e a ficha abre logo depois.
+   - Quem tem acesso a "Computadores" vê tudo (IP, MAC, switch, AnyDesk,
+     manutenção). Os demais veem nome/setor e o botão de abrir chamado.
+   ============================================================ */
+(function(){
+  var CHAVE = 'cssl_abrir_pc';
+  var URL_PADRAO = 'https://tecnologiacssl.github.io/estoque-DG/';
+  function el(id){ return document.getElementById(id); }
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+
+  function urlPortal(){
+    try{
+      if(/^https?:$/.test(location.protocol)) return location.origin + location.pathname.replace(/index\.html$/i, '');
+    }catch(e){}
+    return URL_PADRAO;
+  }
+  // usado pela impressão de etiquetas (Computadores)
+  window.csslUrlFichaPc = function(c){
+    var chave = (c && (c.patrimonio || c.id)) || '';
+    return urlPortal() + '?pc=' + encodeURIComponent(String(chave).trim());
+  };
+
+  // ---- guarda o pedido que veio pelo link (sobrevive ao login) ----
+  var pedido = null;
+  try{
+    var q = new URLSearchParams(location.search).get('pc');
+    if(q){
+      pedido = q;
+      try{ sessionStorage.setItem(CHAVE, q); }catch(e){}
+      // tira o ?pc= do endereço (recarregar a página não abre a ficha de novo)
+      try{ var u = new URL(location.href); u.searchParams.delete('pc'); history.replaceState(history.state, '', u.pathname + (u.search ? u.search : '') + u.hash); }catch(e){}
+    } else {
+      try{ pedido = sessionStorage.getItem(CHAVE); }catch(e){}
+    }
+  }catch(e){}
+
+  function logado(){ return typeof emailLogado !== 'undefined' && !!emailLogado && typeof db !== 'undefined' && !!db; }
+  function podeTI(){ return !!(window.csslPodeVer && window.csslPodeVer('computadores')); }
+  function ehAdmin(){ return !!(window.csslEhAdmin && window.csslEhAdmin()); }
+
+  // aviso na tela de login
+  function avisoLogin(){
+    if(!pedido || logado()) return;
+    var form = el('form-login'); if(!form || el('fp-aviso-login')) return;
+    var d = document.createElement('div');
+    d.id = 'fp-aviso-login'; d.className = 'fp-aviso-login';
+    d.innerHTML = '<span>🏷️</span><div><b>Etiqueta lida: ' + esc(pedido) + '</b>Entre com seu e-mail para ver a ficha do equipamento.</div>';
+    form.parentNode.insertBefore(d, form);
+  }
+
+  var abrindo = false;
+  async function tentarAbrir(){
+    if(!pedido || abrindo || !logado()) return;
+    abrindo = true;
+    var chave = pedido; pedido = null;
+    try{ sessionStorage.removeItem(CHAVE); }catch(e){}
+    var av = el('fp-aviso-login'); if(av) av.remove();
+    try{ await abrirFicha(chave); } finally { abrindo = false; }
+  }
+
+  async function buscarPc(chave){
+    var r = await db.from('pc_computadores').select('*').eq('patrimonio', chave).limit(1);
+    if(r && !r.error && r.data && r.data[0]) return r.data[0];
+    r = await db.from('pc_computadores').select('*').eq('id', chave).limit(1);
+    if(r && !r.error && r.data && r.data[0]) return r.data[0];
+    var semZero = String(chave).replace(/^0+/, '');
+    if(semZero && semZero !== chave){
+      r = await db.from('pc_computadores').select('*').eq('patrimonio', semZero).limit(1);
+      if(r && !r.error && r.data && r.data[0]) return r.data[0];
+    }
+    return null;
+  }
+
+  function item(rot, val, extra){
+    return '<div class="fp-it' + (extra || '') + '"><small>' + esc(rot) + '</small><b>' + (val ? esc(val) : '<span class="fp-cinza">—</span>') + '</b></div>';
+  }
+  function dataBr(v){ if(!v) return ''; var d = new Date(v.length === 10 ? v + 'T12:00:00' : v); return isNaN(d) ? String(v) : d.toLocaleDateString('pt-BR'); }
+
+  async function abrirFicha(chave){
+    var corpo = el('fp-corpo');
+    corpo.innerHTML = '<p class="small" style="padding:20px 4px">Procurando o equipamento...</p>';
+    el('ficha-pc-modal').classList.add('aberto');
+    var pc = null;
+    try{ pc = await buscarPc(chave); }catch(e){}
+    if(!pc){
+      corpo.innerHTML = '<div class="fp-vazio"><div class="fp-vazio-ic">🔎</div><b>Equipamento não encontrado</b>A etiqueta "' + esc(chave) + '" não está no cadastro de Computadores. Ele pode ter sido excluído ou o patrimônio mudou.' +
+        '<div class="fp-acoes"><button type="button" class="btn-principal" data-fp="chamado-vazio">Abrir chamado mesmo assim</button></div></div>';
+      fichaAtual = { pc: null, chave: chave };
+      return;
+    }
+    fichaAtual = { pc: pc, chave: chave };
+    var ti = podeTI();
+    var h = '<div class="fp-cab"><div class="fp-ic">🖥</div><div style="min-width:0"><b id="fp-nome">' + esc(pc.nome || 'Computador') + '</b><small>Computador' + (pc.setor ? ' · ' + esc(pc.setor) : '') + (pc.status ? ' · ' + esc(pc.status) : '') + '</small></div></div>';
+    if(ti){
+      h += '<div class="fp-ip"><div><small>IP</small><b>' + (pc.ip ? esc(pc.ip) : '<span class="fp-cinza">sem IP</span>') + '</b></div>' + (pc.ip ? '<button type="button" class="fp-btn-cp" data-fp="copiar-ip">Copiar</button>' : '') + '</div>';
+      h += '<div class="fp-grade">' +
+        item('Patrimônio', pc.patrimonio) + item('Usuário', pc.usuario) +
+        '<div class="fp-it fp-larga" id="fp-switch"><small>Ligado no switch</small><b><span class="fp-cinza">procurando...</span></b></div>' +
+        item('MAC', pc.mac, ' fp-mono') + item('Hostname', pc.hostname) +
+        item('Sistema', [pc.so, pc.so_versao].filter(Boolean).join(' ')) + item('Memória', pc.ram) +
+        '<div id="fp-anydesk" class="fp-larga" hidden></div>' +
+      '</div>';
+      h += '<div class="fp-linhas" id="fp-linhas"><div><b>Última manutenção:</b> <span class="fp-cinza">procurando...</span></div></div>';
+    } else {
+      h += '<div class="fp-grade">' + item('Patrimônio', pc.patrimonio) + item('Setor', pc.setor) + item('Usuário', pc.usuario, ' fp-larga') + '</div>';
+      h += '<p class="fp-nota">Algum problema com este equipamento? Abra um chamado: a TI já recebe com o nome e o patrimônio dele.</p>';
+    }
+    h += '<div class="fp-acoes"><button type="button" class="btn-principal" data-fp="chamado">Abrir chamado deste equipamento</button>' +
+      (ti ? '<button type="button" class="btn-secundario" data-fp="ver-pc">Ver em Computadores</button>' : '') + '</div>';
+    corpo.innerHTML = h;
+    if(!ti) return;
+
+    // switch / porta
+    try{
+      var rs = await db.from('switches').select('id,nome,portas');
+      var achou = [];
+      ((rs && rs.data) || []).forEach(function(s){ var ps = s.portas || {}; Object.keys(ps).forEach(function(k){ var p = ps[k]; if(p && p.estado === 'ocupada' && p.tipo === 'pc' && String(p.computador_id) === String(pc.id)) achou.push(s.nome + ' · porta ' + k); }); });
+      var sw = el('fp-switch'); if(sw) sw.querySelector('b').innerHTML = achou.length ? esc(achou.join(' / ')) : '<span class="fp-cinza">não anotado no mapa de portas</span>';
+    }catch(e){ var sw2 = el('fp-switch'); if(sw2) sw2.querySelector('b').innerHTML = '<span class="fp-cinza">—</span>'; }
+    // AnyDesk (só admins, igual à aba AnyDesk)
+    if(ehAdmin()){
+      try{
+        var ra = await db.from('anydesk_salvos').select('anydesk_id').eq('computador_id', pc.id).limit(1);
+        var a = ra && ra.data && ra.data[0];
+        if(a){
+          var box = el('fp-anydesk');
+          if(box){ box.hidden = false; box.className = 'fp-it fp-larga fp-any';
+            var num = String(a.anydesk_id).replace(/\D/g, '');
+            box.innerHTML = '<div><small>AnyDesk</small><b class="fp-mono">' + esc(num.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')) + '</b></div><button type="button" class="fp-btn-cp pri" data-fp="anydesk" data-num="' + esc(num) + '">Conectar</button>'; }
+        }
+      }catch(e){}
+    }
+    // última manutenção
+    try{
+      var rm = await db.from('pc_manutencoes').select('tipo,data,descricao,status,criado_em').eq('computador_id', pc.id).order('criado_em', { ascending: false }).limit(1);
+      var m = rm && rm.data && rm.data[0];
+      var li = el('fp-linhas');
+      if(li) li.innerHTML = '<div><b>Última manutenção:</b> ' + (m ? esc(dataBr(m.data || m.criado_em)) + ' · ' + esc(m.tipo || '') + (m.descricao ? ' — ' + esc(String(m.descricao).slice(0, 90)) : '') : '<span class="fp-cinza">nenhuma registrada</span>') + '</div>';
+    }catch(e){}
+  }
+  var fichaAtual = null;
+
+  function fechar(){ el('ficha-pc-modal').classList.remove('aberto'); }
+  el('fp-fechar').addEventListener('click', fechar);
+  el('ficha-pc-modal').addEventListener('click', function(e){
+    if(e.target === el('ficha-pc-modal')) return fechar();
+    var b = e.target.closest('[data-fp]'); if(!b) return;
+    var acao = b.getAttribute('data-fp'), pc = fichaAtual && fichaAtual.pc;
+    if(acao === 'copiar-ip' && pc && pc.ip){
+      (navigator.clipboard ? navigator.clipboard.writeText(pc.ip) : Promise.reject()).then(function(){ b.textContent = 'Copiado ✓'; }, function(){ b.textContent = pc.ip; });
+      return;
+    }
+    if(acao === 'anydesk'){ try{ location.href = 'anydesk:' + b.getAttribute('data-num'); }catch(err){} return; }
+    if(acao === 'ver-pc' && pc){ fechar(); if(window.csslPc) window.csslPc.abrirDetalhes(pc.id); return; }
+    if(acao === 'chamado' || acao === 'chamado-vazio'){ fechar(); abrirChamado(pc, fichaAtual && fichaAtual.chave); }
+  });
+
+  function abrirChamado(pc, chave){
+    var card = el('card-chamado'); if(!card) return;
+    // volta para a Início antes (se outra tela estiver aberta)
+    document.querySelectorAll('[id^="tela-"]').forEach(function(t){ if(t.id !== 'tela-portal' && t.id !== 'tela-login' && t.style.display === 'block' && t.querySelector('.btn-voltar-portal')) t.querySelector('.btn-voltar-portal').click(); });
+    card.click();
+    setTimeout(function(){
+      var form = el('form-chamado'); if(!form) return;
+      var desc = el('input-descricao-chamado');
+      var txt = pc ? 'Equipamento: ' + (pc.nome || '') + (pc.patrimonio ? ' (patrimônio ' + pc.patrimonio + ')' : '') + (pc.ip ? ' · IP ' + pc.ip : '') : 'Etiqueta: ' + (chave || '');
+      if(desc && desc.value.indexOf(txt) === -1){ desc.value = txt + '\n\n' + desc.value.replace(/^\s+/, ''); desc.dispatchEvent(new Event('input', { bubbles: true })); }
+      var sel = form.querySelector('select[name="setor"]');
+      if(sel && pc && pc.setor && !sel.value){
+        var op = [].filter.call(sel.options, function(o){ return o.value.toLowerCase() === String(pc.setor).toLowerCase(); })[0];
+        if(op){ sel.value = op.value; sel.dispatchEvent(new Event('change', { bubbles: true })); }
+      }
+      if(desc){ try{ desc.focus(); desc.setSelectionRange(desc.value.length, desc.value.length); }catch(e){} }
+    }, 450);
+  }
+
+  document.addEventListener('cssl:permissoes-aplicadas', function(){ setTimeout(tentarAbrir, 300); });
+  window.addEventListener('load', function(){ setTimeout(avisoLogin, 300); setTimeout(tentarAbrir, 1500); });
+  var tentativas = 0, t = setInterval(function(){ tentativas++; if(!pedido || tentativas > 40){ clearInterval(t); return; } avisoLogin(); tentarAbrir(); }, 1500);
+  window.csslAbrirFichaPc = function(chave){ if(logado()) abrirFicha(chave); };
+})();
+</script>
+<script>
+/* ============================================================
+   ADIÇÃO: Scanner de rede (só admins). A busca de verdade é feita pelo
+   app Central de TI 1.0.5+ (window.csslDesktop.rede) — no navegador
+   aparece só o aviso para abrir pelo app.
+   Compara o que respondeu com o cadastro:
+     - Computadores (pelo MAC, depois pelo IP, depois pelo nome)
+     - Switches (pelo IP)
+   e mostra: cadastrado / desconhecido / IP ou MAC diferente / não respondeu.
+   ============================================================ */
+(function(){
+  var card = document.getElementById('card-scanner');
+  var tela = document.getElementById('tela-scanner');
+  if(!card || !tela) return;
+  function el(id){ return document.getElementById(id); }
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function norm(v){ return String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function macN(m){ var h = String(m || '').replace(/[^0-9a-f]/gi, '').toUpperCase(); return h.length === 12 ? h.match(/.{2}/g).join(':') : ''; }
+  function nomeN(n){ return String(n || '').toLowerCase().split('.')[0].trim(); }
+  function ipNum(ip){ var p = String(ip || '').split('.'); return p.length === 4 ? +p[3] : 999; }
+  function toast(msg, tipo){
+    var t = document.createElement('div'); t.textContent = msg;
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:100001;padding:11px 16px;border-radius:12px;font:600 13.5px inherit;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:90vw;background:' + (tipo === 'err' ? '#b91c1c' : '#15803d');
+    document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 2800);
+  }
+  function ehAdmin(){ return !!(window.csslEhAdmin && window.csslEhAdmin()); }
+  function api(){ return window.csslDesktop && window.csslDesktop.rede && window.csslDesktop.rede.disponivel ? window.csslDesktop.rede : null; }
+  function aplicarVisibilidade(){ card.style.display = ehAdmin() ? '' : 'none'; }
+  document.addEventListener('cssl:permissoes-aplicadas', aplicarVisibilidade);
+  aplicarVisibilidade();
+
+  var CH_ULT = 'cssl_scanner_ultimo', CH_OCULT = 'cssl_scanner_ocultos';
+  function lerJson(k, padrao){ try{ return JSON.parse(localStorage.getItem(k) || 'null') || padrao; }catch(e){ return padrao; } }
+  function gravarJson(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+
+  var resultado = lerJson(CH_ULT, null);   // último resultado neste computador
+  var pcs = [], sws = [], linhas = [], filtro = 'todos', rodando = false, tirarAviso = null, menuItem = null;
+
+  async function carregarCadastro(){
+    try{ var r = await db.from('pc_computadores').select('id,nome,patrimonio,setor,ip,mac,hostname,status'); pcs = (r && r.data) || []; }catch(e){ pcs = []; }
+    try{ var s = await db.from('switches').select('id,nome,ip,setor,local'); sws = (s && !s.error && s.data) || []; }catch(e){ sws = []; }
+  }
+
+  // ---------- palpite do que é um aparelho desconhecido ----------
+  function palpite(a){
+    var f = a.fabricante || '', n = a.nome || '';
+    if(a.macAleatorio) return 'Parece um celular (MAC aleatório)';
+    if(/print|impress|hplj|^npi|^brw|epson|lexmark|kyocera|ricoh|xerox|zebra/i.test(n) || /epson|brother|lexmark|kyocera|ricoh|xerox|zebra|canon|seiko|bematech|elgin/i.test(f)) return 'Parece uma impressora';
+    if(/hikvision|dahua|axis comm|uniview|hanwha/i.test(f)) return 'Parece uma câmera';
+    if(/cisco|tp-link|tplink|ubiquiti|mikrotik|routerboard|d-link|huawei tech|aruba|juniper|fortinet|ruckus|zyxel|netgear|intelbras|tenda|mercusys/i.test(f) || a.ttl > 200) return 'Parece um equipamento de rede';
+    if(/apple|xiaomi|motorola|oneplus|oppo|vivo mobile|realme|huawei device|honor/i.test(f)) return 'Parece um celular ou tablet';
+    if(/lg electronics|tcl|philips|sony|roku|hisense|samsung/i.test(f) && !n) return 'Pode ser uma TV';
+    if(/raspberry/i.test(f)) return 'Raspberry Pi';
+    if(a.ttl && a.ttl > 64 && a.ttl <= 128) return 'Parece um computador Windows';
+    if(a.via === 'arp') return 'Bloqueia ping, mas está ligado';
+    return '';
+  }
+
+  // ---------- compara a busca com o cadastro ----------
+  function comparar(){
+    linhas = [];
+    if(!resultado) return;
+    var ocultos = lerJson(CH_OCULT, {});
+    var base = resultado.rede && resultado.rede.base ? resultado.rede.base + '.' : '';
+    var pcPorMac = {}, pcPorIp = {}, pcPorNome = {}, swPorIp = {};
+    pcs.forEach(function(p){ var m = macN(p.mac); if(m) pcPorMac[m] = p; if(p.ip) pcPorIp[String(p.ip).trim()] = p; [p.hostname, p.nome].forEach(function(x){ if(x) pcPorNome[nomeN(x)] = pcPorNome[nomeN(x)] || p; }); });
+    sws.forEach(function(s){ if(s.ip) swPorIp[String(s.ip).trim().replace(/^https?:\/\//, '').split('/')[0]] = s; });
+    var vistosPc = {}, vistosSw = {};
+    (resultado.itens || []).forEach(function(a){
+      var mac = macN(a.mac), l = { a: a, ip: a.ip, mac: mac, nome: a.nome || '', fab: a.fabricante || '' };
+      var porMac = mac && pcPorMac[mac], porIp = pcPorIp[a.ip], sw = swPorIp[a.ip], porNome = a.nome && pcPorNome[nomeN(a.nome)];
+      if(a.souEu) l.eu = true;
+      if(porMac){
+        vistosPc[porMac.id] = 1; l.pc = porMac;
+        if(String(porMac.ip || '').trim() !== a.ip){ l.st = 'dif'; l.msg = 'IP diferente'; l.sub = 'No cadastro está ' + (porMac.ip || 'sem IP'); l.acao = 'ip'; }
+        else{ l.st = 'ok'; }
+      } else if(sw){
+        vistosSw[sw.id] = 1; l.sw = sw; l.st = 'ok';
+      } else if(porIp){
+        vistosPc[porIp.id] = 1; l.pc = porIp;
+        if(macN(porIp.mac) && mac && macN(porIp.mac) !== mac){ l.st = 'dif'; l.msg = 'MAC diferente'; l.sub = 'Esse IP é do ' + porIp.nome + ' no cadastro, mas respondeu outro aparelho'; l.acao = 'ver'; }
+        else{ l.st = 'ok'; if(!macN(porIp.mac) && mac) l.acao = 'mac'; }
+      } else if(porNome){
+        vistosPc[porNome.id] = 1; l.pc = porNome; l.st = 'dif'; l.msg = 'IP diferente'; l.sub = 'Achado pelo nome. No cadastro está ' + (porNome.ip || 'sem IP'); l.acao = 'ip';
+      } else {
+        l.st = mac && ocultos[mac] ? 'ocult' : 'novo';
+        l.sub = palpite(a);
+      }
+      linhas.push(l);
+    });
+    // cadastrados nesta faixa que não responderam
+    pcs.forEach(function(p){
+      var ip = String(p.ip || '').trim();
+      if(vistosPc[p.id] || !base || ip.indexOf(base) !== 0 || /inativ|baixad/i.test(p.status || '')) return;
+      linhas.push({ st: 'off', ip: ip, mac: macN(p.mac), nome: p.hostname || p.nome, pc: p, sub: 'Desligado, cabo solto ou fora da rede' });
+    });
+    sws.forEach(function(s){
+      var ip = String(s.ip || '').trim();
+      if(vistosSw[s.id] || !base || ip.indexOf(base) !== 0) return;
+      linhas.push({ st: 'off', ip: ip, nome: s.nome, sw: s, sub: 'Switch não respondeu' });
+    });
+  }
+
+  // ---------- tela ----------
+  function noPortal(l){
+    if(l.pc) return '<span class="sc-ok">✓ Computador · ' + esc(l.pc.nome) + '</span>';
+    if(l.sw) return '<span class="sc-ok">✓ Switch · ' + esc(l.sw.nome) + '</span>';
+    return '';
+  }
+  function linhaHtml(l, i){
+    var cad = noPortal(l), tag = '', acao = '';
+    if(l.st === 'ok') tag = cad + (l.pc && l.pc.setor ? '<span class="sc-sub">' + esc(l.pc.setor) + (l.pc.patrimonio ? ' · patrimônio ' + esc(l.pc.patrimonio) : '') + '</span>' : l.sw && l.sw.setor ? '<span class="sc-sub">' + esc(l.sw.setor) + '</span>' : '');
+    else if(l.st === 'dif') tag = '<span class="sc-tag dif">' + esc(l.msg) + '</span> ' + cad + '<span class="sc-sub">' + esc(l.sub) + '</span>';
+    else if(l.st === 'off') tag = '<span class="sc-tag off">Sem resposta</span> ' + cad + '<span class="sc-sub">' + esc(l.sub) + '</span>';
+    else if(l.st === 'ocult') tag = '<span class="sc-tag ocult">Ocultado</span>' + (l.sub ? '<span class="sc-sub">' + esc(l.sub) + '</span>' : '');
+    else tag = '<span class="sc-tag novo">Desconhecido</span>' + (l.sub ? '<span class="sc-sub">' + esc(l.sub) + '</span>' : '');
+    if(l.eu) tag = '<span class="sc-tag eu">Este computador</span> ' + tag;
+    if(l.acao === 'ip') acao += '<button type="button" class="ad-btn pri" data-sc-ip="' + i + '">Atualizar IP</button>';
+    if(l.acao === 'mac') acao += '<button type="button" class="ad-btn" data-sc-mac="' + i + '" title="Guardar o MAC no cadastro do computador">Salvar MAC</button>';
+    if(l.pc) acao += '<button type="button" class="ad-btn" data-sc-ficha="' + i + '">Ver ficha</button>';
+    if(l.sw && l.ip) acao += '<button type="button" class="ad-btn" data-sc-abrir="' + i + '">Abrir</button>';
+    if(l.st === 'novo') acao += '<button type="button" class="ad-btn pri" data-sc-cadastrar="' + i + '">+ Cadastrar</button>';
+    if(l.st === 'ocult') acao += '<button type="button" class="ad-btn" data-sc-mostrar="' + i + '">Mostrar</button>';
+    var nome = l.nome ? esc(l.nome) : '<span style="color:#71717a">(sem nome)</span>';
+    return '<tr' + (l.eu ? ' class="sc-eu"' : '') + '><td class="sc-ip">' + esc(l.ip || '—') + '</td><td>' + nome + '</td>' +
+      '<td><span class="sc-mac">' + esc(l.mac || '—') + '</span><span class="sc-sub">' + esc(l.fab || (l.a && l.a.via === 'ping' && !l.mac ? 'MAC não lido' : '')) + '</span></td>' +
+      '<td>' + tag + '</td><td><div class="sc-acao">' + acao + '</div></td></tr>';
+  }
+  function contar(st){ return linhas.filter(function(l){ return st === 'todos' ? l.st !== 'ocult' : l.st === st; }).length; }
+  function render(){
+    var semApp = !api();
+    el('sc-sem-app').hidden = !semApp;
+    el('sc-btn-procurar').disabled = semApp && !rodando;
+    el('sc-btn-procurar').style.display = semApp ? 'none' : '';
+    el('sc-conteudo').hidden = semApp && !resultado;
+    ['todos', 'novo', 'dif', 'off', 'ok'].forEach(function(k){ var n = el('sc-n-' + k); if(n) n.textContent = contar(k); });
+    [].forEach.call(el('sc-filtros').querySelectorAll('[data-sc-filtro]'), function(b){ b.classList.toggle('on', b.getAttribute('data-sc-filtro') === filtro); });
+    var vivos = linhas.filter(function(l){ return l.st !== 'off'; }).length;
+    function tile(c, ic, num, rot, em){ return '<div class="sw-stat" style="--c:' + c + '"><div class="sw-stat-ic">' + ic + '</div><div style="min-width:0"><b>' + num + '</b><small>' + rot + '</small><em>' + em + '</em></div></div>'; }
+    el('sc-stats').innerHTML = resultado ?
+      tile('#34d399', '📡', vivos, 'Ligados agora', 'responderam na rede') +
+      tile('#818cf8', '✓', contar('ok'), 'Já cadastrados', 'computadores e switches') +
+      tile('#fbbf24', '?', contar('novo'), 'Desconhecidos', 'ligados mas sem cadastro') +
+      tile('#f87171', '⚠', contar('off') + contar('dif'), 'Precisam de atenção', contar('off') + ' sem resposta · ' + contar('dif') + ' diferentes') : '';
+    var lista = el('sc-lista');
+    if(!resultado && rodando){ lista.innerHTML = '<div class="sc-vazio ad-vazio"><b>Procurando...</b>A lista aparece aqui assim que a busca terminar.</div>'; el('sc-rodape').textContent = ''; return; }
+    if(!resultado){ lista.innerHTML = '<div class="sc-vazio ad-vazio"><b>Nenhuma busca ainda</b>Clique em “Procurar agora”. Leva por volta de 30 segundos a 1 minuto.</div>'; el('sc-rodape').textContent = ''; return; }
+    var termo = norm(el('sc-busca').value.trim());
+    var vis = linhas.map(function(l, i){ return { l: l, i: i }; }).filter(function(o){
+      var l = o.l;
+      if(filtro === 'todos' ? false : l.st !== filtro) return false;
+      if(!termo) return true;
+      return norm([l.ip, l.nome, l.mac, l.fab, l.sub, l.msg, l.pc && l.pc.nome, l.pc && l.pc.patrimonio, l.pc && l.pc.setor, l.sw && l.sw.nome].join(' ')).indexOf(termo) !== -1;
+    });
+    var ativos = vis.filter(function(o){ return o.l.st !== 'off' && o.l.st !== 'ocult'; }).sort(function(x, y){ return ipNum(x.l.ip) - ipNum(y.l.ip); });
+    var ocult = vis.filter(function(o){ return o.l.st === 'ocult'; }).sort(function(x, y){ return ipNum(x.l.ip) - ipNum(y.l.ip); });
+    var off = vis.filter(function(o){ return o.l.st === 'off'; }).sort(function(x, y){ return ipNum(x.l.ip) - ipNum(y.l.ip); });
+    if(!vis.length){ lista.innerHTML = '<div class="sc-vazio ad-vazio"><b>Nada aqui</b>' + (termo ? 'Tente outro termo.' : 'Nenhum aparelho nesse filtro.') + '</div>'; }
+    else lista.innerHTML = '<div class="sc-tabela-wrap"><table class="sc-tabela"><thead><tr><th>IP</th><th>Nome na rede</th><th>MAC · fabricante</th><th>No portal</th><th style="text-align:right">Ação</th></tr></thead><tbody>' +
+      ativos.map(function(o){ return linhaHtml(o.l, o.i); }).join('') +
+      (off.length ? '<tr class="sc-sep"><td colspan="5">Cadastrados que não responderam (' + off.length + ')</td></tr>' + off.map(function(o){ return linhaHtml(o.l, o.i); }).join('') : '') +
+      (ocult.length ? '<tr class="sc-sep" style="color:#a1a1aa"><td colspan="5" style="color:#a1a1aa !important;background:rgba(255,255,255,.03)">Ocultados (' + ocult.length + ')</td></tr>' + ocult.map(function(o){ return linhaHtml(o.l, o.i); }).join('') : '') +
+      '</tbody></table></div>';
+    var quando = resultado.inicio ? new Date(resultado.inicio) : null;
+    el('sc-rodape').textContent = (quando ? 'Busca de ' + quando.toLocaleDateString('pt-BR') + ' às ' + quando.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '') +
+      (resultado.rede ? ' · rede ' + resultado.rede.faixa + ' · feita no computador ' + (resultado.rede.computador || '') + (resultado.rede.ip ? ' (' + resultado.rede.ip + ')' : '') : '') +
+      ' · Aparelhos que não respondem a ping nem a ARP (outra rede/VLAN) não aparecem.';
+  }
+
+  // ---------- busca ----------
+  var FASES = { ping: 'Procurando quem responde', vizinhos: 'Lendo os MACs da rede', nomes: 'Descobrindo os nomes' };
+  function progresso(p){
+    var pct = p.fase === 'ping' ? Math.round(p.feitos / p.total * 70) : p.fase === 'vizinhos' ? 75 : 78 + Math.round((p.feitos / Math.max(1, p.total)) * 22);
+    el('sc-barra').style.width = Math.min(100, pct) + '%';
+    el('sc-prog-txt').innerHTML = '<b>' + esc(FASES[p.fase] || 'Procurando') + '...</b> ' + (p.fase === 'ping' ? p.feitos + ' de ' + p.total + ' endereços' : p.fase === 'nomes' ? p.feitos + ' de ' + p.total + ' nomes' : '') + ' · ' + (p.itens ? p.itens.length : 0) + ' encontrados';
+  }
+  async function procurar(){
+    var r = api(); if(!r) return render();
+    if(rodando){ try{ await r.cancelar(); }catch(e){} return; }
+    rodando = true;
+    var base = el('sc-rede') ? el('sc-rede').value : '';
+    el('sc-prog').classList.add('rodando'); el('sc-barra').style.width = '2%';
+    el('sc-btn-procurar-txt').textContent = 'Parar';
+    el('sc-prog-txt').innerHTML = '<b>Começando...</b>';
+    render();
+    if(tirarAviso) tirarAviso();
+    tirarAviso = r.aoProgresso(progresso);
+    try{
+      var res = await r.varrer({ base: base });
+      await carregarCadastro();
+      resultado = res; gravarJson(CH_ULT, res);
+      comparar();
+      el('sc-barra').style.width = '100%';
+      el('sc-prog-txt').innerHTML = res.cancelado ? '<b>Busca interrompida.</b> Mostrando o que deu tempo de achar.' : '<b>Pronto.</b> ' + (res.itens || []).length + ' aparelhos responderam em ' + Math.round((res.duracaoMs || 0) / 1000) + ' s.';
+    }catch(err){
+      var m = String(err && err.message || err).replace(/^Error invoking remote method '[^']+': (Error: )?/, '');
+      el('sc-prog-txt').innerHTML = '<b style="color:#fca5a5">Não foi possível procurar.</b> ' + esc(m);
+    }finally{
+      rodando = false; if(tirarAviso){ tirarAviso(); tirarAviso = null; }
+      el('sc-prog').classList.remove('rodando');
+      el('sc-btn-procurar-txt').textContent = 'Procurar de novo';
+      render();
+    }
+  }
+
+  async function montarRedes(){
+    var r = api(), dir = el('sc-prog-dir');
+    if(!r || !dir) return;
+    try{
+      var info = await r.info();
+      var redes = (info && info.redes) || [];
+      if(redes.length > 1){
+        dir.innerHTML = 'Rede: <select id="sc-rede">' + redes.map(function(x){ return '<option value="' + esc(x.base) + '">' + esc(x.base) + '.0/24 · ' + esc(x.interface) + '</option>'; }).join('') + '</select>';
+        if(resultado && resultado.rede) el('sc-rede').value = resultado.rede.base;
+      } else if(redes.length === 1) dir.innerHTML = 'Rede <b>' + esc(redes[0].base) + '.0/24</b> · este computador: ' + esc(redes[0].ip);
+      else dir.innerHTML = '<span style="color:#fca5a5">Este computador não está numa rede local.</span>';
+    }catch(e){}
+  }
+
+  // ---------- ações ----------
+  function fecharMenu(){ el('sc-menu-novo').hidden = true; menuItem = null; }
+  tela.addEventListener('click', async function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var v;
+    if(b.id === 'sc-btn-procurar') return procurar();
+    if(b.id === 'sc-btn-exportar') return exportar();
+    if((v = b.getAttribute('data-sc-filtro'))){ filtro = v; return render(); }
+    if((v = b.getAttribute('data-sc-ficha')) !== null){ var lf = linhas[+v]; if(lf && lf.pc && window.csslAbrirFichaPc) window.csslAbrirFichaPc(lf.pc.patrimonio || lf.pc.id); return; }
+    if((v = b.getAttribute('data-sc-abrir')) !== null){ var la = linhas[+v]; if(la){ var u = 'http://' + la.ip; if(window.csslDesktop) location.href = u; else window.open(u, '_blank', 'noopener'); } return; }
+    if((v = b.getAttribute('data-sc-ip')) !== null || (v = b.getAttribute('data-sc-mac')) !== null){
+      var l = linhas[+v]; if(!l || !l.pc || !window.csslPc) return;
+      var soMac = b.hasAttribute('data-sc-mac');
+      var campos = soMac ? { mac: l.mac } : { ip: l.ip, mac: l.mac || undefined };
+      if(!soMac && !confirm('Trocar o IP do ' + l.pc.nome + ' de ' + (l.pc.ip || 'sem IP') + ' para ' + l.ip + '?')) return;
+      b.disabled = true;
+      try{ await window.csslPc.atualizarRede(l.pc.id, campos); if(campos.ip) l.pc.ip = campos.ip; if(campos.mac) l.pc.mac = campos.mac; toast(soMac ? 'MAC salvo no cadastro.' : 'IP atualizado no cadastro.'); await carregarCadastro(); comparar(); render(); }
+      catch(err){ b.disabled = false; toast('Não foi possível salvar (' + (err && err.message ? err.message : 'erro') + ').', 'err'); }
+      return;
+    }
+    if((v = b.getAttribute('data-sc-mostrar')) !== null){ var lm = linhas[+v]; var oc = lerJson(CH_OCULT, {}); delete oc[lm.mac]; gravarJson(CH_OCULT, oc); comparar(); render(); return; }
+    if((v = b.getAttribute('data-sc-cadastrar')) !== null){
+      menuItem = linhas[+v];
+      var m = el('sc-menu-novo'), r = b.getBoundingClientRect();
+      m.hidden = false;
+      m.style.top = Math.min(window.innerHeight - m.offsetHeight - 8, r.bottom + 6) + 'px';
+      m.style.left = Math.max(8, r.right - m.offsetWidth) + 'px';
+      e.stopPropagation(); return;
+    }
+    if((v = b.getAttribute('data-sc-novo'))){
+      var it = menuItem; fecharMenu(); if(!it) return;
+      if(v === 'ocultar'){ if(!it.mac){ toast('Sem MAC: não dá para ocultar este aparelho.', 'err'); return; } var o2 = lerJson(CH_OCULT, {}); o2[it.mac] = 1; gravarJson(CH_OCULT, o2); comparar(); render(); return; }
+      if(v === 'pc' && window.csslPc){ window.csslPc.abrirNovo({ ip: it.ip, mac: it.mac, hostname: it.nome, nome: it.nome ? String(it.nome).toUpperCase() : '', fabricante: it.fab }); return; }
+      if(v === 'switch' && window.csslSwitch){ window.csslSwitch.abrirNovo({ ip: it.ip, nome: it.nome ? String(it.nome).toUpperCase() : '', marca: it.fab }); return; }
+    }
+  });
+  document.addEventListener('click', function(e){ if(!el('sc-menu-novo').hidden && !e.target.closest('#sc-menu-novo')) fecharMenu(); });
+  window.addEventListener('scroll', fecharMenu, true);
+  el('sc-busca').addEventListener('input', render);
+
+  // ---------- exportar (Excel) ----------
+  async function exportar(){
+    if(!resultado || !linhas.length){ toast('Faça uma busca primeiro.', 'err'); return; }
+    var ROT = { ok: 'Cadastrado', dif: 'Diferente do cadastro', off: 'Não respondeu', novo: 'Desconhecido', ocult: 'Ocultado' };
+    var cab = ['IP', 'Nome na rede', 'MAC', 'Fabricante', 'Situação', 'No portal', 'Setor', 'Patrimônio', 'Observação'];
+    var dados = linhas.slice().sort(function(x, y){ return ipNum(x.ip) - ipNum(y.ip); }).map(function(l){
+      return [l.ip || '', l.nome || '', l.mac || '', l.fab || '', (l.eu ? 'Este computador · ' : '') + (ROT[l.st] || l.st) + (l.msg ? ' (' + l.msg + ')' : ''), l.pc ? 'Computador ' + l.pc.nome : l.sw ? 'Switch ' + l.sw.nome : '', (l.pc && l.pc.setor) || (l.sw && l.sw.setor) || '', (l.pc && l.pc.patrimonio) || '', l.sub || ''];
+    });
+    var nomeArq = 'Scanner de rede - ' + new Date(resultado.inicio || Date.now()).toISOString().slice(0, 10);
+    function baixar(blob, nome){ var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nome; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000); }
+    if(!window.ExcelJS){
+      var q = function(v){ v = String(v == null ? '' : v); return /[";\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+      baixar(new Blob(['﻿' + [cab].concat(dados).map(function(l){ return l.map(q).join(';'); }).join('\r\n')], { type: 'text/csv;charset=utf-8' }), nomeArq + '.csv');
+      return;
+    }
+    try{
+      var wb = new ExcelJS.Workbook(); wb.creator = 'CSSL Central TI';
+      var ws = wb.addWorksheet('Rede', { views: [{ state: 'frozen', ySplit: 1 }] });
+      ws.addRow(cab); dados.forEach(function(d){ ws.addRow(d); });
+      ws.getRow(1).eachCell(function(c){ c.font = { bold: true, color: { argb: 'FFFFFFFF' } }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0601FE' } }; });
+      [16, 24, 20, 22, 26, 28, 18, 14, 40].forEach(function(w, i){ ws.getColumn(i + 1).width = w; });
+      ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: cab.length } };
+      ws.eachRow(function(row, i){ if(i === 1) return; var c = row.getCell(5), t = String(c.value || '');
+        var cor = /Não respondeu/.test(t) ? ['FFFEE2E2', 'FF991B1B'] : /Desconhecido/.test(t) ? ['FFFEF3C7', 'FF92400E'] : /Diferente/.test(t) ? ['FFFFEDD5', 'FF9A3412'] : ['FFDCFCE7', 'FF166534'];
+        c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: cor[0] } }; c.font = { bold: true, color: { argb: cor[1] } }; });
+      var buf = await wb.xlsx.writeBuffer();
+      baixar(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), nomeArq + '.xlsx');
+      toast('Excel gerado.');
+    }catch(err){ toast('Não foi possível gerar o Excel.', 'err'); }
+  }
+
+  // ---------- abrir / voltar ----------
+  card.addEventListener('click', async function(){
+    if(!ehAdmin()) return;
+    document.getElementById('tela-portal').style.display = 'none';
+    tela.style.display = 'block';
+    render();
+    montarRedes();
+    if(resultado){ await carregarCadastro(); comparar(); render(); }
+  });
+  el('btn-voltar-portal-scanner').addEventListener('click', function(){
+    tela.style.display = 'none';
+    document.getElementById('tela-portal').style.display = 'block';
+  });
+  var antesEntrar = window.entrarNoPortal;
+  window.entrarNoPortal = function(){ var r = antesEntrar ? antesEntrar.apply(this, arguments) : undefined; tela.style.display = 'none'; return r; };
 })();
 </script>
 </body>
