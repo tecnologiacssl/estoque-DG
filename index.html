@@ -5325,6 +5325,17 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 .sc-vazio b{display:block;color:#e4e4e7;font-size:15px;margin-bottom:4px}
 .sc-rodape{margin-top:10px;font-size:12px;color:#71717a}
 .sc-menu-novo{position:fixed;z-index:70;width:260px !important}
+.sc-alerta{display:flex;gap:10px;align-items:flex-start;margin:0 0 14px;padding:11px 14px;border-radius:12px;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.07);color:#fde68a;font-size:13px;line-height:1.5}
+.sc-alerta[hidden]{display:none}
+.sc-alerta b{color:#fff}
+.sc-diag{margin-top:8px;font-size:12.5px;color:#a1a1aa}
+.sc-diag[hidden]{display:none}
+.sc-diag summary{cursor:pointer;color:#c4c4cf;font-weight:700;padding:4px 0}
+.sc-diag-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-top:8px}
+.sc-diag-grade div{padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
+.sc-diag-grade small{display:block;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#71717a}
+.sc-diag-grade b{display:block;color:#e4e4e7;font-size:13px;margin-top:2px}
+.sc-diag-grade .ruim b{color:#fca5a5}
 @media (max-width:900px){ .sc-stats{grid-template-columns:1fr 1fr;gap:8px} }
 </style>
 </head>
@@ -7241,6 +7252,7 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
         <div class="sc-prog-l"><span id="sc-prog-txt">Clique em <b>Procurar agora</b> para ver o que está ligado na rede.</span><span id="sc-prog-dir"></span></div>
         <div class="sc-barra"><i id="sc-barra"></i></div>
       </div>
+      <div class="sc-alerta" id="sc-alerta" hidden></div>
       <div class="sc-stats" id="sc-stats"></div>
       <div class="sc-filtros" id="sc-filtros">
         <button type="button" class="sc-chip on" data-sc-filtro="todos">Todos<span id="sc-n-todos">0</span></button>
@@ -7252,6 +7264,7 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
       </div>
       <div id="sc-lista"></div>
       <p class="sc-rodape" id="sc-rodape"></p>
+      <details class="sc-diag" id="sc-diag" hidden><summary>Detalhes da busca (para comparar dois computadores)</summary><div id="sc-diag-corpo"></div></details>
     </div>
     <div class="pc2-menu sc-menu-novo" id="sc-menu-novo" role="menu" hidden>
       <button type="button" role="menuitem" data-sc-novo="pc">🖥 Cadastrar como computador</button>
@@ -32612,7 +32625,7 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
     if(l.sw && l.ip) acao += '<button type="button" class="ad-btn" data-sc-abrir="' + i + '">Abrir</button>';
     if(l.st === 'novo') acao += '<button type="button" class="ad-btn pri" data-sc-cadastrar="' + i + '">+ Cadastrar</button>';
     if(l.st === 'ocult') acao += '<button type="button" class="ad-btn" data-sc-mostrar="' + i + '">Mostrar</button>';
-    var nome = l.nome ? esc(l.nome) : '<span style="color:#71717a">(sem nome)</span>';
+    var nome = l.nome ? '<span' + (l.a && l.a.fonteNome ? ' title="Nome descoberto por ' + esc(l.a.fonteNome) + '"' : '') + '>' + esc(l.nome) + '</span>' + (l.a && l.a.grupo ? '<span class="sc-sub">Domínio/grupo: ' + esc(l.a.grupo) + '</span>' : '') : '<span style="color:#71717a">(sem nome)</span>';
     return '<tr' + (l.eu ? ' class="sc-eu"' : '') + '><td class="sc-ip">' + esc(l.ip || '—') + '</td><td>' + nome + '</td>' +
       '<td><span class="sc-mac">' + esc(l.mac || '—') + '</span><span class="sc-sub">' + esc(l.fab || (l.a && l.a.via === 'ping' && !l.mac ? 'MAC não lido' : '')) + '</span></td>' +
       '<td>' + tag + '</td><td><div class="sc-acao">' + acao + '</div></td></tr>';
@@ -32624,6 +32637,7 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
     el('sc-btn-procurar').disabled = semApp && !rodando;
     el('sc-btn-procurar').style.display = semApp ? 'none' : '';
     el('sc-conteudo').hidden = semApp && !resultado;
+    renderDiag();
     ['todos', 'novo', 'dif', 'off', 'ok'].forEach(function(k){ var n = el('sc-n-' + k); if(n) n.textContent = contar(k); });
     [].forEach.call(el('sc-filtros').querySelectorAll('[data-sc-filtro]'), function(b){ b.classList.toggle('on', b.getAttribute('data-sc-filtro') === filtro); });
     var vivos = linhas.filter(function(l){ return l.st !== 'off'; }).length;
@@ -32656,6 +32670,34 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
     el('sc-rodape').textContent = (quando ? 'Busca de ' + quando.toLocaleDateString('pt-BR') + ' às ' + quando.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '') +
       (resultado.rede ? ' · rede ' + resultado.rede.faixa + ' · feita no computador ' + (resultado.rede.computador || '') + (resultado.rede.ip ? ' (' + resultado.rede.ip + ')' : '') : '') +
       ' · Aparelhos que não respondem a ping nem a ARP (outra rede/VLAN) não aparecem.';
+  }
+  // ADIÇÃO (app 1.0.6): mostra como a busca foi feita neste PC — se dois
+  // computadores mostram coisas diferentes, compare estes números.
+  function renderDiag(){
+    var box = el('sc-diag'), alerta = el('sc-alerta');
+    var d = resultado && resultado.diag, rede = resultado && resultado.rede;
+    var avisos = [];
+    var versao = (window.csslDesktop && window.csslDesktop.versao) || '';
+    function versaoNum(v){ return String(v || '0').split('.').reduce(function(t, x){ return t * 1000 + (parseInt(x, 10) || 0); }, 0); }
+    if(api() && versaoNum(versao) < versaoNum('1.0.6')) avisos.push('<b>O app deste computador está desatualizado (' + esc(versao || 'versão antiga') + ').</b> Na versão 1.0.6 os nomes e MACs saem iguais em qualquer PC. Ele se atualiza sozinho quando fica escondido perto do relógio.');
+    if(rede && rede.tipo === 'wifi') avisos.push('<b>Este computador está no Wi-Fi.</b> Alguns roteadores escondem os aparelhos uns dos outros: para o resultado mais completo, faça a busca num PC ligado no cabo.');
+    if(d && d.vizinhos && !d.vizinhos.total && (resultado.itens || []).length > 1) avisos.push('<b>Não foi possível ler os MACs neste computador</b> (PowerShell e "arp" não responderam). Sem MAC não aparece o fabricante nem dá para achar o computador no cadastro pelo MAC.');
+    alerta.hidden = !avisos.length;
+    alerta.innerHTML = avisos.length ? '<span>⚠️</span><div>' + avisos.join('<br>') + '</div>' : '';
+    if(!d){ box.hidden = true; return; }
+    box.hidden = false;
+    function c(rot, val, ruim){ return '<div' + (ruim ? ' class="ruim"' : '') + '><small>' + esc(rot) + '</small><b>' + val + '</b></div>'; }
+    var est = d.vizinhos && d.vizinhos.estados ? Object.keys(d.vizinhos.estados).map(function(k){ return k + ' ' + d.vizinhos.estados[k]; }).join(' · ') : '';
+    var total = (resultado.itens || []).length;
+    el('sc-diag-corpo').innerHTML = '<div class="sc-diag-grade">' +
+      c('Computador / placa', esc((rede && rede.computador) || '') + ' · ' + esc(d.placa || '')) +
+      c('Versão do app', esc(d.versao || '—')) +
+      c('Responderam ao ping', d.respostasPing + ' de ' + total + ' achados') +
+      c('MACs lidos (' + esc((d.vizinhos && d.vizinhos.metodo) || 'nenhum') + ')', (d.vizinhos ? d.vizinhos.total : 0) + (est ? ' <span style="color:#71717a;font-weight:500">(' + esc(est) + ')</span>' : ''), d.vizinhos && !d.vizinhos.total) +
+      c('Nomes descobertos', 'NetBIOS ' + d.nomes.netbios + ' · DNS ' + d.nomes.dns + ' · mDNS ' + d.nomes.mdns) +
+      c('Sem nome / sem MAC', d.semNome + ' / ' + d.semMac, d.semMac > total / 2) +
+      c('Tempo de cada etapa', 'ping ' + (d.tempos.ping || 0) + 's · MACs ' + (d.tempos.vizinhos || 0) + 's · nomes ' + (d.tempos.nomes || 0) + 's') +
+    '</div>';
   }
 
   // ---------- busca ----------
@@ -32701,9 +32743,9 @@ html.sug-travado,html.sug-travado body{overflow:hidden}
       var info = await r.info();
       var redes = (info && info.redes) || [];
       if(redes.length > 1){
-        dir.innerHTML = 'Rede: <select id="sc-rede">' + redes.map(function(x){ return '<option value="' + esc(x.base) + '">' + esc(x.base) + '.0/24 · ' + esc(x.interface) + '</option>'; }).join('') + '</select>';
+        dir.innerHTML = 'Rede: <select id="sc-rede">' + redes.map(function(x){ return '<option value="' + esc(x.base) + '">' + esc(x.base) + '.0/24 · ' + esc(x.interface) + (x.tipo === 'wifi' ? ' (Wi-Fi)' : '') + '</option>'; }).join('') + '</select>';
         if(resultado && resultado.rede) el('sc-rede').value = resultado.rede.base;
-      } else if(redes.length === 1) dir.innerHTML = 'Rede <b>' + esc(redes[0].base) + '.0/24</b> · este computador: ' + esc(redes[0].ip);
+      } else if(redes.length === 1) dir.innerHTML = 'Rede <b>' + esc(redes[0].base) + '.0/24</b> · este computador: ' + esc(redes[0].ip) + (redes[0].tipo === 'wifi' ? ' (Wi-Fi)' : '');
       else dir.innerHTML = '<span style="color:#fca5a5">Este computador não está numa rede local.</span>';
     }catch(e){}
   }
