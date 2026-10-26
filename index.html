@@ -34181,7 +34181,7 @@ html.tema-claro .sug-adm-vazio b{color:#191919}
 .nav-tema-btn .ic-lua{display:none}
 html.tema-claro .nav-tema-btn .ic-sol{display:none}
 html.tema-claro .nav-tema-btn .ic-lua{display:block}
-html.tema-trocando, html.tema-trocando *, html.tema-trocando *::before, html.tema-trocando *::after{transition:background-color .25s ease,color .25s ease,border-color .25s ease,box-shadow .25s ease !important}
+html.tema-sem-transicao, html.tema-sem-transicao *, html.tema-sem-transicao *::before, html.tema-sem-transicao *::after{transition:none !important}
 
 /* ===== Tema claro: base ===== */
 html.tema-claro{
@@ -34292,12 +34292,21 @@ html.tema-claro [style*="color:#facc15"]:not([style*="background-color:#facc15"]
     try{ if(window.csslDesktop && typeof window.csslDesktop.tema === 'function') window.csslDesktop.tema(c ? 'claro' : 'escuro'); }catch(e){}
     try{ document.dispatchEvent(new CustomEvent('cssl:tema', { detail: { claro: c } })); }catch(e){}
   }
+  // ALTERADO: troca na hora. Antes cada elemento animava a cor sozinho
+  // (milhares de animações ao mesmo tempo = travadinha); agora as animações
+  // ficam desligadas durante a troca e a tela muda no mesmo instante.
+  function aplicarTroca(alvo){
+    raiz.classList.add('tema-sem-transicao');
+    raiz.classList.toggle('tema-claro', alvo);
+    void raiz.offsetWidth; // aplica as cores novas já, sem animar
+    raiz.classList.remove('tema-sem-transicao');
+    // o resto (Estoque, app, aviso) não precisa segurar a troca na tela
+    setTimeout(atualizar, 0);
+  }
   function trocar(){
-    raiz.classList.add('tema-trocando');
-    raiz.classList.toggle('tema-claro');
-    try{ localStorage.setItem(CH, claro() ? 'claro' : 'escuro'); }catch(e){}
-    atualizar();
-    setTimeout(function(){ raiz.classList.remove('tema-trocando'); }, 350);
+    var alvo = !claro();
+    try{ localStorage.setItem(CH, alvo ? 'claro' : 'escuro'); }catch(e){}
+    aplicarTroca(alvo);
   }
   if(bt) bt.addEventListener('click', trocar);
   var f = document.getElementById('frame-estoque');
