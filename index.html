@@ -5342,6 +5342,22 @@ html.agenda-arrastando,html.agenda-arrastando *{cursor:grabbing !important;user-
 .sc-diag-grade b{display:block;color:#e4e4e7;font-size:13px;margin-top:2px}
 .sc-diag-grade .ruim b{color:#fca5a5}
 @media (max-width:900px){ .sc-stats{grid-template-columns:1fr 1fr;gap:8px} }
+
+/* ===== ADIÇÃO: botões "Voltar" com área de clique maior =====
+   - altura mínima de 40px, seta à esquerda e uma "margem invisível" de 8px
+     em cima e embaixo que também conta como clique;
+   - no app de computador, o topo das telas nunca vira área de arrastar a
+     janela (antes um clique perto do cabeçalho podia ser "engolido"). */
+.btn-voltar-portal{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 18px 9px 13px !important;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
+.btn-voltar-portal::before{content:'';width:16px;height:16px;flex:none;background:currentColor;opacity:.85;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M12 19l-7-7 7-7'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M12 19l-7-7 7-7'/%3E%3C/svg%3E") center/contain no-repeat}
+.btn-voltar-portal::after{content:'';position:absolute;inset:-8px 0}
+.btn-voltar-portal:active{transform:translateY(1px)}
+.btn-voltar-portal *{pointer-events:none}
+.chat-btn-voltar-lista{min-width:40px;min-height:40px}
+#wifi-btn-voltar-andares{min-height:38px;padding:8px 14px}
+html.app-desktop .topo-chamado, html.app-desktop .topo-chamado *, html.app-desktop main, html.app-desktop .btn-voltar-portal{-webkit-app-region:no-drag}
 </style>
 </head>
 <body>
