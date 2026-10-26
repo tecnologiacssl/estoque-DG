@@ -22529,6 +22529,10 @@ formSolicitacao.addEventListener('submit', async function(e){
     }catch(err){ console.warn('Chat: falha ao carregar usuários.', err); }
   }
 
+  // CORREÇÃO: gravações "dispara e esquece" do chat precisam do .then() para
+  // de fato irem ao banco; este só registra no console se der erro.
+  function chatSalvoOk(r){ if(r && r.error) console.warn('Chat: não foi possível salvar.', r.error); else if(r instanceof Error) console.warn('Chat: não foi possível salvar.', r); }
+
   async function chatCarregarConversas(){
     if(!db || !chatMeuId) return;
     try{
@@ -22562,7 +22566,9 @@ formSolicitacao.addEventListener('submit', async function(e){
           outroNome: outro ? (outro.nome || outro.email) : 'Usuário removido',
           outroEmail: outro ? outro.email : '',
           outroIcone: outro ? outro.icone_perfil : null,
-          ultimaMensagemEm: c.ultima_mensagem_em,
+          // CORREÇÃO: usa a data da última mensagem de verdade (conversas
+          // antigas ficaram com a data da 1ª mensagem no banco)
+          ultimaMensagemEm: (info && info.ultima && (!c.ultima_mensagem_em || new Date(info.ultima.criado_em) > new Date(c.ultima_mensagem_em))) ? info.ultima.criado_em : c.ultima_mensagem_em,
           previewTexto: info && info.ultima ? (chatPreviewAnexo(info.ultima) || 'Diga olá 👋') : 'Diga olá 👋',
           previewMinha: info && info.ultima ? (String(info.ultima.remetente_id) === String(chatMeuId)) : false,
           previewLida: info && info.ultima ? !!info.ultima.lida : false,
@@ -22570,6 +22576,7 @@ formSolicitacao.addEventListener('submit', async function(e){
         };
       });
 
+      chatConversasCache.sort(function(a, b){ return new Date(b.ultimaMensagemEm || 0) - new Date(a.ultimaMensagemEm || 0); });
       chatRenderListaConversas(elBuscaInput.value);
       chatAtualizarBadgeSidebar();
     }catch(err){ console.warn('Chat: falha ao carregar conversas.', err); }
@@ -23778,7 +23785,7 @@ formSolicitacao.addEventListener('submit', async function(e){
         db.from('chat_grupo_leituras').upsert(
           { setor: setorAtivo, usuario_id: chatMeuId, lida_em: agoraGrupo },
           { onConflict: 'setor,usuario_id' }
-        );
+        ).then(chatSalvoOk, chatSalvoOk);
         chatAdicionarMensagemNaTela(respGrupo.data, true);
         chatAtualizarPreviewGrupo(setorAtivo, chatPreviewAnexo(respGrupo.data), true, chatMeuNome, agoraGrupo);
       }catch(err){
@@ -23800,7 +23807,10 @@ formSolicitacao.addEventListener('submit', async function(e){
 
       if(error || !data){ chatToast('Não foi possível enviar a mensagem.'); return; }
 
-      db.from('chat_conversas').update({ ultima_mensagem_em: agora }).eq('id', chatConversaAtivaId);
+      // CORREÇÃO: sem o .then() a atualização nunca era enviada ao banco (o
+      // Supabase só manda o pedido quando alguém "espera" a resposta) — por isso
+      // a conversa ficava com a data da 1ª mensagem na lista de quem recebe.
+      db.from('chat_conversas').update({ ultima_mensagem_em: agora }).eq('id', chatConversaAtivaId).then(chatSalvoOk, chatSalvoOk);
       chatAdicionarMensagemNaTela(data, false);
       chatAtualizarPreviewConversa(chatConversaAtivaId, chatPreviewAnexo(data), true, agora);
     }catch(err){
@@ -23963,7 +23973,7 @@ formSolicitacao.addEventListener('submit', async function(e){
 
     if(chatTipoAtivo === 'direta' && String(m.conversa_id) === String(chatConversaAtivaId)){
       chatAdicionarMensagemNaTela(m, false);
-      db.from('chat_mensagens').update({ lida:true }).eq('id', m.id);
+      db.from('chat_mensagens').update({ lida:true }).eq('id', m.id).then(chatSalvoOk, chatSalvoOk);
       chatAvisarLido(m.conversa_id);
       chatAtualizarStatusCabecalho();
     } else {
@@ -23995,7 +24005,7 @@ formSolicitacao.addEventListener('submit', async function(e){
       db.from('chat_grupo_leituras').upsert(
         { setor: m.setor, usuario_id: chatMeuId, lida_em: m.criado_em },
         { onConflict: 'setor,usuario_id' }
-      );
+      ).then(chatSalvoOk, chatSalvoOk);
       item.naoLidas = 0;
     } else {
       item.naoLidas = (item.naoLidas || 0) + 1;
@@ -24031,7 +24041,7 @@ formSolicitacao.addEventListener('submit', async function(e){
           var c = chatConversasCache.filter(function(x){ return String(x.id) === String(chatConversaAtivaId); })[0];
           if(c && c.naoLidas > 0){
             c.naoLidas = 0;
-            db.from('chat_mensagens').update({ lida:true }).eq('conversa_id', chatConversaAtivaId).eq('lida', false).neq('remetente_id', chatMeuId);
+            db.from('chat_mensagens').update({ lida:true }).eq('conversa_id', chatConversaAtivaId).eq('lida', false).neq('remetente_id', chatMeuId).then(chatSalvoOk, chatSalvoOk);
             chatAvisarLido(chatConversaAtivaId);
           }
         } else if(chatTipoAtivo === 'grupo' && chatGrupoAtivoSetor){
@@ -24039,7 +24049,7 @@ formSolicitacao.addEventListener('submit', async function(e){
           if(g && g.naoLidas > 0){
             g.naoLidas = 0;
             var ult = g.ultimaMensagemEm ? new Date(g.ultimaMensagemEm).getTime() + 1 : 0;
-            db.from('chat_grupo_leituras').upsert({ setor: chatGrupoAtivoSetor, usuario_id: chatMeuId, lida_em: new Date(Math.max(Date.now(), ult)).toISOString() }, { onConflict: 'setor,usuario_id' });
+            db.from('chat_grupo_leituras').upsert({ setor: chatGrupoAtivoSetor, usuario_id: chatMeuId, lida_em: new Date(Math.max(Date.now(), ult)).toISOString() }, { onConflict: 'setor,usuario_id' }).then(chatSalvoOk, chatSalvoOk);
           }
         }
       }
@@ -24056,6 +24066,11 @@ formSolicitacao.addEventListener('submit', async function(e){
   window.addEventListener('focus', chatRecontarSePreciso);
   document.addEventListener('visibilitychange', chatRecontarSePreciso);
   setInterval(function(){ if(chatMeuId && !document.hidden) chatAgendarRecontagem(0); }, 600000);
+  // ADIÇÃO: o "agora / 5 min / 1h" da lista vai se atualizando sozinho
+  setInterval(function(){
+    var tc = document.getElementById('tela-chat');
+    if(chatMeuId && !document.hidden && tc && tc.offsetParent !== null) chatRenderListaConversas(elBuscaInput.value);
+  }, 60000);
 
   function chatIniciarRealtime(){
     chatIniciarPresenca(); // REDESIGN: online / digitando / lida
