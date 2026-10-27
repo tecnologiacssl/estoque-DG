@@ -537,7 +537,11 @@ body{
       return;
     }
     try{
-      var resp = await db.from('wifi_redes_publica').select('nome,andar,senha').order('andar', { ascending:true });
+      // ALTERADO: as senhas do Wi-Fi ficaram protegidas no banco; as redes
+      // públicas vêm por uma função própria (wifi_redes_publicas). Se ela
+      // ainda não existir, usa a visão antiga.
+      var resp = await db.rpc('wifi_redes_publicas');
+      if(resp.error) resp = await db.from('wifi_redes_publica').select('nome,andar,senha').order('andar', { ascending:true });
       if(resp.error){ console.error(resp.error); renderErro(); return; }
       var linhas = (resp.data || []).filter(function(r){ return r.andar; });
       if(!linhas.length){ renderVazio(); return; }
