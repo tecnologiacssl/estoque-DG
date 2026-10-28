@@ -2,152 +2,134 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wi-Fi · Casa de Saúde Santa Lúcia</title>
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#050505">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* tema: o que a pessoa escolheu antes, senão o do aparelho */
+(function(){
+  var t = null;
+  try{ t = localStorage.getItem('cssl_wifi_tema'); }catch(e){}
+  if(t !== 'claro' && t !== 'escuro') t = (window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches) ? 'claro' : 'escuro';
+  document.documentElement.setAttribute('data-tema', t);
+})();
+</script>
 <style>
 :root{
-  --azul:#4c6ff2;
-  --azul-forte:#3355d8;
-  --azul-claro:#82a0ff;
-  --branco:#ffffff;
-  --cinza-claro:#a6a6ac;
-  --cinza-medio:#72727a;
-  --preto:#050505;
-  --borda:rgba(161,161,170,.18);
-  --verde:#22c55e;
-  --amarelo:#f59e0b;
-  --vermelho:#f87171;
+  --fundo:#050505;--superficie:rgba(255,255,255,.035);--superficie-2:rgba(255,255,255,.06);--superficie-3:rgba(255,255,255,.1);
+  --texto:#ffffff;--texto-2:#a6a6ac;--texto-3:#72727a;--borda:rgba(161,161,170,.18);
+  --azul:#4c6ff2;--azul-forte:#3355d8;--azul-claro:#82a0ff;--verde:#22c55e;
+  --senha-fundo:rgba(0,0,0,.35);--sombra:0 12px 30px -16px rgba(0,0,0,.7);--brilho-topo:rgba(76,111,242,.22);
+}
+html[data-tema="claro"]{
+  --fundo:#f3f4f8;--superficie:#ffffff;--superficie-2:#f1f2f7;--superficie-3:#e6e8f1;
+  --texto:#14141c;--texto-2:#4f4f5c;--texto-3:#6b6b78;--borda:rgba(20,20,40,.12);
+  --azul:#3b5bdb;--azul-forte:#2f4ac4;--azul-claro:#2f4ac4;--verde:#16a34a;
+  --senha-fundo:#f1f3fa;--sombra:0 10px 26px -18px rgba(20,30,80,.35);--brilho-topo:rgba(76,111,242,.14);
 }
 *{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;font-family:"Manrope","Segoe UI",Arial,sans-serif;background:var(--preto);color:var(--branco);
-  min-height:100vh;display:flex;flex-direction:column;
-}
-.topo{
-  padding:28px 20px 18px;text-align:center;
-  background:radial-gradient(480px 220px at 50% -40%,rgba(76,111,242,.22),transparent 70%);
-}
-.topo .logo{width:44px;height:44px;border-radius:12px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg,var(--azul-forte),var(--azul));box-shadow:0 10px 26px -10px rgba(76,111,242,.6)}
+html,body{min-height:100%}
+body{margin:0;font-family:"Manrope","Segoe UI",Arial,sans-serif;background:var(--fundo);color:var(--texto);min-height:100vh;display:flex;flex-direction:column}
+button{font-family:inherit}
+
+/* ---- Topo ---- */
+.topo{position:relative;padding:26px 20px 14px;text-align:center;background:radial-gradient(520px 220px at 50% -40%,var(--brilho-topo),transparent 70%)}
+.topo .logo{width:44px;height:44px;border-radius:12px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg,var(--azul-forte),var(--azul));box-shadow:0 8px 22px -8px rgba(76,111,242,.7)}
 .topo h1{margin:0;font-size:19px;font-weight:800}
-.topo p{margin:6px 0 0;font-size:13px;color:var(--cinza-claro)}
+.topo p{margin:6px 0 0;font-size:13px;color:var(--texto-2)}
+.btn-tema{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:11px;border:1px solid var(--borda);background:var(--superficie);color:var(--texto);cursor:pointer;display:grid;place-items:center}
+.btn-tema:hover{background:var(--superficie-2)}
+.btn-tema svg{width:19px;height:19px}
 
-.conteudo{flex:1;max-width:480px;width:100%;margin:0 auto;padding:18px 16px 40px;display:flex;flex-direction:column;gap:14px}
+/* ---- Abas de andares ---- */
+.abas-wrap{position:sticky;top:0;z-index:20;background:var(--fundo);border-bottom:1px solid var(--borda)}
+.abas{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.abas::-webkit-scrollbar{display:none}
+.aba{flex:none;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:99px;border:1px solid var(--borda);background:var(--superficie);color:var(--texto);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.aba:hover{background:var(--superficie-2)}
+.aba .qt{min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--superficie-3);color:var(--texto-2);font-size:11px;font-weight:800;display:inline-grid;place-items:center}
+.aba.ativa{background:var(--azul);border-color:var(--azul);color:#fff}
+.aba.ativa .qt{background:rgba(255,255,255,.22);color:#fff}
+.aba:focus-visible{outline:2px solid var(--azul-claro);outline-offset:2px}
 
-.carregando{display:flex;flex-direction:column;align-items:center;gap:10px;padding:60px 20px;color:var(--cinza-claro);font-size:13.5px}
-.spin{width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,.12);border-top-color:var(--azul-claro);animation:girar .8s linear infinite}
+/* ---- Conteúdo ---- */
+.conteudo{flex:1;max-width:1120px;width:100%;margin:0 auto;padding:18px 16px 36px}
+.barra{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.barra h2{margin:0;font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px}
+.barra h2 small{font-size:13px;font-weight:600;color:var(--texto-2)}
+.barra-acoes{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 14px;border-radius:10px;border:1px solid var(--borda);background:var(--superficie);color:var(--texto);font-size:13px;font-weight:700;cursor:pointer}
+.btn:hover{background:var(--superficie-2)}
+.btn.pri{background:var(--azul);border-color:var(--azul);color:#fff}
+.btn.pri:hover{background:var(--azul-forte)}
+.btn svg{width:16px;height:16px}
+
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+@media (max-width:420px){.grade{grid-template-columns:1fr}}
+.rede{display:flex;gap:14px;align-items:stretch;padding:16px;border-radius:16px;background:var(--superficie);border:1px solid var(--borda);box-shadow:var(--sombra)}
+.rede-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+.rede-nome{font-size:15.5px;font-weight:800;display:flex;align-items:center;gap:8px;word-break:break-word}
+.rede-nome .ponto{width:8px;height:8px;border-radius:50%;background:var(--verde);flex:none}
+.rede-rot{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--texto-3);margin-bottom:-4px}
+.rede-senha{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:16px;font-weight:600;letter-spacing:.4px;padding:10px 12px;border-radius:10px;background:var(--senha-fundo);border:1px solid var(--borda);word-break:break-all;user-select:all}
+.rede-copiar{align-self:flex-start;margin-top:auto}
+.rede-qr{flex:none;width:112px;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;padding:0;cursor:zoom-in;color:var(--texto-3)}
+.rede-qr .qr{width:112px;height:112px;padding:7px;border-radius:12px;background:#fff;border:1px solid var(--borda)}
+.rede-qr .qr img,.rede-qr .qr canvas{width:100% !important;height:100% !important;display:block}
+.rede-qr span{font-size:10.5px;font-weight:700;text-align:center;line-height:1.3}
+@media (max-width:420px){.rede-qr{width:96px}.rede-qr .qr{width:96px;height:96px}}
+
+.carregando{display:flex;flex-direction:column;align-items:center;gap:10px;padding:60px 20px;color:var(--texto-2);font-size:13.5px}
+.spin{width:26px;height:26px;border-radius:50%;border:3px solid var(--superficie-3);border-top-color:var(--azul-claro);animation:girar .8s linear infinite}
 @keyframes girar{to{transform:rotate(360deg)}}
-
-.vazio{text-align:center;padding:50px 16px;color:var(--cinza-claro)}
+.vazio{text-align:center;padding:50px 16px;color:var(--texto-2)}
 .vazio .ico{font-size:34px;margin-bottom:10px}
-.vazio b{display:block;color:#fff;font-size:15px;margin-bottom:4px}
+.vazio b{display:block;color:var(--texto);font-size:15px;margin-bottom:4px}
 .vazio p{margin:0;font-size:13px;line-height:1.5}
 
-/* ---- Menu de andares ---- */
-.andares-titulo{font-size:13px;color:var(--cinza-claro);margin:4px 2px 0;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-.andar-btn{
-  display:flex;align-items:center;gap:14px;width:100%;padding:16px 16px;border-radius:14px;
-  background:rgba(255,255,255,.035);border:1px solid var(--borda);color:#fff;cursor:pointer;
-  font-family:inherit;text-align:left;transition:background .15s ease,border-color .15s ease,transform .1s ease;
-}
-.andar-btn:active{transform:scale(.98)}
-.andar-btn:hover{background:rgba(76,111,242,.1);border-color:rgba(129,140,248,.4)}
-.andar-btn .ico{flex-shrink:0;width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;background:rgba(76,111,242,.14)}
-.andar-btn .txt{flex:1;min-width:0}
-.andar-btn .txt b{display:block;font-size:15px}
-.andar-btn .txt span{display:block;font-size:12px;color:var(--cinza-claro);margin-top:2px}
-.andar-btn .seta{color:var(--cinza-claro);font-size:18px;flex-shrink:0}
-
-/* ---- Lista de redes de um andar ---- */
-.voltar-btn{
-  display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:9px 14px;border-radius:10px;
-  background:rgba(255,255,255,.05);border:1px solid var(--borda);color:#fff;cursor:pointer;font-family:inherit;
-  font-size:13px;font-weight:700;
-}
-.voltar-btn:hover{background:rgba(255,255,255,.08)}
-.andar-atual{font-size:15px;font-weight:800;margin:2px 2px 0}
-
-.rede-card{
-  padding:16px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid var(--borda);
-}
-.rede-nome{font-size:15.5px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.rede-nome .ponto{width:8px;height:8px;border-radius:50%;background:var(--verde);flex-shrink:0}
-.rede-senha-linha{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.35);border-radius:10px;padding:11px 13px}
-.rede-senha{flex:1;min-width:0;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;letter-spacing:.5px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rede-btns{display:flex;gap:8px;margin-top:12px}
-.rede-btn{
-  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 8px;border-radius:10px;border:none;
-  cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;color:#fff;background:rgba(255,255,255,.06);
-  border:1px solid var(--borda);
-}
-.rede-btn:hover{background:rgba(255,255,255,.1)}
-.rede-btn.principal{background:linear-gradient(135deg,var(--azul-forte),var(--azul));border-color:transparent}
-
-/* ---- Modal de QR ---- */
-.modal-overlay{
-  position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;
-  padding:20px;opacity:0;pointer-events:none;transition:opacity .25s ease;
-}
+/* ---- Modal do QR grande ---- */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s ease}
 .modal-overlay.aberto{opacity:1;pointer-events:auto}
-.modal-box{
-  max-width:320px;width:100%;background:#0d0d0f;border:1px solid var(--borda);border-radius:18px;padding:24px;text-align:center;
-  transform:scale(.92);transition:transform .25s ease;
-}
+.modal-box{max-width:340px;width:100%;background:var(--superficie);border:1px solid var(--borda);border-radius:18px;padding:24px;text-align:center;transform:scale(.94);transition:transform .2s ease}
+html[data-tema="escuro"] .modal-box{background:#0d0d0f}
 .modal-overlay.aberto .modal-box{transform:scale(1)}
 .modal-box h3{margin:0 0 4px;font-size:16px}
-.modal-box p{margin:0 0 16px;font-size:12.5px;color:var(--cinza-claro);line-height:1.5}
+.modal-box p{margin:0 0 16px;font-size:12.5px;color:var(--texto-2);line-height:1.5}
 .qr-holder{display:flex;justify-content:center;margin-bottom:16px}
 .qr-holder img,.qr-holder canvas{border-radius:10px;background:#fff;padding:10px}
-.modal-fechar{width:100%;padding:11px;border-radius:10px;border:none;background:rgba(255,255,255,.08);color:#fff;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer}
+.modal-fechar{width:100%;padding:11px;border-radius:10px;border:1px solid var(--borda);background:var(--superficie-2);color:var(--texto);font-weight:700;font-size:13.5px;cursor:pointer}
 
-.rodape{text-align:center;padding:18px 16px 28px;font-size:11.5px;color:var(--cinza-medio)}
-
+.rodape{text-align:center;padding:18px 16px 28px;font-size:11.5px;color:var(--texto-3)}
 .toast-wrap{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
-.toast{background:#17171b;color:#fff;padding:10px 16px;border-radius:10px;font-size:12.5px;font-weight:600;border:1px solid var(--borda);opacity:0;transform:translateY(6px);transition:opacity .2s ease,transform .2s ease;box-shadow:0 10px 26px -10px rgba(0,0,0,.6)}
+.toast{background:#17171b;color:#fff;padding:10px 16px;border-radius:10px;font-size:12.5px;font-weight:600;border:1px solid rgba(161,161,170,.18);opacity:0;transform:translateY(6px);transition:opacity .2s ease,transform .2s ease}
 .toast.show{opacity:1;transform:translateY(0)}
-
-/* ADIÇÃO: botão "Imprimir" — fica FORA de #conteudo (que é trocado
-   por inteiro a cada tela) pra não sumir ao trocar de andar/tela; só
-   aparece depois que pelo menos uma rede pública carregou com sucesso. */
-.acoes-globais{max-width:480px;width:100%;margin:0 auto;padding:0 16px 6px;display:none}
-.btn-word{
-  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 16px;border-radius:12px;
-  background:rgba(255,255,255,.05);border:1px solid var(--borda);color:#fff;cursor:pointer;font-family:inherit;
-  font-size:13px;font-weight:700;
-}
-.btn-word:hover{background:rgba(255,255,255,.09)}
-.btn-word:disabled{opacity:.5;cursor:default}
 </style>
 </head>
 <body>
 
 <div class="topo">
+  <button type="button" class="btn-tema" id="btn-tema" aria-label="Trocar tema claro/escuro" title="Trocar tema"></button>
   <div class="logo">📶</div>
   <h1>Wi-Fi · Casa de Saúde Santa Lúcia</h1>
   <p>Rede e senha do Wi-Fi por andar, sem precisar de login.</p>
 </div>
 
-<div class="conteudo" id="conteudo">
-  <div class="carregando" id="carregando">
-    <div class="spin"></div>
-    <span>Carregando redes disponíveis...</span>
-  </div>
-</div>
+<div class="abas-wrap" id="abas-wrap" hidden><div class="abas" id="abas" role="tablist" aria-label="Andares"></div></div>
 
-<div class="acoes-globais" id="acoes-globais">
-  <button type="button" class="btn-word" id="btn-imprimir">🖨️ Imprimir cartões de todos os andares</button>
+<div class="conteudo" id="conteudo">
+  <div class="carregando"><div class="spin"></div><span>Carregando redes disponíveis...</span></div>
 </div>
 
 <div class="modal-overlay" id="modal-qr">
   <div class="modal-box">
     <h3>📶 Conectar no Wi-Fi</h3>
-    <p id="qr-nome-rede">Aponte a câmera do celular pra este código — ele já oferece a opção de entrar na rede, sem digitar senha.</p>
+    <p id="qr-nome-rede">Aponte a câmera do celular para o código.</p>
     <div class="qr-holder" id="qr-holder"></div>
     <button type="button" class="modal-fechar" id="qr-fechar">Fechar</button>
   </div>
@@ -159,235 +141,162 @@ body{
 <script>
 (function(){
   'use strict';
-
-  // Mesmo projeto/chave pública já usados no portal principal — a chave
-  // "anon" do Supabase é feita pra ir no navegador (não é secreta), então
-  // não tem problema repetir ela aqui numa página sem login.
   var SUPABASE_URL = "https://qahkmnaqlaocbduuiuac.supabase.co";
   var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhaGttbmFxbGFvY2JkdXVpdWFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTYwMzcsImV4cCI6MjEwMDEzMjAzN30.f_x08PNmXU3_ye2wrwpO-WmMpNnTwbqoSlwrLg7xXsU";
-
-  // ADIÇÃO: só lê a "vitrine" pública (view wifi_redes_publica) — nome,
-  // andar e senha das redes que o admin marcou como "visível para
-  // visitantes" no formulário de Wi-Fi do portal. Ver sql_criar_wifi_publico.sql.
-  var db = (window.supabase && window.supabase.createClient)
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-    : null;
+  var db = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
   var conteudoEl = document.getElementById('conteudo');
-  var modalQr = document.getElementById('modal-qr');
-  var qrHolder = document.getElementById('qr-holder');
-  var qrNomeRede = document.getElementById('qr-nome-rede');
-  var btnQrFechar = document.getElementById('qr-fechar');
-  // ADIÇÃO: guarda os dados já carregados (agrupados por andar) pra poder
-  // gerar o Word a qualquer momento, sem precisar consultar o Supabase de
-  // novo — ver "Exportar para Word" mais abaixo.
-  var acoesGlobaisEl = document.getElementById('acoes-globais');
-  var btnImprimir = document.getElementById('btn-imprimir');
-  var porAndarCarregado = null;
-  var andarAtual = null;   // null = menu de andares (imprime todos); senão só este andar
-  function atualizarBotaoImprimir(){
-    if(!btnImprimir) return;
-    btnImprimir.textContent = andarAtual ? '🖨️ Imprimir cartões do ' + andarAtual : '🖨️ Imprimir cartões de todos os andares';
-  }
+  var abasWrap = document.getElementById('abas-wrap'), abasEl = document.getElementById('abas');
+  var modalQr = document.getElementById('modal-qr'), qrHolder = document.getElementById('qr-holder'), qrNomeRede = document.getElementById('qr-nome-rede');
+  var porAndar = {}, andares = [], andarAtual = null;
 
-  // ---- Ordem preferida dos andares (bate com o cadastro do admin);
-  // qualquer valor fora dessa lista aparece depois, em ordem alfabética. ----
   var ORDEM_ANDARES = ['Térreo', '1º Andar', '2º Andar', '3º Andar'];
+  var IC_IMPRIMIR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>';
+  var IC_COPIAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  var IC_SOL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  var IC_LUA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
 
-  function esc(v){
-    if(v === undefined || v === null) return '';
-    return String(v).replace(/[&<>"']/g, function(c){
-      return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
-    });
-  }
-
-  function toast(msg, tipo){
-    var wrap = document.getElementById('toastWrap');
-    if(!wrap) return;
-    var el = document.createElement('div');
-    el.className = 'toast' + (tipo ? ' ' + tipo : '');
-    el.textContent = msg;
-    wrap.appendChild(el);
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function toast(msg){
+    var wrap = document.getElementById('toastWrap'); if(!wrap) return;
+    var el = document.createElement('div'); el.className = 'toast'; el.textContent = msg; wrap.appendChild(el);
     requestAnimationFrame(function(){ el.classList.add('show'); });
-    setTimeout(function(){
-      el.classList.remove('show');
-      setTimeout(function(){ el.remove(); }, 300);
-    }, 2800);
+    setTimeout(function(){ el.classList.remove('show'); setTimeout(function(){ el.remove(); }, 300); }, 2600);
   }
 
-  function escQR(v){
-    return String(v === undefined || v === null ? '' : v).replace(/([\\;,:"])/g, '\\$1');
+  // ---------- tema claro/escuro ----------
+  var btnTema = document.getElementById('btn-tema');
+  function pintarBotaoTema(){
+    var claro = document.documentElement.getAttribute('data-tema') === 'claro';
+    btnTema.innerHTML = claro ? IC_LUA : IC_SOL;
+    btnTema.title = claro ? 'Usar tema escuro' : 'Usar tema claro';
+    var m = document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', claro ? '#f3f4f8' : '#050505');
   }
-  function conteudoQR(rede){
-    return 'WIFI:T:WPA;S:' + escQR(rede.nome) + ';P:' + escQR(rede.senha) + ';;';
+  btnTema.addEventListener('click', function(){
+    var novo = document.documentElement.getAttribute('data-tema') === 'claro' ? 'escuro' : 'claro';
+    document.documentElement.setAttribute('data-tema', novo);
+    try{ localStorage.setItem('cssl_wifi_tema', novo); }catch(e){}
+    pintarBotaoTema();
+  });
+  pintarBotaoTema();
+
+  // ---------- QR ----------
+  function escQR(v){ return String(v == null ? '' : v).replace(/([\\;,:"])/g, '\\$1'); }
+  function conteudoQR(r){ return 'WIFI:T:WPA;S:' + escQR(r.nome) + ';P:' + escQR(r.senha) + ';;'; }
+  function desenharQr(el, r, tam){
+    el.innerHTML = '';
+    if(!window.QRCode){ el.textContent = 'QR indisponível'; return; }
+    new QRCode(el, { text: conteudoQR(r), width: tam, height: tam, colorDark: '#0f1b3d', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
   }
-  function abrirModalQr(rede){
-    qrNomeRede.textContent = 'Rede: ' + rede.nome + ' — aponte a câmera do celular pro código.';
-    qrHolder.innerHTML = '';
-    if(window.QRCode){
-      new QRCode(qrHolder, {
-        text: conteudoQR(rede), width: 190, height: 190,
-        colorDark: '#0f1b3d', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M
-      });
-    } else {
-      qrHolder.innerHTML = '<div style="padding:20px;color:var(--cinza-claro);font-size:12.5px">Não foi possível gerar o QR agora — mostre a senha manualmente.</div>';
-    }
+  function abrirModalQr(r){
+    qrNomeRede.textContent = 'Rede: ' + r.nome + ' — aponte a câmera do celular para o código.';
+    desenharQr(qrHolder, r, 210);
     modalQr.classList.add('aberto');
   }
   function fecharModalQr(){ modalQr.classList.remove('aberto'); }
-  btnQrFechar.addEventListener('click', fecharModalQr);
+  document.getElementById('qr-fechar').addEventListener('click', fecharModalQr);
   modalQr.addEventListener('click', function(e){ if(e.target === modalQr) fecharModalQr(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') fecharModalQr(); });
 
-  function ordenarAndares(andares){
-    return andares.slice().sort(function(a, b){
+  function ordenarAndares(lista){
+    return lista.slice().sort(function(a, b){
       var ia = ORDEM_ANDARES.indexOf(a), ib = ORDEM_ANDARES.indexOf(b);
       if(ia === -1 && ib === -1) return a.localeCompare(b, 'pt-BR');
-      if(ia === -1) return 1;
-      if(ib === -1) return -1;
+      if(ia === -1) return 1; if(ib === -1) return -1;
       return ia - ib;
     });
   }
-
-  function icone(andar){
-    if(/térreo/i.test(andar)) return '🏢';
-    return '🏬';
-  }
+  function icone(andar){ return /térreo/i.test(andar) ? '🏢' : '🏬'; }
 
   function renderErro(){
-    conteudoEl.innerHTML =
-      '<div class="vazio"><div class="ico">⚠️</div><b>Não foi possível carregar agora</b>' +
-      '<p>Verifique sua conexão com a internet e tente novamente em instantes.</p></div>';
+    abasWrap.hidden = true;
+    conteudoEl.innerHTML = '<div class="vazio"><div class="ico">⚠️</div><b>Não foi possível carregar agora</b><p>Verifique sua conexão com a internet e tente novamente em instantes.</p></div>';
   }
-
   function renderVazio(){
-    conteudoEl.innerHTML =
-      '<div class="vazio"><div class="ico">📶</div><b>Nenhuma rede pública cadastrada ainda</b>' +
-      '<p>Peça informações na recepção do seu andar.</p></div>';
+    abasWrap.hidden = true;
+    conteudoEl.innerHTML = '<div class="vazio"><div class="ico">📶</div><b>Nenhuma rede pública cadastrada ainda</b><p>Peça informações na recepção do seu andar.</p></div>';
   }
 
-  function renderMenuAndares(porAndar){
-    andarAtual = null; atualizarBotaoImprimir();
-    var andares = ordenarAndares(Object.keys(porAndar));
-    var html = '<div class="andares-titulo">Escolha o andar</div>';
-    html += andares.map(function(andar){
-      var qtd = porAndar[andar].length;
-      return '<button type="button" class="andar-btn" data-andar="' + esc(andar) + '">' +
-        '<div class="ico">' + icone(andar) + '</div>' +
-        '<div class="txt"><b>' + esc(andar) + '</b><span>' + qtd + (qtd === 1 ? ' rede disponível' : ' redes disponíveis') + '</span></div>' +
-        '<div class="seta">›</div>' +
-      '</button>';
+  // ---------- abas ----------
+  function renderAbas(){
+    abasEl.innerHTML = andares.map(function(a){
+      var on = a === andarAtual;
+      return '<button type="button" class="aba' + (on ? ' ativa' : '') + '" role="tab" aria-selected="' + on + '" data-andar="' + esc(a) + '">' + icone(a) + ' ' + esc(a) + '<span class="qt">' + porAndar[a].length + '</span></button>';
     }).join('');
-    conteudoEl.innerHTML = html;
-    conteudoEl.querySelectorAll('[data-andar]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        renderRedesDoAndar(btn.getAttribute('data-andar'), porAndar[btn.getAttribute('data-andar')], porAndar);
-      });
-    });
+    abasWrap.hidden = andares.length < 2;
+    var ativa = abasEl.querySelector('.aba.ativa');
+    if(ativa && ativa.scrollIntoView) try{ ativa.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }catch(e){}
   }
+  abasEl.addEventListener('click', function(e){
+    var b = e.target.closest('[data-andar]'); if(!b) return;
+    abrirAndar(b.getAttribute('data-andar'));
+  });
+  abasEl.addEventListener('keydown', function(e){
+    if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    var i = andares.indexOf(andarAtual) + (e.key === 'ArrowRight' ? 1 : -1);
+    if(i < 0 || i >= andares.length) return;
+    abrirAndar(andares[i]);
+    var b = abasEl.querySelector('.aba.ativa'); if(b) b.focus();
+  });
 
-  function renderRedesDoAndar(andar, redes, porAndar){
-    andarAtual = andar; atualizarBotaoImprimir();
-    var html = '<button type="button" class="voltar-btn" id="btn-voltar-andares">‹ Trocar de andar</button>';
-    html += '<div class="andar-atual">' + icone(andar) + ' ' + esc(andar) + '</div>';
-    html += redes.map(function(r){
-      return '<div class="rede-card">' +
-        '<div class="rede-nome"><span class="ponto"></span>' + esc(r.nome) + '</div>' +
-        '<div class="rede-senha-linha">' +
-          '<span class="rede-senha" data-senha-de="' + esc(r.nome) + '" data-visivel="0">••••••••</span>' +
+  // ---------- redes do andar ----------
+  function abrirAndar(andar){
+    andarAtual = andar;
+    renderAbas();
+    var redes = porAndar[andar] || [];
+    var n = redes.length;
+    var h = '<div class="barra"><h2>' + icone(andar) + ' ' + esc(andar) + ' <small>· ' + n + (n === 1 ? ' rede' : ' redes') + '</small></h2>' +
+      '<div class="barra-acoes">' +
+        '<button type="button" class="btn pri" data-imprimir="andar">' + IC_IMPRIMIR + 'Imprimir este andar</button>' +
+        (andares.length > 1 ? '<button type="button" class="btn" data-imprimir="todos">' + IC_IMPRIMIR + 'Imprimir todos</button>' : '') +
+      '</div></div>';
+    h += '<div class="grade">' + redes.map(function(r, i){
+      return '<article class="rede">' +
+        '<div class="rede-info">' +
+          '<div class="rede-nome"><span class="ponto"></span>' + esc(r.nome) + '</div>' +
+          '<div class="rede-rot">Senha</div>' +
+          '<div class="rede-senha">' + esc(r.senha) + '</div>' +
+          '<button type="button" class="btn rede-copiar" data-copiar="' + i + '">' + IC_COPIAR + 'Copiar senha</button>' +
         '</div>' +
-        '<div class="rede-btns">' +
-          '<button type="button" class="rede-btn" data-mostrar="' + esc(r.nome) + '">Mostrar</button>' +
-          '<button type="button" class="rede-btn" data-copiar="' + esc(r.nome) + '">Copiar</button>' +
-          '<button type="button" class="rede-btn principal" data-conectar="' + esc(r.nome) + '">Conectar</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-    conteudoEl.innerHTML = html;
-
-    document.getElementById('btn-voltar-andares').addEventListener('click', function(){
-      renderMenuAndares(porAndar);
-    });
-    conteudoEl.querySelectorAll('[data-mostrar]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var nome = btn.getAttribute('data-mostrar');
-        var r = redes.find(function(x){ return x.nome === nome; });
-        if(!r) return;
-        var span = conteudoEl.querySelector('.rede-senha[data-senha-de="' + CSS.escape(nome) + '"]');
-        if(!span) return;
-        var visivel = span.getAttribute('data-visivel') === '1';
-        span.textContent = visivel ? '••••••••' : r.senha;
-        span.setAttribute('data-visivel', visivel ? '0' : '1');
-        btn.textContent = visivel ? 'Mostrar' : 'Ocultar';
-      });
-    });
-    conteudoEl.querySelectorAll('[data-copiar]').forEach(function(btn){
-      btn.addEventListener('click', async function(){
-        var nome = btn.getAttribute('data-copiar');
-        var r = redes.find(function(x){ return x.nome === nome; });
-        if(!r) return;
-        try{
-          await navigator.clipboard.writeText(r.senha || '');
-          toast('Senha copiada!');
-        }catch(e){
-          toast('Não foi possível copiar — mostre a senha e digite manualmente.');
-        }
-      });
-    });
-    conteudoEl.querySelectorAll('[data-conectar]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var nome = btn.getAttribute('data-conectar');
-        var r = redes.find(function(x){ return x.nome === nome; });
-        if(r) abrirModalQr(r);
-      });
-    });
+        '<button type="button" class="rede-qr" data-qr="' + i + '" aria-label="Ampliar QR code da rede ' + esc(r.nome) + '"><div class="qr" data-qr-desenho="' + i + '"></div><span>Toque para ampliar</span></button>' +
+      '</article>';
+    }).join('') + '</div>';
+    conteudoEl.innerHTML = h;
+    redes.forEach(function(r, i){ var el = conteudoEl.querySelector('[data-qr-desenho="' + i + '"]'); if(el) desenharQr(el, r, 196); });
   }
-
-  // ALTERADO: em vez de baixar um Word, imprime direto (uma folha por
-  // andar, cartões em 2 colunas para recortar). No menu de andares imprime
-  // todos; dentro de um andar, só aquele andar. Ver csslImprimirWifi.
-  if(btnImprimir){
-    btnImprimir.addEventListener('click', function(){
-      if(!porAndarCarregado || !Object.keys(porAndarCarregado).length){ toast('Nenhuma rede pública carregada ainda.'); return; }
-      var lista = andarAtual ? [andarAtual] : ordenarAndares(Object.keys(porAndarCarregado));
-      if(!window.csslImprimirWifi(porAndarCarregado, lista)) toast('Nada para imprimir neste andar.');
-    });
-  }
-
-  async function iniciar(){
-    if(!db){
-      renderErro();
+  conteudoEl.addEventListener('click', async function(e){
+    var redes = porAndar[andarAtual] || [];
+    var c = e.target.closest('[data-copiar]');
+    if(c){
+      var r = redes[+c.getAttribute('data-copiar')]; if(!r) return;
+      try{ await navigator.clipboard.writeText(r.senha || ''); toast('Senha copiada!'); }
+      catch(err){ toast('Não foi possível copiar — selecione a senha e copie.'); }
       return;
     }
+    var q = e.target.closest('[data-qr]');
+    if(q){ var r2 = redes[+q.getAttribute('data-qr')]; if(r2) abrirModalQr(r2); return; }
+    var p = e.target.closest('[data-imprimir]');
+    if(p){
+      var lista = p.getAttribute('data-imprimir') === 'todos' ? andares : [andarAtual];
+      if(!window.csslImprimirWifi || !window.csslImprimirWifi(porAndar, lista)) toast('Nada para imprimir.');
+    }
+  });
+
+  async function iniciar(){
+    if(!db){ renderErro(); return; }
     try{
-      // ALTERADO: as senhas do Wi-Fi ficaram protegidas no banco; as redes
-      // públicas vêm por uma função própria (wifi_redes_publicas). Se ela
-      // ainda não existir, usa a visão antiga.
+      // redes públicas pela função própria (wifi_redes_publicas); se ela não existir, usa a visão antiga
       var resp = await db.rpc('wifi_redes_publicas');
-      if(resp.error) resp = await db.from('wifi_redes_publica').select('nome,andar,senha').order('andar', { ascending:true });
+      if(resp.error) resp = await db.from('wifi_redes_publica').select('nome,andar,senha').order('andar', { ascending: true });
       if(resp.error){ console.error(resp.error); renderErro(); return; }
       var linhas = (resp.data || []).filter(function(r){ return r.andar; });
       if(!linhas.length){ renderVazio(); return; }
-      var porAndar = {};
-      linhas.forEach(function(r){
-        if(!porAndar[r.andar]) porAndar[r.andar] = [];
-        porAndar[r.andar].push(r);
-      });
-      var andares = Object.keys(porAndar);
-      if(andares.length === 1){
-        renderRedesDoAndar(andares[0], porAndar[andares[0]], porAndar);
-      } else {
-        renderMenuAndares(porAndar);
-      }
-      // ADIÇÃO: dados carregados com sucesso — guarda pro botão de Word e
-      // revela o botão (fica escondido em erro/vazio).
-      porAndarCarregado = porAndar;
-      if(acoesGlobaisEl) acoesGlobaisEl.style.display = 'block';
-    }catch(e){
-      console.error(e);
-      renderErro();
-    }
+      porAndar = {};
+      linhas.forEach(function(r){ (porAndar[r.andar] = porAndar[r.andar] || []).push(r); });
+      andares = ordenarAndares(Object.keys(porAndar));
+      abrirAndar(andares[0]);
+    }catch(e){ console.error(e); renderErro(); }
   }
-
   iniciar();
 })();
 </script>
@@ -410,6 +319,12 @@ body{
 #wifi-print-host .wp-cartao tr.wp-azul td{background:#DCE6F1}
 #wifi-print-host .wp-cartao td.wp-nome{width:56%;font-weight:700}
 #wifi-print-host .wp-cartao *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#wifi-print-host .wp-cartao td.wp-qr{width:19mm;height:18mm;padding:1mm;text-align:center}
+#wifi-print-host .wp-cartao td.wp-qr img{width:16mm;height:16mm;display:block;margin:0 auto;image-rendering:pixelated}
+#wifi-print-host .wp-cartao td.wp-info{height:18mm;padding:0 2.5mm;white-space:nowrap;overflow:hidden}
+#wifi-print-host .wp-cartao td.wp-info b{display:block;font-size:9.5pt;line-height:1.25}
+#wifi-print-host .wp-cartao td.wp-info span{display:block;font-size:9pt;line-height:1.3;color:#1a1a1a}
+#wifi-print-host .wp-cartao td.wp-info small{display:block;font-size:6.5pt;color:#555;margin-top:.5mm}
 </style>
 <script>
 /* ADIÇÃO: monta e imprime os cartões de Wi-Fi.
@@ -419,22 +334,51 @@ body{
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
   // fonte menor para texto comprido, para nunca cortar a senha
   function tam(txt, base, cabe){ var n = String(txt || '').length; return n <= cabe ? base : Math.max(6, Math.round(base * cabe / n * 10) / 10); }
+  // QR code "WIFI:" (o celular oferece entrar na rede ao apontar a câmera)
+  function escQR(v){ return String(v == null ? '' : v).replace(/([\\;,:"])/g, '\\$1'); }
+  var cacheQr = {};
+  function qrDataUrl(r){
+    var texto = 'WIFI:T:WPA;S:' + escQR(r.nome) + ';P:' + escQR(r.senha) + ';;';
+    if(cacheQr[texto]) return cacheQr[texto];
+    if(!window.QRCode) return null;
+    var d = document.createElement('div');
+    d.style.cssText = 'position:absolute;left:-9999px;top:0';
+    document.body.appendChild(d);
+    try{
+      new QRCode(d, { text: texto, width: 256, height: 256, correctLevel: QRCode.CorrectLevel.M });
+      var c = d.querySelector('canvas'), im = d.querySelector('img');
+      var u = c && c.toDataURL ? c.toDataURL('image/png') : (im && im.src);
+      if(u) cacheQr[texto] = u;
+      return u || null;
+    }catch(e){ return null; }
+    finally{ d.remove(); }
+  }
+  var comQr = false;
   function cartao(andar, redes){
-    var h = '<table class="wp-cartao"><tr><th colspan="2" style="font-size:' + tam(andar, 9.5, 30) + 'pt">' + esc(String(andar).toUpperCase()) + '</th></tr>';
+    var h = '<table class="wp-cartao">' + (comQr ? '<colgroup><col style="width:19mm"><col></colgroup>' : '<colgroup><col style="width:56%"><col style="width:44%"></colgroup>') +
+      '<tr><th colspan="2" style="font-size:' + tam(andar, 9.5, 30) + 'pt">' + esc(String(andar).toUpperCase()) + '</th></tr>';
     redes.forEach(function(r, i){
-      h += '<tr' + (i % 2 === 0 ? ' class="wp-azul"' : '') + '><td class="wp-nome" style="font-size:' + tam(r.nome, 9, 24) + 'pt">' + esc(r.nome) + '</td>' +
-        '<td style="font-size:' + tam(r.senha, 9, 18) + 'pt">' + esc(r.senha) + '</td></tr>';
+      var qr = comQr ? qrDataUrl(r) : null;
+      if(qr){
+        h += '<tr' + (i % 2 === 0 ? ' class="wp-azul"' : '') + '><td class="wp-qr"><img src="' + qr + '" alt=""></td>' +
+          '<td class="wp-info"><b style="font-size:' + tam(r.nome, 9.5, 26) + 'pt">' + esc(r.nome) + '</b>' +
+          '<span style="font-size:' + tam('Senha: ' + r.senha, 9, 30) + 'pt">Senha: ' + esc(r.senha) + '</span><small>Aponte a câmera para conectar</small></td></tr>';
+      } else {
+        h += '<tr' + (i % 2 === 0 ? ' class="wp-azul"' : '') + '><td class="wp-nome" style="font-size:' + tam(r.nome, 9, 24) + 'pt">' + esc(r.nome) + '</td>' +
+          '<td style="font-size:' + tam(r.senha, 9, 18) + 'pt">' + esc(r.senha) + '</td></tr>';
+      }
     });
     return h + '</table>';
   }
   function copiasPorPagina(n){
-    var alturaCartao = 8 + 7 * n + 1;               // mm
+    var alturaCartao = 8 + (comQr ? 18 : 7) * n + 1;   // mm
     var linhas = Math.floor((276 + 5) / (alturaCartao + 5));
     return Math.max(1, Math.min(linhas, 14)) * 2;   // 2 colunas
   }
   window.csslImprimirWifi = function(porAndar, ordem){
     var andares = (ordem || Object.keys(porAndar)).filter(function(a){ return porAndar[a] && porAndar[a].length; });
     if(!andares.length) return false;
+    comQr = !!window.QRCode;
     var host = document.getElementById('wifi-print-host');
     if(!host){ host = document.createElement('div'); host.id = 'wifi-print-host'; document.body.appendChild(host); }
     host.innerHTML = andares.map(function(andar){
@@ -445,7 +389,11 @@ body{
     document.body.classList.add('wifi-imprimindo');
     var limpar = function(){ document.body.classList.remove('wifi-imprimindo'); window.removeEventListener('afterprint', limpar); };
     window.addEventListener('afterprint', limpar);
-    setTimeout(function(){ window.print(); }, 60);  // a classe só vale na impressão (@media print)
+    // espera as imagens dos QR codes ficarem prontas antes de abrir a impressão
+    var imgs = [].slice.call(host.querySelectorAll('img'));
+    Promise.all(imgs.map(function(i){ return i.decode ? i.decode().catch(function(){}) : null; })).then(function(){
+      setTimeout(function(){ window.print(); }, 60);  // a classe só vale na impressão (@media print)
+    });
     return true;
   };
 })();
